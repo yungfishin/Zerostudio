@@ -52,6 +52,10 @@ const REVOKED_KEYS = [
 ];
 
 window.isProActive = function() {
+    const testTier = localStorage.getItem('zerostudio_test_tier');
+    if (testTier === 'free') return false;
+    if (testTier === 'pro' || testTier === 'ultra') return true;
+
     const key = localStorage.getItem('zerostudio_pro_license');
     if (!key) return false;
     const cleanKey = key.trim().toUpperCase();
@@ -63,6 +67,10 @@ window.isProActive = function() {
 };
 
 window.isUltraActive = function() {
+    const testTier = localStorage.getItem('zerostudio_test_tier');
+    if (testTier === 'free' || testTier === 'pro') return false;
+    if (testTier === 'ultra') return true;
+
     const key = localStorage.getItem('zerostudio_pro_license');
     if (!key) return false;
     const cleanKey = key.trim().toUpperCase();
@@ -2199,7 +2207,28 @@ let isCheckingPayment = false;
 
 function updateProHeaderBadge() {
     const badgeBtn = document.querySelector('.btn-pro-unlock');
-    if (badgeBtn) {
+    if (!badgeBtn) return;
+
+    if (!window.isProActive()) {
+        badgeBtn.innerHTML = `
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #cbd5e1; width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <span style="color: #cbd5e1; font-weight: 700;">Nâng Cấp Pro (299k)</span>
+        `;
+        badgeBtn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+        badgeBtn.style.background = 'rgba(255, 255, 255, 0.05)';
+        badgeBtn.style.boxShadow = 'none';
+        return;
+    }
+
+    if (window.isUltraActive()) {
+        badgeBtn.innerHTML = `
+            <svg fill="currentColor" viewBox="0 0 24 24" style="color: #f59e0b; width: 15px; height: 15px;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+            <span style="color: #f59e0b; font-weight: 800;">Ultra MMO Master</span>
+        `;
+        badgeBtn.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+        badgeBtn.style.background = 'rgba(245, 158, 11, 0.14)';
+        badgeBtn.style.boxShadow = '0 0 16px rgba(245, 158, 11, 0.35)';
+    } else {
         badgeBtn.innerHTML = `
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #34d399; width: 15px; height: 15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
             <span style="color: #34d399; font-weight: 700;">Bản Pro Vĩnh Viễn</span>
@@ -2240,14 +2269,23 @@ window.openProModal = function(reason, targetTier = 'pro') {
             }
         }
 
-        const savedKey = localStorage.getItem('zerostudio_pro_license');
+        const testTier = localStorage.getItem('zerostudio_test_tier');
         const isUltraUser = window.isUltraActive();
+        const isProUser = window.isProActive();
+
+        // If in Free mode or not pro, always show pricing view!
+        if (testTier === 'free' || !isProUser) {
+            showProPricingView();
+            return;
+        }
 
         // If target is ultra and user doesn't have ultra, show pricing view to let them upgrade!
         if (targetTier === 'ultra' && !isUltraUser) {
             showProPricingView();
             return;
         }
+
+        const savedKey = localStorage.getItem('zerostudio_pro_license');
 
         if (savedKey) {
             const successView = document.getElementById('pro-view-success');
@@ -2458,16 +2496,43 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
     showToast("XÁC THỰC THÀNH CÔNG! Đã nhận đủ 299.000đ từ MB Bank. Bản Pro đã kích hoạt vĩnh viễn!", "success");
 }
 
+window.setTestTier = async function(tier) {
+    if (tier === 'free') {
+        localStorage.setItem('zerostudio_test_tier', 'free');
+        localStorage.removeItem('zerostudio_pro_license');
+        try {
+            await fetch('http://127.0.0.1:8899/api/delete-license', { method: 'POST' });
+        } catch {}
+        updateProHeaderBadge();
+        closeProModal();
+        showToast('🎯 ĐÃ CHUYỂN SANG CHẾ ĐỘ KHÁCH FREE (0đ) ĐỂ TEST!', 'info');
+        setTimeout(() => window.location.reload(), 400);
+    } else if (tier === 'pro') {
+        localStorage.setItem('zerostudio_test_tier', 'pro');
+        localStorage.setItem('zerostudio_pro_license', 'ZERO-PRO-DEMO-TESTER-VIP');
+        updateProHeaderBadge();
+        closeProModal();
+        showToast('⚡ ĐÃ CHUYỂN SANG GÓI PRO (299k) ĐỂ TEST!', 'success');
+        setTimeout(() => window.location.reload(), 400);
+    } else if (tier === 'ultra') {
+        localStorage.removeItem('zerostudio_test_tier');
+        localStorage.setItem('zerostudio_pro_license', 'ZERO-PRO-HIEU-MASTER-2026-SECURE');
+        try {
+            await fetch('http://127.0.0.1:8899/api/save-license', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ license_key: 'ZERO-PRO-HIEU-MASTER-2026-SECURE' })
+            });
+        } catch {}
+        updateProHeaderBadge();
+        closeProModal();
+        showToast('👑 ĐÃ KHÔI PHỤC TOÀN QUYỀN ULTRA MMO MASTER (ADMIN)!', 'success');
+        setTimeout(() => window.location.reload(), 400);
+    }
+};
+
 window.deactivateProToFree = async function() {
-    localStorage.removeItem('zerostudio_pro_license');
-    try {
-        await fetch('http://127.0.0.1:8899/api/delete-license', { method: 'POST' });
-    } catch {}
-    closeProModal();
-    showToast('Đã chuyển về bản FREE! Trình duyệt đang tải lại...', 'info');
-    setTimeout(() => {
-        window.location.reload();
-    }, 500);
+    await window.setTestTier('free');
 };
 
 window.copyPaymentField = function(text, label) {
@@ -2547,6 +2612,13 @@ async function syncLicenseWithDisk(key) {
 }
 
 async function loadPermanentDiskLicense() {
+    // If admin explicitly set test tier to free or pro, respect it!
+    const testTier = localStorage.getItem('zerostudio_test_tier');
+    if (testTier === 'free' || testTier === 'pro') {
+        updateProHeaderBadge();
+        return;
+    }
+
     // 0. Purge any leaked or revoked key immediately
     const existingKey = localStorage.getItem('zerostudio_pro_license');
     if (existingKey && REVOKED_KEYS.includes(existingKey.trim().toUpperCase())) {
@@ -2568,7 +2640,7 @@ async function loadPermanentDiskLicense() {
 
     // 2. Fallback to localStorage
     const localKey = localStorage.getItem('zerostudio_pro_license');
-    if (localKey && localKey.startsWith('ZERO-PRO-') && !REVOKED_KEYS.includes(localKey.trim().toUpperCase())) {
+    if (localKey && (localKey.startsWith('ZERO-PRO-') || localKey.startsWith('ZERO-ULTRA-')) && !REVOKED_KEYS.includes(localKey.trim().toUpperCase())) {
         updateProHeaderBadge();
         syncLicenseWithDisk(localKey);
     }
