@@ -2382,10 +2382,46 @@ window.downloadLicenseFile = function() {
     showToast('Đã tải file license.key! Giữ file này trong thư mục app để tự kích hoạt Pro vĩnh viễn.', 'success');
 };
 
+// ----------------------------------------------------
+// SHOWCASE THEATER VIDEO CONTROLS
+// ----------------------------------------------------
+window.toggleShowcaseVideo = function() {
+    const video = document.getElementById('showcase-demo-video');
+    const overlay = document.getElementById('theater-play-overlay');
+    if (!video) return;
+    if (video.paused) {
+        video.play().then(() => {
+            if (overlay) overlay.style.display = 'none';
+        }).catch(() => {
+            video.muted = true;
+            video.play();
+            if (overlay) overlay.style.display = 'none';
+        });
+    } else {
+        video.pause();
+        if (overlay) overlay.style.display = 'flex';
+    }
+};
+
+window.toggleShowcaseMute = function() {
+    const video = document.getElementById('showcase-demo-video');
+    if (!video) return;
+    video.muted = !video.muted;
+    showToast(video.muted ? 'Đã tắt âm thanh video demo' : 'Đã bật âm thanh video demo', 'info');
+};
+
 // Initialize Antiban dropzone & Permanent License Sync on load
 document.addEventListener('DOMContentLoaded', () => {
     setupAntibanDropzone();
     loadPermanentDiskLicense();
+
+    const showcaseVid = document.getElementById('showcase-demo-video');
+    if (showcaseVid) {
+        showcaseVid.addEventListener('ended', () => {
+            const overlay = document.getElementById('theater-play-overlay');
+            if (overlay) overlay.style.display = 'flex';
+        });
+    }
 });
 setTimeout(() => {
     setupAntibanDropzone();

@@ -1092,6 +1092,277 @@
             to { transform: translateY(0) scale(1); opacity: 1; }
         }
 
+        /* 13. How-It-Works Blueprint & Video Showcase Theater */
+        .how-it-works-section {
+            margin-top: 4.5rem;
+            margin-bottom: 3.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-tagline-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(14, 165, 233, 0.12);
+            border: 1px solid rgba(14, 165, 233, 0.35);
+            border-radius: 9999px;
+            padding: 0.35rem 0.95rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-headline-group {
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto 3rem;
+        }
+
+        .section-headline-group h2 {
+            font-size: 2.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+        }
+
+        .section-headline-group p {
+            margin-top: 0.75rem;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* 3-Step Blueprint Grid */
+        .steps-blueprint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .step-blueprint-card {
+            background: rgba(13, 16, 23, 0.75);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 2rem 1.75rem;
+            position: relative;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .step-blueprint-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.6), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .step-blueprint-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
+        }
+
+        .step-blueprint-card:hover::before {
+            opacity: 1;
+        }
+
+        .step-card-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 0.2rem 0.55rem;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 1.25rem;
+            width: fit-content;
+        }
+
+        .step-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(168, 85, 247, 0.18));
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #38bdf8;
+            margin-bottom: 1.25rem;
+        }
+
+        .step-icon-wrap svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-desc {
+            color: #94a3b8;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            flex-grow: 1;
+        }
+
+        .step-metric-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 6px;
+            padding: 0.25rem 0.55rem;
+            width: fit-content;
+        }
+
+        /* Video Showcase Theater */
+        .video-theater-wrap {
+            background: #090c13;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 50px rgba(56, 189, 248, 0.15);
+            position: relative;
+        }
+
+        .theater-top-bar {
+            background: #0d121c;
+            border-bottom: 1px solid var(--border-glass);
+            padding: 0.85rem 1.35rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .theater-window-dots {
+            display: flex;
+            gap: 0.45rem;
+        }
+
+        .theater-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+        }
+
+        .theater-dot.red { background: #ef4444; }
+        .theater-dot.yellow { background: #f59e0b; }
+        .theater-dot.green { background: #10b981; }
+
+        .theater-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theater-live-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .theater-screen-box {
+            position: relative;
+            background: #000000;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .theater-video-el {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .theater-play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 7, 10, 0.45);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theater-play-overlay:hover {
+            background: rgba(5, 7, 10, 0.25);
+        }
+
+        .theater-play-btn {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #a855f7);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 35px rgba(14, 165, 233, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .theater-play-btn svg {
+            width: 34px;
+            height: 34px;
+            margin-left: 4px;
+        }
+
+        .theater-play-overlay:hover .theater-play-btn {
+            transform: scale(1.12);
+        }
+
+        .theater-caption-bar {
+            padding: 1.25rem 1.75rem;
+            background: #0c1018;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-top: 1px solid var(--border-glass);
+        }
+
         footer {
             position: relative;
             z-index: 1;
@@ -3434,6 +3705,114 @@
                 </div>
             </div>
         </div>
+
+        <!-- ======================================================== -->
+        <!-- 13. HOW-IT-WORKS BLUEPRINT & VIDEO SHOWCASE THEATER      -->
+        <!-- ======================================================== -->
+        <section class="how-it-works-section" id="how-it-works">
+            <div class="section-headline-group">
+                <div class="section-tagline-pill">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    HƯỚNG DẪN & TRẢI NGHIỆM THỰC TẾ
+                </div>
+                <h2>3 Bước Thao Tác Siêu Tốc & Video Trải Nghiệm 60fps</h2>
+                <p>Không cần đăng ký phức tạp hay cài đặt rườm rà. Mọi tác vụ xử lý video và nén PDF đều diễn ra tức thì ngay trên thiết bị của bạn với tốc độ tính bằng mili-giây.</p>
+            </div>
+
+            <!-- 3-Step Visual Blueprint Cards -->
+            <div class="steps-blueprint-grid">
+                <!-- STEP 1 -->
+                <div class="step-blueprint-card">
+                    <div class="step-card-num">BƯỚC 01</div>
+                    <div class="step-icon-wrap">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    </div>
+                    <div class="step-title">Chọn Công Cụ & Thả File</div>
+                    <div class="step-desc">Dán link TikTok/Reels/Shorts để tải video sạch logo, hoặc kéo thả file PDF cần xử lý. 100% dữ liệu xử lý an toàn tại máy, không tải lên cloud trung gian.</div>
+                    <div class="step-metric-badge">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 12px; height: 12px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        100% Zero-Knowledge
+                    </div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="step-blueprint-card">
+                    <div class="step-card-num">BƯỚC 02</div>
+                    <div class="step-icon-wrap" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2)); border-color: rgba(168, 85, 247, 0.35); color: #c084fc;">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    </div>
+                    <div class="step-title">AI Xử Lý & Lách Thuật Toán</div>
+                    <div class="step-desc">Chỉ 1 click để đổi cấu trúc Hash MD5 chống quét bản quyền khi reup, gỡ sạch logo góc, bóc tách phụ đề song ngữ hoặc nén PDF tới 88% dung lượng.</div>
+                    <div class="step-metric-badge" style="color: #c084fc; background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3);">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 12px; height: 12px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        Tốc Độ 0.2s Siêu Tốc
+                    </div>
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="step-blueprint-card">
+                    <div class="step-card-num">BƯỚC 03</div>
+                    <div class="step-icon-wrap" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2)); border-color: rgba(16, 185, 129, 0.35); color: #34d399;">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div class="step-title">Xuất File 4K & Dùng Vĩnh Viễn</div>
+                    <div class="step-desc">Tải ngay video sạch không dính watermark hoặc file PDF siêu nét chuẩn nộp Dịch Vụ Công. Bản Pro ghi nhớ vĩnh viễn trên ổ cứng máy tính của bạn.</div>
+                    <div class="step-metric-badge" style="color: #34d399; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 12px; height: 12px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Bảo Hành Trọn Đời
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Showcase Theater Viewport -->
+            <div class="video-theater-wrap">
+                <div class="theater-top-bar">
+                    <div class="theater-window-dots">
+                        <span class="theater-dot red"></span>
+                        <span class="theater-dot yellow"></span>
+                        <span class="theater-dot green"></span>
+                    </div>
+                    <div class="theater-title">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ZeroStudio_Workflow_LiveDemo.mp4 (60 FPS)
+                    </div>
+                    <div class="theater-live-tag">
+                        <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; display: inline-block;"></span>
+                        FULL HD • 60 FPS
+                    </div>
+                </div>
+
+                <div class="theater-screen-box">
+                    <video id="showcase-demo-video" class="theater-video-el" poster="./assets/demo_poster.jpg" playsinline loop preload="metadata">
+                        <source src="./assets/demo_showcase.mp4" type="video/mp4">
+                        Trình duyệt của bạn không hỗ trợ thẻ video.
+                    </video>
+                    
+                    <div class="theater-play-overlay" id="theater-play-overlay" onclick="toggleShowcaseVideo()">
+                        <div class="theater-play-btn">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <span style="color: #ffffff; font-weight: 700; font-size: 0.95rem; margin-top: 1rem; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">Bấm Để Xem Video Trải Nghiệm Thực Tế (26 Giây)</span>
+                    </div>
+                </div>
+
+                <div class="theater-caption-bar">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <button class="btn-subtle" onclick="toggleShowcaseVideo()" id="theater-ctl-play">
+                            <svg fill="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M8 5v14l11-7z"/></svg>
+                            Phát / Tạm Dừng
+                        </button>
+                        <button class="btn-subtle" onclick="toggleShowcaseMute()" id="theater-ctl-mute">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 16px; height: 16px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                            Âm Thanh
+                        </button>
+                    </div>
+                    <div style="color: #94a3b8; font-size: 0.82rem; font-family: 'JetBrains Mono', monospace;">
+                        QUAY THỰC TẾ TRÊN ZEROSTUDIO • ZERO-WATERMARK WORKFLOW
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
