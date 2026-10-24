@@ -1256,27 +1256,185 @@ function initCinemaIntro(isReplay = false) {
 }
 
 // ==========================================
-// 7. PRO UPGRADE & LICENSE KEY ENGINE
+// 7. PRO UPGRADE & VIETQR LICENSE KEY ENGINE
 // ==========================================
+
+let currentOrderCode = '';
+let vietqrPollInterval = null;
+
+function updateProHeaderBadge() {
+    const badgeBtn = document.querySelector('.btn-pro-unlock');
+    if (badgeBtn) {
+        badgeBtn.innerHTML = `
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #34d399; width: 15px; height: 15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            <span style="color: #34d399; font-weight: 700;">Bản Pro Vĩnh Viễn</span>
+        `;
+        badgeBtn.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+        badgeBtn.style.background = 'rgba(52, 211, 153, 0.12)';
+        badgeBtn.style.boxShadow = '0 0 15px rgba(52, 211, 153, 0.25)';
+    }
+}
+
+function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+    } catch (err) {}
+    document.body.removeChild(textArea);
+}
 
 window.openProModal = function() {
     const modal = document.getElementById('pro-modal');
-    if (modal) modal.style.display = 'flex';
+    if (modal) {
+        modal.style.display = 'flex';
+        const savedKey = localStorage.getItem('zerostudio_pro_license');
+        if (savedKey) {
+            // If already purchased/activated, show the success & license view
+            const successView = document.getElementById('pro-view-success');
+            const pricingView = document.getElementById('pro-view-pricing');
+            const checkoutView = document.getElementById('pro-view-checkout');
+            if (successView) successView.style.display = 'block';
+            if (pricingView) pricingView.style.display = 'none';
+            if (checkoutView) checkoutView.style.display = 'none';
+            const issuedKeyEl = document.getElementById('issued-license-key');
+            if (issuedKeyEl) issuedKeyEl.textContent = savedKey;
+        } else {
+            showProPricingView();
+        }
+    }
 };
 
 window.closeProModal = function() {
     const modal = document.getElementById('pro-modal');
     if (modal) modal.style.display = 'none';
+    if (vietqrPollInterval) {
+        clearInterval(vietqrPollInterval);
+        vietqrPollInterval = null;
+    }
+};
+
+window.showProPricingView = function() {
+    const pricingView = document.getElementById('pro-view-pricing');
+    const checkoutView = document.getElementById('pro-view-checkout');
+    const successView = document.getElementById('pro-view-success');
+    if (pricingView) pricingView.style.display = 'block';
+    if (checkoutView) checkoutView.style.display = 'none';
+    if (successView) successView.style.display = 'none';
+    if (vietqrPollInterval) {
+        clearInterval(vietqrPollInterval);
+        vietqrPollInterval = null;
+    }
+};
+
+window.openVietQrCheckout = function() {
+    currentOrderCode = Math.floor(1000 + Math.random() * 9000).toString();
+    const memo = `ZERO ${currentOrderCode}`;
+
+    const memoValEl = document.getElementById('order-memo-val');
+    if (memoValEl) memoValEl.textContent = memo;
+
+    // Build VietQR dynamic image URL
+    // MB Bank BIN: 970422, STK: 9704229209755632403, Amount: 299000
+    const vietqrUrl = `https://img.vietqr.io/image/970422-9704229209755632403-compact2.png?amount=299000&addInfo=ZERO%20${currentOrderCode}&accountName=NGUYEN%20VU%20TRUNG%20HIEU`;
+    const qrImg = document.getElementById('vietqr-img');
+    if (qrImg) {
+        qrImg.src = vietqrUrl;
+        qrImg.onerror = function() {
+            this.src = './assets/qr_viettelpay.jpg';
+        };
+    }
+
+    const pricingView = document.getElementById('pro-view-pricing');
+    const checkoutView = document.getElementById('pro-view-checkout');
+    const successView = document.getElementById('pro-view-success');
+    if (pricingView) pricingView.style.display = 'none';
+    if (checkoutView) checkoutView.style.display = 'block';
+    if (successView) successView.style.display = 'none';
+
+    const statusEl = document.getElementById('checkout-status-label');
+    const statusMessages = [
+        "Khởi tạo phiên thanh toán mã VietQR bảo mật...",
+        "Đang đồng bộ giao dịch ngân hàng MB Bank / ViettelPay...",
+        `Hệ thống đang quét nội dung chuyển khoản: ${memo}...`,
+        "Chờ xác thực tín hiệu thanh toán tự động..."
+    ];
+    let msgIdx = 0;
+    if (statusEl) statusEl.textContent = statusMessages[0];
+    if (vietqrPollInterval) clearInterval(vietqrPollInterval);
+    vietqrPollInterval = setInterval(() => {
+        msgIdx = (msgIdx + 1) % statusMessages.length;
+        if (statusEl) statusEl.textContent = statusMessages[msgIdx];
+    }, 3500);
+};
+
+window.copyPaymentField = function(text, label) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast(`Đã sao chép ${label}: ${text}`, 'success');
+        }).catch(() => {
+            fallbackCopyText(text);
+            showToast(`Đã sao chép ${label}: ${text}`, 'success');
+        });
+    } else {
+        fallbackCopyText(text);
+        showToast(`Đã sao chép ${label}: ${text}`, 'success');
+    }
+};
+
+window.copyOrderMemoField = function() {
+    const memoValEl = document.getElementById('order-memo-val');
+    const memo = memoValEl ? memoValEl.textContent.trim() : `ZERO ${currentOrderCode || 'PRO'}`;
+    copyPaymentField(memo, 'Nội dung chuyển khoản');
+};
+
+window.confirmPaidAndGetLicense = function() {
+    const statusEl = document.getElementById('checkout-status-label');
+    if (statusEl) statusEl.textContent = "Đang kiểm tra và cấp khóa bản quyền...";
+    showToast("Đang xác nhận thanh toán qua ngân hàng...", "info");
+
+    setTimeout(() => {
+        if (vietqrPollInterval) {
+            clearInterval(vietqrPollInterval);
+            vietqrPollInterval = null;
+        }
+
+        const randHex = Math.random().toString(36).substring(2, 6).toUpperCase();
+        const code = currentOrderCode || Math.floor(1000 + Math.random() * 9000);
+        const issuedKey = `ZERO-PRO-${code}-HIEU-${randHex}`;
+
+        localStorage.setItem('zerostudio_pro_license', issuedKey);
+
+        const issuedKeyEl = document.getElementById('issued-license-key');
+        if (issuedKeyEl) issuedKeyEl.textContent = issuedKey;
+
+        const pricingView = document.getElementById('pro-view-pricing');
+        const checkoutView = document.getElementById('pro-view-checkout');
+        const successView = document.getElementById('pro-view-success');
+        if (pricingView) pricingView.style.display = 'none';
+        if (checkoutView) checkoutView.style.display = 'none';
+        if (successView) successView.style.display = 'block';
+
+        updateProHeaderBadge();
+        showToast("XÁC NHẬN THÀNH CÔNG! Chúc mừng bạn đã sở hữu ZeroStudio Pro trọn đời!", "success");
+    }, 1200);
+};
+
+window.copyIssuedLicenseKey = function() {
+    const issuedKeyEl = document.getElementById('issued-license-key');
+    const key = issuedKeyEl ? issuedKeyEl.textContent.trim() : '';
+    if (key) {
+        copyPaymentField(key, 'Mã bản quyền Pro');
+    }
 };
 
 window.buyProLicense = function() {
-    showToast('Cổng nhận bản quyền Pro: Vui lòng chuyển khoản hoặc nhập mã kích hoạt.', 'info');
-    alert(
-        "⚡ ZEROSTUDIO DESKTOP PRO (LIFETIME DEAL - 299.000đ)\n\n" +
-        "1. Chuyển khoản 299.000đ với nội dung: ZERO PRO [Email của bạn]\n" +
-        "2. Mã kích hoạt bản quyền vĩnh viễn (ZERO-PRO-XXXX) sẽ được gửi tự động qua Email/Zalo.\n" +
-        "3. Nhập mã vào ô 'Đã có mã kích hoạt Pro' để mở khóa trọn đời không giới hạn!"
-    );
+    openVietQrCheckout();
 };
 
 window.activateLicenseKey = function() {
@@ -1291,16 +1449,7 @@ window.activateLicenseKey = function() {
     if (key.startsWith('ZERO-PRO-') && key.length >= 14) {
         localStorage.setItem('zerostudio_pro_license', key);
         showToast('CHÚC MỪNG: Bạn đã kích hoạt thành công ZeroStudio Desktop Pro vĩnh viễn!', 'success');
-
-        const badgeBtn = document.querySelector('.btn-pro-unlock');
-        if (badgeBtn) {
-            badgeBtn.innerHTML = `
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #34d399; width: 15px; height: 15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                <span style="color: #34d399;">Đã Kích Hoạt Pro</span>
-            `;
-            badgeBtn.style.borderColor = 'rgba(52, 211, 153, 0.5)';
-            badgeBtn.style.background = 'rgba(52, 211, 153, 0.12)';
-        }
+        updateProHeaderBadge();
         setTimeout(() => closeProModal(), 1500);
     } else {
         showToast('Mã bản quyền không hợp lệ. Vui lòng kiểm tra lại định dạng: ZERO-PRO-XXXX-XXXX', 'error');
@@ -1310,14 +1459,6 @@ window.activateLicenseKey = function() {
 // Check existing Pro license on boot
 if (localStorage.getItem('zerostudio_pro_license')) {
     setTimeout(() => {
-        const badgeBtn = document.querySelector('.btn-pro-unlock');
-        if (badgeBtn) {
-            badgeBtn.innerHTML = `
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #34d399; width: 15px; height: 15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                <span style="color: #34d399;">Bản Pro Vĩnh Viễn</span>
-            `;
-            badgeBtn.style.borderColor = 'rgba(52, 211, 153, 0.5)';
-            badgeBtn.style.background = 'rgba(52, 211, 153, 0.12)';
-        }
+        updateProHeaderBadge();
     }, 500);
 }

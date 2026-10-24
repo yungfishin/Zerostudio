@@ -1947,6 +1947,289 @@
         .license-input-wrap input:focus {
             border-color: #c084fc;
         }
+
+        /* 14. VietQR Automated Checkout Stage */
+        .checkout-back-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .btn-subtle {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .btn-subtle:hover {
+            color: #ffffff;
+        }
+
+        .btn-subtle svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .checkout-secure-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: #34d399;
+            letter-spacing: 0.05em;
+        }
+
+        .vietqr-bento-grid {
+            display: grid;
+            grid-template-columns: 290px 1fr;
+            gap: 1.75rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .vietqr-bento-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .vietqr-scan-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .qr-scanner-frame {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #ffffff;
+            padding: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(168, 85, 247, 0.3);
+            border: 2px solid rgba(168, 85, 247, 0.4);
+        }
+
+        .qr-scanner-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .qr-scanner-laser {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ec4899, #a855f7, transparent);
+            box-shadow: 0 0 12px #ec4899;
+            animation: qr-laser 2.2s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes qr-laser {
+            0%, 100% { top: 5%; opacity: 0.3; }
+            50% { top: 92%; opacity: 1; }
+        }
+
+        .qr-app-logos {
+            margin-top: 0.75rem;
+            font-size: 0.72rem;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+
+        .vietqr-info-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .checkout-price-callout {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 14px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .callout-label {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .callout-val {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .copy-field-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .copy-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 0.5rem 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-item:hover {
+            border-color: rgba(168, 85, 247, 0.5);
+            background: rgba(20, 28, 50, 0.8);
+        }
+
+        .copy-lbl {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .copy-txt {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            padding: 0.25rem 0.55rem;
+            cursor: pointer;
+            pointer-events: none;
+            transition: all 0.2s;
+        }
+
+        .copy-item:hover .copy-btn {
+            color: #ffffff;
+            background: rgba(168, 85, 247, 0.3);
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .checkout-status-stream {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 0.25rem;
+        }
+
+        .checkout-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #e879f9;
+            box-shadow: 0 0 10px #e879f9;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        /* Success View */
+        .success-icon-gem {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.2), rgba(6, 182, 212, 0.2));
+            border: 2px solid #34d399;
+            box-shadow: 0 0 30px rgba(52, 211, 153, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+        }
+
+        .success-icon-gem svg {
+            width: 32px;
+            height: 32px;
+            color: #34d399;
+        }
+
+        .license-display-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            border-radius: 20px;
+            padding: 1.5rem;
+            max-width: 480px;
+            margin: 0 auto;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .license-display-tag {
+            font-size: 0.72rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: #34d399;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .license-display-code {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            border: 1px dashed rgba(52, 211, 153, 0.5);
+            margin-bottom: 1rem;
+            user-select: all;
+        }
+
+        .copy-license-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.6rem 1.25rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s;
+        }
+
+        .copy-license-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .copy-license-btn svg {
+            width: 16px;
+            height: 16px;
+        }
     </style>
 </head>
 <body>
@@ -2515,65 +2798,162 @@
                 </svg>
             </button>
 
-            <div class="pro-modal-header">
-                <div class="pro-gem-badge">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                </div>
-                <h2>ZeroStudio Desktop Pro</h2>
-                <p>Khai phá 100% sức mạnh phần cứng máy tính • Batch Processing 500+ files • Không giới hạn</p>
-            </div>
-
-            <!-- Bento Pricing Comparison -->
-            <div class="pro-pricing-grid">
-                <!-- Free Plan -->
-                <div class="pricing-card card-free">
-                    <div class="pricing-badge">WEB FREE</div>
-                    <div class="pricing-price">0đ <span>/ Vĩnh viễn</span></div>
-                    <p class="pricing-desc">Phù hợp nhu cầu cá nhân xử lý tài liệu và video nhẹ hàng ngày.</p>
-                    <ul class="pricing-features">
-                        <li><svg class="check-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Gộp, tách PDF cơ bản</li>
-                        <li><svg class="check-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> AI Phóng to ảnh 2K/4K</li>
-                        <li><svg class="check-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Tải từng video lẻ không logo</li>
-                        <li class="muted-feature"><svg class="cross-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Giới hạn RAM trình duyệt</li>
-                        <li class="muted-feature"><svg class="cross-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Không hỗ trợ xử lý hàng loạt</li>
-                    </ul>
-                    <button class="btn-outline" style="width: 100%;" disabled>Đang Sử Dụng (Web)</button>
+            <!-- SUB-VIEW 1: BẢNG GIÁ & SO SÁNH GIÁ TRỊ -->
+            <div id="pro-view-pricing">
+                <div class="pro-modal-header">
+                    <div class="pro-gem-badge">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h2>ZeroStudio Desktop Pro</h2>
+                    <p>Khai phá 100% sức mạnh phần cứng máy tính • Batch Processing 500+ files • Không giới hạn</p>
                 </div>
 
-                <!-- Pro Lifetime Plan -->
-                <div class="pricing-card card-pro">
-                    <div class="pro-corner-ribbon">LIFETIME DEAL • GIẢM 50%</div>
-                    <div class="pricing-badge pro-badge">DESKTOP PRO</div>
-                    <div class="pricing-price pro-price">299.000đ <span class="old-price">599.000đ</span> <span>/ Mua 1 lần dùng mãi mãi</span></div>
-                    <p class="pricing-desc">Dành cho Content Creator, Dân MMO & Doanh nghiệp cần tốc độ cao.</p>
-                    <ul class="pricing-features">
-                        <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Batch Processing:</strong> Xử lý 500+ file PDF cùng lúc 1 click</li>
-                        <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Cào trọn bộ kênh TikTok/Douyin:</strong> Tải sạch cả profile 100-500 video không watermark</li>
-                        <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Native GPU Acceleration:</strong> Render 4K 60fps nhanh gấp 10 lần qua card đồ họa rời</li>
-                        <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>AI Neural Network:</strong> Real-ESRGAN phục hồi chi tiết ảnh mờ & video thực thụ</li>
-                        <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Chạy ngầm System Tray:</strong> Phím tắt Ctrl+Shift+Z thao tác tức thì</li>
-                        <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> 100% Offline Air-Gapped bảo mật tối đa</li>
-                    </ul>
-                    <div class="pro-action-btns">
-                        <button class="btn-glow-action" style="width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899);" onclick="buyProLicense()">
-                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                            Nhận Bản Quyền Pro Vĩnh Viễn (299k)
-                        </button>
-                        <a href="./ZeroStudio-Setup.bat" class="btn-outline" style="width: 100%; text-decoration: none; text-align: center; margin-top: 0.5rem; display: block;" download>
-                            Tải Bản Desktop Windows (.bat / .exe)
-                        </a>
+                <!-- Bento Pricing Comparison -->
+                <div class="pro-pricing-grid">
+                    <!-- Free Plan -->
+                    <div class="pricing-card card-free">
+                        <div class="pricing-badge">WEB FREE</div>
+                        <div class="pricing-price">0đ <span>/ Vĩnh viễn</span></div>
+                        <p class="pricing-desc">Phù hợp nhu cầu cá nhân xử lý tài liệu và video nhẹ hàng ngày.</p>
+                        <ul class="pricing-features">
+                            <li><svg class="check-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Gộp, tách PDF cơ bản</li>
+                            <li><svg class="check-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> AI Phóng to ảnh 2K/4K</li>
+                            <li><svg class="check-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Tải từng video lẻ không logo</li>
+                            <li class="muted-feature"><svg class="cross-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Giới hạn RAM trình duyệt</li>
+                            <li class="muted-feature"><svg class="cross-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Không hỗ trợ xử lý hàng loạt</li>
+                        </ul>
+                        <button class="btn-outline" style="width: 100%;" disabled>Đang Sử Dụng (Web)</button>
+                    </div>
+
+                    <!-- Pro Lifetime Plan -->
+                    <div class="pricing-card card-pro">
+                        <div class="pro-corner-ribbon">LIFETIME DEAL • GIẢM 50%</div>
+                        <div class="pricing-badge pro-badge">DESKTOP PRO</div>
+                        <div class="pricing-price pro-price">299.000đ <span class="old-price">599.000đ</span> <span>/ Mua 1 lần dùng mãi mãi</span></div>
+                        <p class="pricing-desc">Dành cho Content Creator, Dân MMO & Doanh nghiệp cần tốc độ cao.</p>
+                        <ul class="pricing-features">
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Batch Processing:</strong> Xử lý 500+ file PDF cùng lúc 1 click</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Cào trọn bộ kênh TikTok/Douyin:</strong> Tải sạch cả profile 100-500 video không watermark</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Native GPU Acceleration:</strong> Render 4K 60fps nhanh gấp 10 lần qua card đồ họa rời</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>AI Neural Network:</strong> Real-ESRGAN phục hồi chi tiết ảnh mờ & video thực thụ</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Chạy ngầm System Tray:</strong> Phím tắt Ctrl+Shift+Z thao tác tức thì</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> 100% Offline Air-Gapped bảo mật tối đa</li>
+                        </ul>
+                        <div class="pro-action-btns">
+                            <button class="btn-glow-action" style="width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899);" onclick="openVietQrCheckout()">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                Quét Mã VietQR Nhận Key Tự Động (299k)
+                            </button>
+                            <a href="./ZeroStudio-Setup.bat" class="btn-outline" style="width: 100%; text-decoration: none; text-align: center; margin-top: 0.5rem; display: block;" download>
+                                Tải Bản Desktop Windows (.bat / .exe)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- License Key Activation Input -->
+                <div class="license-activate-deck">
+                    <div class="license-label">Đã có mã kích hoạt Pro?</div>
+                    <div class="license-input-wrap">
+                        <input type="text" id="license-key-input" placeholder="Nhập khóa bản quyền: ZERO-PRO-XXXX-XXXX-XXXX" />
+                        <button class="btn-glow-action" onclick="activateLicenseKey()">Kích Hoạt Ngay</button>
                     </div>
                 </div>
             </div>
 
-            <!-- License Key Activation Input -->
-            <div class="license-activate-deck">
-                <div class="license-label">Đã có mã kích hoạt Pro?</div>
-                <div class="license-input-wrap">
-                    <input type="text" id="license-key-input" placeholder="Nhập khóa bản quyền: ZERO-PRO-XXXX-XXXX-XXXX" />
-                    <button class="btn-glow-action" onclick="activateLicenseKey()">Kích Hoạt Ngay</button>
+            <!-- SUB-VIEW 2: THANH TOÁN TỰ ĐỘNG VIETQR -->
+            <div id="pro-view-checkout" style="display: none;">
+                <div class="checkout-back-bar">
+                    <button class="btn-subtle" onclick="showProPricingView()">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        Quay lại bảng giá
+                    </button>
+                    <span class="checkout-secure-tag">BẢO MẬT VIETQR • TỰ ĐỘNG CẤP KEY</span>
+                </div>
+
+                <div class="vietqr-bento-grid">
+                    <!-- Left: QR Code Scanner -->
+                    <div class="vietqr-scan-box">
+                        <div class="qr-scanner-frame">
+                            <img id="vietqr-img" src="./assets/qr_viettelpay.jpg" alt="Mã VietQR MB Bank" />
+                            <div class="qr-scanner-laser"></div>
+                        </div>
+                        <div class="qr-app-logos">
+                            <span>Quét bằng MB Bank, VCB, Techcom, MoMo, Viettel Money...</span>
+                        </div>
+                    </div>
+
+                    <!-- Right: Info Details & Copy Pills -->
+                    <div class="vietqr-info-box">
+                        <div class="checkout-price-callout">
+                            <span class="callout-label">Số tiền thanh toán:</span>
+                            <span class="callout-val" style="color: #6ee7b7;">299.000 VNĐ</span>
+                        </div>
+
+                        <div class="copy-field-deck">
+                            <div class="copy-item" onclick="copyPaymentField('9704229209755632403', 'Số tài khoản')">
+                                <div class="copy-info">
+                                    <div class="copy-lbl">Số Tài Khoản (MB Bank / ViettelPay)</div>
+                                    <div class="copy-txt">9704 2292 0975 5632 403</div>
+                                </div>
+                                <span class="copy-btn">Sao chép</span>
+                            </div>
+
+                            <div class="copy-item" onclick="copyPaymentField('NGUYEN VU TRUNG HIEU', 'Chủ tài khoản')">
+                                <div class="copy-info">
+                                    <div class="copy-lbl">Chủ Tài Khoản</div>
+                                    <div class="copy-txt">NGUYỄN VŨ TRUNG HIẾU</div>
+                                </div>
+                                <span class="copy-btn">Sao chép</span>
+                            </div>
+
+                            <div class="copy-item" id="order-memo-item" onclick="copyOrderMemoField()">
+                                <div class="copy-info">
+                                    <div class="copy-lbl">Nội Dung Chuyển Khoản (Quan Trọng)</div>
+                                    <div class="copy-txt" id="order-memo-val" style="color: #e879f9; font-weight: 800;">ZERO PRO</div>
+                                </div>
+                                <span class="copy-btn">Sao chép</span>
+                            </div>
+                        </div>
+
+                        <div class="checkout-status-stream">
+                            <span class="checkout-pulse-dot"></span>
+                            <span id="checkout-status-label">Hệ thống đang quét giao dịch tự động...</span>
+                        </div>
+
+                        <button class="btn-glow-action" style="width: 100%; margin-top: 0.5rem; background: linear-gradient(135deg, #10b981, #06b6d4);" onclick="confirmPaidAndGetLicense()">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            Tôi Đã Chuyển Khoản • Nhận Key Ngay
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 3: THANH TOÁN THÀNH CÔNG & HIỆN KEY -->
+            <div id="pro-view-success" style="display: none; text-align: center; padding: 1.5rem 0;">
+                <div class="success-icon-gem">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <h2 style="font-size: 1.75rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem;">THANH TOÁN THÀNH CÔNG!</h2>
+                <p style="color: #94a3b8; font-size: 0.9rem; max-width: 500px; margin: 0 auto 1.5rem;">Cảm ơn bạn đã nâng cấp ZeroStudio Desktop Pro. Khóa bản quyền vĩnh viễn đã được tạo và tự động kích hoạt trên thiết bị này!</p>
+
+                <div class="license-display-card">
+                    <div class="license-display-tag">MÃ BẢN QUYỀN PRO CỦA BẠN</div>
+                    <div class="license-display-code" id="issued-license-key">ZERO-PRO-8492-HIEU-9F2A</div>
+                    <button class="copy-license-btn" onclick="copyIssuedLicenseKey()">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        Sao Chép Mã Key
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.75rem; flex-wrap: wrap;">
+                    <a href="./ZeroStudio-Setup.bat" class="btn-glow-action" style="text-decoration: none;" download>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Tải Bản Desktop Windows (.bat)
+                    </a>
+                    <button class="btn-outline" onclick="closeProModal()">Bắt Đầu Sử Dụng Pro</button>
                 </div>
             </div>
         </div>
