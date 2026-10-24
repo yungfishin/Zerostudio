@@ -40,7 +40,23 @@ exports.handler = async function(event, context) {
 
     // Sanitize order code (only numbers)
     const cleanDigits = orderCode.toString().replace(/[^0-9]/g, '');
-    const sepayToken = process.env.SEPAY_API_TOKEN;
+
+    // Smart Token Detection: searches standard variable or any key/value starting with spsk_ or SEPAY
+    let sepayToken = process.env.SEPAY_API_TOKEN || process.env.SEPAY_SECRET_KEY;
+    if (!sepayToken) {
+        // Fallback: check if the user accidentally named the variable key itself as the token
+        const envKeys = Object.keys(process.env);
+        const tokenAsKey = envKeys.find(k => k.startsWith('spsk_') || k.startsWith('spt_') || k.startsWith('SP-'));
+        if (tokenAsKey) {
+            sepayToken = tokenAsKey;
+        } else {
+            // Check all values in process.env
+            const tokenAsVal = Object.values(process.env).find(v => typeof v === 'string' && (v.startsWith('spsk_') || v.startsWith('spt_')));
+            if (tokenAsVal) {
+                sepayToken = tokenAsVal;
+            }
+        }
+    }
 
     // Check if SEPAY_API_TOKEN is set in Netlify Environment Variables
     if (!sepayToken) {
