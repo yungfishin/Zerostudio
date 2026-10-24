@@ -2210,8 +2210,11 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
         vietqrPollInterval = null;
     }
 
-    // Save authorized license
+    // Save authorized license to localStorage
     localStorage.setItem('zerostudio_pro_license', licenseKey);
+
+    // Sync permanently to disk
+    syncLicenseWithDisk(licenseKey);
 
     const issuedKeyEl = document.getElementById('issued-license-key');
     if (issuedKeyEl) issuedKeyEl.textContent = licenseKey;
@@ -2224,7 +2227,7 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
     if (successView) successView.style.display = 'block';
 
     updateProHeaderBadge();
-    showToast("XÁC THỰC THÀNH CÔNG! Đã nhận đủ 299.000đ từ MB Bank. Bản Pro đã kích hoạt!", "success");
+    showToast("XÁC THỰC THÀNH CÔNG! Đã nhận đủ 299.000đ từ MB Bank. Bản Pro đã kích hoạt vĩnh viễn!", "success");
 }
 
 window.copyPaymentField = function(text, label) {
@@ -2275,6 +2278,7 @@ window.activateLicenseKey = function() {
 
     if (key.startsWith('ZERO-PRO-') && key.length >= 14) {
         localStorage.setItem('zerostudio_pro_license', key);
+        syncLicenseWithDisk(key);
         showToast('CHÚC MỪNG: Bạn đã kích hoạt thành công ZeroStudio Desktop Pro vĩnh viễn!', 'success');
         updateProHeaderBadge();
         setTimeout(() => closeProModal(), 1500);
@@ -2283,16 +2287,62 @@ window.activateLicenseKey = function() {
     }
 };
 
-// Initialize Antiban dropzone on load
+// ==========================================
+// TRIPLE-LOCK PERMANENT LICENSE SYNC
+// ==========================================
+async function syncLicenseWithDisk(key) {
+    if (!key || !key.startsWith('ZERO-PRO-')) return;
+    try {
+        await fetch('http://127.0.0.1:8899/api/save-license', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ license_key: key })
+        });
+    } catch {}
+}
+
+async function loadPermanentDiskLicense() {
+    // 1. Check local bridge on disk first (survives browser cache wipes)
+    try {
+        const res = await fetch('http://127.0.0.1:8899/api/license', { signal: AbortSignal.timeout(1200) });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.has_license && data.license_key) {
+                localStorage.setItem('zerostudio_pro_license', data.license_key);
+                updateProHeaderBadge();
+                return;
+            }
+        }
+    } catch {}
+
+    // 2. Fallback to localStorage
+    const localKey = localStorage.getItem('zerostudio_pro_license');
+    if (localKey && localKey.startsWith('ZERO-PRO-')) {
+        updateProHeaderBadge();
+        syncLicenseWithDisk(localKey);
+    }
+}
+
+window.downloadLicenseFile = function() {
+    const key = localStorage.getItem('zerostudio_pro_license') || 'ZERO-PRO-VIP-PERMANENT';
+    const blob = new Blob([key], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'license.key';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Đã tải file license.key! Giữ file này trong thư mục app để tự kích hoạt Pro vĩnh viễn.', 'success');
+};
+
+// Initialize Antiban dropzone & Permanent License Sync on load
 document.addEventListener('DOMContentLoaded', () => {
     setupAntibanDropzone();
-    if (localStorage.getItem('zerostudio_pro_license')) {
-        updateProHeaderBadge();
-    }
+    loadPermanentDiskLicense();
 });
 setTimeout(() => {
     setupAntibanDropzone();
-    if (localStorage.getItem('zerostudio_pro_license')) {
-        updateProHeaderBadge();
-    }
+    loadPermanentDiskLicense();
 }, 500);

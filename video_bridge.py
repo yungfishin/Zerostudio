@@ -35,6 +35,35 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({'status': 'ok', 'service': 'ZeroStudio Video Bridge', 'version': '1.0'}).encode())
             return
 
+        # ----------------------------------------------------
+        # PERMANENT LOCAL DISK LICENSE STORAGE
+        # ----------------------------------------------------
+        if parsed.path == '/api/license':
+            license_file = Path(__file__).parent / 'license.key'
+            user_license_file = Path.home() / '.zerostudio_license'
+            key = None
+
+            if license_file.exists():
+                try:
+                    key = license_file.read_text(encoding='utf-8').strip()
+                except Exception:
+                    pass
+            elif user_license_file.exists():
+                try:
+                    key = user_license_file.read_text(encoding='utf-8').strip()
+                except Exception:
+                    pass
+
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'has_license': bool(key and key.startswith('ZERO-PRO-')),
+                'license_key': key if (key and key.startswith('ZERO-PRO-')) else None
+            }).encode())
+            return
+
         if parsed.path == '/api/resolve':
             url = params.get('url', [None])[0]
             if not url:
@@ -168,6 +197,41 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({'success': False, 'error': f'Lỗi quét kênh: {str(e)}'}).encode())
             return
+
+        self.send_response(404)
+        self.end_headers()
+
+    def do_POST(self):
+        parsed = urllib.parse.urlparse(self.path)
+
+        if parsed.path == '/api/save-license':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                key = data.get('license_key', '').strip()
+                if key and key.startswith('ZERO-PRO-'):
+                    license_file = Path(__file__).parent / 'license.key'
+                    user_license_file = Path.home() / '.zerostudio_license'
+                    license_file.write_text(key, encoding='utf-8')
+                    try:
+                        user_license_file.write_text(key, encoding='utf-8')
+                    except Exception:
+                        pass
+
+                    self.send_response(200)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': True, 'saved': True}).encode())
+                    return
+            except Exception as e:
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
+                return
 
         self.send_response(404)
         self.end_headers()
