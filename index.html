@@ -4306,6 +4306,14 @@
         </a>
 
         <div class="header-right-deck">
+            <!-- Desktop App .EXE Download Button -->
+            <a href="./ZeroStudio-Setup.exe" class="btn-outline" style="text-decoration: none; padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; border-color: rgba(56, 189, 248, 0.4); color: #38bdf8; background: rgba(56, 189, 248, 0.08);" download="ZeroStudio-Setup.exe" title="Tải Bản Cài Đặt ZeroStudio cho Windows 64-bit">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                <span>Tải Desktop (.EXE)</span>
+            </a>
+
             <!-- Pro Upgrade CTA Button -->
             <button class="btn-pro-unlock" onclick="openProModal()">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -5850,14 +5858,18 @@
                 </div>
 
                 <div style="display: flex; gap: 0.85rem; justify-content: center; margin-top: 1.75rem; flex-wrap: wrap;">
-                    <button class="btn-glow-action" style="background: linear-gradient(135deg, #06b6d4, #10b981);" onclick="downloadLicenseFile()">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-                        Tải File license.key Về Máy
-                    </button>
-                    <a href="./ZeroStudio-Setup.bat" class="btn-outline" style="text-decoration: none;" download>
+                    <a href="./ZeroStudio-Setup.exe" class="btn-glow-action" style="text-decoration: none; background: linear-gradient(135deg, #10b981, #0ea5e9);" download="ZeroStudio-Setup.exe">
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        Tải Bản Desktop (.bat)
+                        Tải Bộ Cài Đặt Desktop (.EXE)
                     </a>
+                    <a href="./ZeroStudio-Pro-Desktop.zip" class="btn-outline" style="text-decoration: none; border-color: rgba(16, 185, 129, 0.4); color: #34d399;" download="ZeroStudio-Pro-Desktop.zip">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                        Tải Trọn Bộ Bản Portable (.ZIP)
+                    </a>
+                    <button class="btn-glow-action" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);" onclick="downloadLicenseFile()">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                        Tải File license.key
+                    </button>
                     <button class="btn-outline" onclick="closeProModal()">Đóng Cửa Sổ</button>
                 </div>
 

@@ -4057,6 +4057,19 @@ Bấm nút bên dưới để ZeroAI kiểm tra tình trạng kết nối ngay c
         actions: [
             { text: '🔄 Kiểm Tra Kết Nối Video Bridge Ngay', func: "testBridgeConnectionFromBot()" }
         ]
+    },
+    {
+        id: 'download_desktop',
+        keywords: ['tải app', 'tải phần mềm', 'tải về', 'cài đặt', 'setup', 'exe', 'download', 'bản máy tính', 'desktop', 'link tải', 'bản cài', 'zip'],
+        title: 'Tải Bộ Cài Đặt Desktop Chính Thức (.EXE / .ZIP)',
+        response: `💻 <strong>TẢI TRỌN BỘ PHẦN MỀM ZEROSTUDIO CHO WINDOWS:</strong><br><br>
+• <strong>Bộ Cài Đặt Chính Thức (.EXE):</strong> Tự động tạo lối tắt ngoài Desktop, tích hợp Video Bridge và mở giao diện Native 60fps siêu mượt.<br>
+• <strong>Bản Portable (.ZIP):</strong> Trọn gói toàn bộ mã nguồn và thư viện, giải nén chạy ngay không cần cài đặt.<br><br>
+Tương thích hoàn hảo: <strong>Windows 10 & Windows 11 (64-bit)</strong>.`,
+        actions: [
+            { text: '📥 Tải Bộ Cài Đặt ZeroStudio-Setup.exe', func: "downloadAppExe()" },
+            { text: '📦 Tải Trọn Gói Portable (.ZIP)', func: "downloadAppZip()" }
+        ]
     }
 ];
 
@@ -4473,4 +4486,24 @@ function escapeHtml(str) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
+
+window.downloadAppExe = function() {
+    const a = document.createElement('a');
+    a.href = './ZeroStudio-Setup.exe';
+    a.download = 'ZeroStudio-Setup.exe';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('Đang tải bộ cài đặt ZeroStudio-Setup.exe về máy...', 'success');
+};
+
+window.downloadAppZip = function() {
+    const a = document.createElement('a');
+    a.href = './ZeroStudio-Pro-Desktop.zip';
+    a.download = 'ZeroStudio-Pro-Desktop.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('Đang tải trọn bộ ZeroStudio-Pro-Desktop.zip về máy...', 'success');
+};
 
