@@ -51,8 +51,8 @@ window.isProActive = function() {
 
 window.requirePro = function(featureName) {
     if (!window.isProActive()) {
-        showToast(`Tính năng "${featureName}" chỉ dành riêng cho bản ZeroStudio Pro! Vui lòng nâng cấp để mở khóa.`, 'warning');
-        openProModal();
+        showToast(`🔒 Vui lòng đăng ký gói ZeroStudio Pro để sử dụng dịch vụ "${featureName}"!`, 'warning');
+        openProModal(featureName);
         return false;
     }
     return true;
@@ -71,9 +71,13 @@ function initTabs() {
     const tabButtons = document.querySelectorAll('.bento-nav-btn');
     tabButtons.forEach(btn => {
         btn.addEventListener('click', () => {
+            const targetTab = btn.getAttribute('data-tab');
+            if (targetTab === 'compress' && !window.isProActive()) {
+                window.requirePro('Nén PDF Thông Minh Chuẩn Cổng Thuế & Dịch Vụ Công');
+            }
+
             tabButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            const targetTab = btn.getAttribute('data-tab');
             state.activeTab = targetTab;
 
             document.querySelectorAll('.tab-pane').forEach(pane => {
@@ -850,6 +854,17 @@ function detectPlatform(url) {
 }
 
 window.switchVideoSubMode = function(mode) {
+    if (!window.isProActive()) {
+        const proTitles = {
+            channel: 'Cào Hàng Loạt Video Trọn Kênh TikTok / Douyin Sạch Logo',
+            antiban: 'Phòng Thí Nghiệm Lách Bản Quyền & Đổi MD5',
+            subtitles: 'Bóc Phụ Đề AI & Dịch Thuật Xuất File SRT Cho CapCut'
+        };
+        if (proTitles[mode]) {
+            window.requirePro(proTitles[mode]);
+        }
+    }
+
     const btns = {
         download: document.getElementById('subnav-btn-dl'),
         channel: document.getElementById('subnav-btn-channel'),
@@ -2016,10 +2031,22 @@ function fallbackCopyText(text) {
     document.body.removeChild(textArea);
 }
 
-window.openProModal = function() {
+window.openProModal = function(reason) {
     const modal = document.getElementById('pro-modal');
     if (modal) {
         modal.style.display = 'flex';
+
+        const noticeEl = document.getElementById('pro-modal-trigger-notice');
+        const featureEl = document.getElementById('pro-trigger-feature-name');
+        if (noticeEl && featureEl) {
+            if (reason) {
+                featureEl.textContent = reason;
+                noticeEl.style.display = 'block';
+            } else {
+                noticeEl.style.display = 'none';
+            }
+        }
+
         const savedKey = localStorage.getItem('zerostudio_pro_license');
         if (savedKey) {
             const successView = document.getElementById('pro-view-success');
