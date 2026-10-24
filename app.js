@@ -2954,6 +2954,43 @@ window.buyProLicense = function() {
     openVietQrCheckout();
 };
 
+async function dispatchDeviceVerification(endpointPath, payload) {
+    const cloudBase = (window.location.origin && window.location.origin.includes('netlify.app')) 
+        ? window.location.origin 
+        : 'https://zerostu.netlify.app';
+
+    // 1. First Priority: Global Cloud Arbiter (Netlify Serverless)
+    try {
+        const cloudRes = await fetch(`${cloudBase}${endpointPath}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: AbortSignal.timeout(3500)
+        });
+        const cloudData = await cloudRes.json();
+        return { ok: cloudRes.ok, status: cloudRes.status, data: cloudData, source: 'cloud' };
+    } catch (e) {
+        console.warn('[SECURITY] Cloud verification unreachable, trying local bridge...', e);
+    }
+
+    // 2. Second Priority: Local Video Bridge (127.0.0.1:8900)
+    try {
+        const bridgeUrl = await getBridgeBaseUrl();
+        const bridgeRes = await fetch(`${bridgeUrl}${endpointPath}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: AbortSignal.timeout(1500)
+        });
+        const bridgeData = await bridgeRes.json();
+        return { ok: bridgeRes.ok, status: bridgeRes.status, data: bridgeData, source: 'local' };
+    } catch (e) {
+        console.warn('[SECURITY] Local bridge verification unreachable...', e);
+    }
+
+    return null;
+}
+
 window.activateLicenseKey = async function() {
     const input = document.getElementById('license-key-input');
     const key = input ? input.value.trim().toUpperCase() : '';
@@ -2980,33 +3017,34 @@ window.activateLicenseKey = async function() {
     }
 
     if ((key.startsWith('ZERO-PRO-') || key.startsWith('ZERO-ULTRA-')) && key.length >= 14) {
-        // Device Limit Verification (Pro: 1 device, Ultra: 2 devices)
+        // Device Limit Verification (Pro: 1 device, Ultra: 2 devices) with Cloud Arbiter
         const deviceId = getDeviceFingerprint();
         try {
-            const bridgeUrl = await getBridgeBaseUrl();
-            const vRes = await fetch(`${bridgeUrl}/api/verify-device`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ license_key: key, device_id: deviceId })
-            });
-            const vData = await vRes.json();
-            
-            // Check if 3 strikes resulted in permanent ban
-            if (vRes.status === 403 || vData.banned || vData.error === 'ACCESS_DENIED_PERMANENT_BAN') {
-                window.triggerPermanentLockdown(vData.message || 'Vi phạm cố tình kích hoạt vượt quá số lượng thiết bị cho phép 3 lần liên tiếp');
-                return;
-            }
-
-            // Check if device limit exceeded (Strike 1 or 2)
-            if (!vRes.ok || !vData.success) {
-                showToast(vData.message || 'Mã bản quyền đã đạt tối đa số thiết bị cho phép!', 'error');
-                if (typeof playCyberAlertSiren === 'function') playCyberAlertSiren();
-                if (vData.tier === 'pro') {
-                    setTimeout(() => {
-                        showToast('💡 Mẹo: Nâng cấp lên Gói Ultra (699k) để dùng đồng thời 2 máy (PC + Laptop) không bị giới hạn!', 'info');
-                    }, 1800);
+            const verifyResult = await dispatchDeviceVerification('/api/verify-device', { license_key: key, device_id: deviceId });
+            if (verifyResult) {
+                const vData = verifyResult.data || {};
+                
+                // Check if 3 strikes resulted in permanent ban
+                if (verifyResult.status === 403 || vData.banned || vData.error === 'ACCESS_DENIED_PERMANENT_BAN') {
+                    window.triggerPermanentLockdown(vData.message || 'Vi phạm cố tình kích hoạt vượt quá số lượng thiết bị cho phép 3 lần liên tiếp');
+                    return;
                 }
-                return;
+
+                // Check if device limit exceeded (Strike 1 or 2)
+                if (!verifyResult.ok || !vData.success) {
+                    showToast(vData.message || 'Mã bản quyền đã đạt tối đa số thiết bị cho phép!', 'error');
+                    if (typeof playCyberAlertSiren === 'function') playCyberAlertSiren();
+                    if (vData.tier === 'pro') {
+                        setTimeout(() => {
+                            showToast('💡 Mẹo: Nâng cấp lên Gói Ultra (699k) để dùng đồng thời 2 máy (PC + Laptop) không bị giới hạn!', 'info');
+                        }, 1800);
+                    }
+                    return;
+                }
+
+                if (vData.certificate) {
+                    try { localStorage.setItem('zerostudio_activation_cert', JSON.stringify(vData.certificate)); } catch {}
+                }
             }
         } catch (e) {
             console.log("Device verification offline fallback...", e);
@@ -3130,27 +3168,27 @@ window.unbindCurrentDevice = async function() {
 
     const deviceId = getDeviceFingerprint();
     try {
-        const bridgeUrl = await getBridgeBaseUrl();
-        const res = await fetch(`${bridgeUrl}/api/unbind-device`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ license_key: key, device_id: deviceId })
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-            localStorage.removeItem('zerostudio_pro_license');
-            localStorage.removeItem('zerostudio_license_sig');
-            syncLicenseWithDisk('');
-            updateProHeaderBadge();
-            showToast('Đã hủy liên kết máy thành công! Bây giờ bạn có thể mang key sang máy mới.', 'success');
-            setTimeout(() => location.reload(), 1500);
-            return;
-        } else {
-            showToast(data.message || 'Không thể hủy liên kết!', 'error');
+        const unbindResult = await dispatchDeviceVerification('/api/unbind-device', { license_key: key, device_id: deviceId });
+        if (unbindResult) {
+            const data = unbindResult.data || {};
+            if (unbindResult.ok && data.success) {
+                localStorage.removeItem('zerostudio_pro_license');
+                localStorage.removeItem('zerostudio_license_sig');
+                localStorage.removeItem('zerostudio_activation_cert');
+                syncLicenseWithDisk('');
+                updateProHeaderBadge();
+                showToast('Đã hủy liên kết máy thành công! Bây giờ bạn có thể mang key sang máy mới.', 'success');
+                setTimeout(() => location.reload(), 1500);
+                return;
+            } else {
+                showToast(data.message || 'Không thể hủy liên kết!', 'error');
+                return;
+            }
         }
     } catch (e) {
         localStorage.removeItem('zerostudio_pro_license');
         localStorage.removeItem('zerostudio_license_sig');
+        localStorage.removeItem('zerostudio_activation_cert');
         syncLicenseWithDisk('');
         updateProHeaderBadge();
         showToast('Đã đặt lại bản quyền trên máy này! Bạn có thể kích hoạt trên máy mới.', 'success');
