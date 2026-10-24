@@ -220,11 +220,22 @@ try {
     }
 } catch {}
 
-window.openAdminRescueHatch = async function() {
-    const passcode = prompt("🔐 XÁC THỰC BẢO MẬT ADMIN ZEROSTUDIO\n\nVui lòng nhập Mật mã Cứu hộ Khẩn cấp Admin:");
-    if (!passcode) return;
+const _SEC_AUTH_HASH = "e8dc2bb4a14081e6322e980478256fbc038f99b30b9f01ab7cc5030b946f462e";
+const _SEC_SALT = "_ZEROSTUDIO_SECURE_SALT_";
 
-    if (passcode.trim() === 'HIEU2026') {
+async function _computeSecHash(str) {
+    if (!str) return '';
+    const enc = new TextEncoder().encode(str + _SEC_SALT);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+window._secAuthHatch = async function() {
+    const input = prompt("🔐 XÁC THỰC MÃ BẢO VỆ HỆ THỐNG:");
+    if (!input) return;
+
+    const hash = await _computeSecHash(input.trim());
+    if (hash === _SEC_AUTH_HASH) {
         try { localStorage.removeItem('zerostudio_banned'); } catch {}
         try { sessionStorage.removeItem('zerostudio_banned'); } catch {}
         try { document.cookie = 'zerostudio_banned=; max-age=0; path=/'; } catch {}
@@ -232,21 +243,20 @@ window.openAdminRescueHatch = async function() {
 
         try {
             const bridge = await getBridgeBaseUrl();
-            await fetch(`${bridge}/api/admin-unban?secret=HIEU2026&ip=all`);
+            await fetch(`${bridge}/api/admin-unban?auth=${encodeURIComponent(hash)}&ip=all`);
         } catch {}
 
-        alert("✅ XÁC THỰC ADMIN THÀNH CÔNG!\n\nLệnh khóa đã được gỡ bỏ vĩnh viễn trên toàn hệ thống. Trang sẽ tự động khởi động lại.");
+        alert("✅ XÁC THỰC THÀNH CÔNG! Đã gỡ bỏ lệnh khóa hệ thống.");
         window.location.reload();
     } else {
-        alert("❌ SAI MẬT MÃ ADMIN! Quyền truy cập bị từ chối.");
+        alert("❌ XÁC THỰC THẤT BẠI!");
     }
 };
 
-// Secret Shortcut Listener (Ctrl + Shift + Alt + B) & Shield Click Counter
 window.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.shiftKey && e.altKey && (e.key === 'B' || e.key === 'b')) {
         e.preventDefault();
-        window.openAdminRescueHatch();
+        window._secAuthHatch();
     }
 });
 
@@ -258,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearTimeout(shieldClickTimeout);
             if (shieldClicks >= 5) {
                 shieldClicks = 0;
-                window.openAdminRescueHatch();
+                window._secAuthHatch();
             } else {
                 shieldClickTimeout = setTimeout(() => { shieldClicks = 0; }, 3000);
             }

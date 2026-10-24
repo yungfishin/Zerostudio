@@ -3750,21 +3750,6 @@
             border-radius: 4px;
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
-        .cyber-admin-rescue-btn {
-            background: transparent;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #94a3b8;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .cyber-admin-rescue-btn:hover {
-            color: #ffffff;
-            border-color: rgba(239, 68, 68, 0.8);
-            background: rgba(239, 68, 68, 0.1);
-        }
     </style>
 </head>
 <body>
@@ -5440,7 +5425,7 @@
                 Hệ Thống Phòng Thủ An Ninh Mạng ZeroStudio
             </div>
             
-            <div class="cyber-shield-icon-wrap" id="cyber-shield-trigger" title="Nhấp 5 lần để kích hoạt Khóa Cứu Hộ Khẩn Cấp Admin">
+            <div class="cyber-shield-icon-wrap" id="cyber-shield-trigger">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                     <circle cx="12" cy="16.5" r="1" fill="#ef4444" />
@@ -5475,10 +5460,9 @@
                 </div>
             </div>
 
-            <div style="display:flex; justify-content:center; align-items:center; gap:16px;">
-                <button type="button" class="cyber-admin-rescue-btn" onclick="openAdminRescueHatch()">
-                    <span style="opacity:0.6;">[Phím tắt: Ctrl + Shift + Alt + B]</span> Mở Khóa Cứu Hộ Admin
-                </button>
+            <div style="margin-top: 10px; font-size: 11px; color: #64748b; line-height: 1.5; font-family: 'JetBrains Mono', monospace;">
+                Mã định danh bảo mật vi phạm đã được mã hóa và lưu trữ cố định trên hệ thống phân tán.<br>
+                Mọi hành vi can thiệp trái phép tiếp theo sẽ bị từ chối kết nối ở cấp độ mạng.
             </div>
         </div>
     </div>
