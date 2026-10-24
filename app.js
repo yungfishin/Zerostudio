@@ -3930,7 +3930,547 @@ window.exportOCRWord = function() {
 // Auto initialize AI Office on page load
 document.addEventListener('DOMContentLoaded', () => {
     initAIOffice();
+    initZeroAI();
 });
 setTimeout(() => {
     initAIOffice();
+    initZeroAI();
 }, 600);
+
+// ==========================================
+// 10. ZEROAI SPECIALIST CHATBOT ENGINE 24/7
+// ==========================================
+
+const ZEROAI_STORAGE_KEY = 'zerostudio_gemini_api_key';
+let isZeroAIChatOpen = false;
+let zeroAIMessages = [];
+
+// Knowledge Base Dictionary (100% Offline, Zero-Cost)
+const ZEROAI_KB = [
+    {
+        id: 'mmo_copyright',
+        keywords: ['lách', 'bản quyền', 'reup', 'mmo', 'tiktok', 'shorts', 'reels', 'content id', 'âm thanh', 'pitch', 'lật', 'video'],
+        title: 'Công thức Lách Bản Quyền Video MMO 4 Bước',
+        response: `🔥 <strong>CÔNG THỨC LÁCH BẢN QUYỀN VIDEO MMO (ZeroStudio Anti-Ban):</strong><br><br>
+1. <strong>Cắt dọc & Auto-Crop 9:16:</strong> Tự động nhận diện chủ thể giữa khung hình, loại bỏ viền đen, làm lệch tỷ lệ khung hình so với video gốc để phá so khớp thị giác.<br>
+2. <strong>Xáo vân âm thanh (Audio Pitch 1.01x - 1.04x):** Thay đổi cao độ và nhịp độ vi mô 1-4%, biến đổi hoàn toàn vân sóng âm (Audio Fingerprint) để vượt qua bộ lọc Content ID của TikTok, Meta và YouTube.<br>
+3. <strong>Xóa Sub / Logo cũ (Corner Delogo):** Che mờ hoặc cắt bỏ phụ đề tiếng Trung / Anh gốc, chèn phụ đề tiếng Việt chuẩn điện ảnh.<br>
+4. <strong>Lật khung & Đổi Hash nhị phân:** Mỗi video xuất ra được tạo mã băm MD5 duy nhất, chống trùng lặp và tránh bị bóp reach tối đa.`,
+        actions: [
+            { text: '🚀 Mở Tab Auto-Crop & Lách MMO (Tab 6)', func: "switchStudioTab('video')" },
+            { text: '⚡ Bàn Làm Việc Hàng Loạt 500 Video (Ultra)', func: "switchStudioTab('batch')" },
+            { text: '📺 Cào Kênh YouTube Shorts / TikTok', func: "switchStudioTab('video')" }
+        ]
+    },
+    {
+        id: 'bg_remover',
+        keywords: ['tách nền', 'ảnh thẻ', 'xóa phông', 'cccd', 'visa', 'chân dung', 'background', 'rembg', 'tóc tơ'],
+        title: 'AI Background Remover (Tách Nền Ảnh Thẻ)',
+        response: `✂ <strong>AI BACKGROUND REMOVER (Tách Nền Chân Dung Siêu Tốc):</strong><br><br>
+• Sử dụng mô hình AI phân đoạn vi mô, bóc tách chính xác từng sợi tóc tơ và nếp áo mà không bị lẹm viền hay răng cưa.<br>
+• <strong>Tùy chọn màu phông tức thì:</strong><br>
+  - <em>Nền Trong Suốt (PNG)</em>: Ghép cảnh tự do.<br>
+  - <em>Nền Trắng Công Vụ</em>: Hồ sơ xin việc, thẻ sinh viên.<br>
+  - <em>Nền Xanh Dương</em>: Chuẩn ảnh thẻ CCCD, Hộ chiếu, Visa quốc tế.<br>
+  - <em>Nền Đỏ</em>: Kỷ yếu và tài liệu truyền thống.<br>
+• Tải ảnh chất lượng cao HD sắc nét, sẵn sàng in ấn ngay lập tức.`,
+        actions: [
+            { text: '✂ Mở Tab Tách Nền Ảnh Thẻ Ngay', func: "switchStudioTab('ai-office')" },
+            { text: '👑 Nâng Cấp Gói Ultra MMO Master', func: "openVietQrCheckout('ultra')" }
+        ]
+    },
+    {
+        id: 'ocr_vietnamese',
+        keywords: ['ocr', 'quét chữ', 'word', 'hóa đơn', 'chứng từ', 'tài liệu', 'bóc tách', 'trích xuất', 'doc', 'chữ viết'],
+        title: 'AI Vietnamese OCR Studio (Quét Chữ Sang Word)',
+        response: `📝 <strong>AI VIETNAMESE OCR STUDIO (Quét Chữ Sang Word):</strong><br><br>
+• Đọc chuẩn xác văn bản tiếng Việt có dấu từ ảnh chụp hóa đơn, hợp đồng, chứng minh thư, tài liệu scan, sách cũ.<br>
+• Bộ lọc tăng tương phản và khử bóng thông minh giúp độ nhận diện dấu thanh chuẩn 99.8%.<br>
+• <strong>Tính năng độc quyền:</strong> Xuất thẳng file Microsoft Word (<code>.doc</code>) mở trực tiếp trên máy tính không bị lỗi font hay mất cấu trúc đoạn văn.`,
+        actions: [
+            { text: '📝 Mở Tab AI OCR Studio Ngay', func: "switchStudioTab('ai-office')" },
+            { text: '💎 Xem Bảng Giá Gói Ultra Đầy Đủ', func: "openProModal('OCR Studio', 'ultra')" }
+        ]
+    },
+    {
+        id: 'compress_pdf',
+        keywords: ['nén', 'dung lượng', 'mb', 'kb', 'thuế', 'dịch vụ công', 'email', 'file nặng', 'giảm nhẹ'],
+        title: 'Smart PDF Compressor (Nén PDF Thông Minh)',
+        response: `📑 <strong>SMART PDF COMPRESSOR (Chuẩn Cổng Thuế & Dịch Vụ Công):</strong><br><br>
+• <strong>Nén Nhẹ (30%):</strong> Giữ 100% độ sắc nét vector để in ấn chất lượng cao.<br>
+• <strong>Tiêu Chuẩn (60%):</strong> Tối ưu dung lượng để nộp báo cáo thuế, hải quan và cổng dịch vụ công trực tuyến.<br>
+• <strong>Siêu Nén (85%):</strong> Ép file từ 50MB xuống dưới 5MB để gửi đính kèm qua Gmail / Outlook mượt mà.<br>
+• Xử lý hoàn toàn trong trình duyệt (Vector Compression Engine), dữ liệu không rời khỏi máy bạn.`,
+        actions: [
+            { text: '📑 Mở Tab Nén PDF Thông Minh', func: "switchStudioTab('compress')" },
+            { text: '💎 Nâng Cấp Pro Nén Không Giới Hạn', func: "openVietQrCheckout('pro')" }
+        ]
+    },
+    {
+        id: 'pricing_compare',
+        keywords: ['giá', 'bao nhiêu', 'mua', 'gói', 'bản quyền', 'pro', 'ultra', 'chi phí', 'so sánh', 'vĩnh viễn', 'thiết bị', 'key'],
+        title: 'Bảng Giá & So Sánh Quyền Lợi Pro vs Ultra',
+        response: `💎 <strong>BẢNG GIÁ BẢN QUYỀN SỞ HỮU VĨNH VIỄN ZEROSTUDIO:</strong><br><br>
+• <strong>Bản Miễn Phí (Free):</strong> Trải nghiệm các tính năng cơ bản, giới hạn 3 lượt tải video/ngày.<br><br>
+• <strong>GÓI PRO (299.000đ - Trọn đời):</strong><br>
+  - Sử dụng trên <strong>1 thiết bị cố định</strong>.<br>
+  - Nén PDF không giới hạn dung lượng.<br>
+  - Tải & lách video MMO không giới hạn số lượng.<br>
+  - Xóa watermark, đổi pitch âm thanh chống gậy bản quyền.<br><br>
+• <strong>GÓI ULTRA MMO MASTER (699.000đ - Trọn đời):</strong><br>
+  - Kích hoạt <strong>2 thiết bị độc lập</strong> (Ví dụ: 1 PC làm việc + 1 Laptop cá nhân).<br>
+  - Trọn bộ <strong>AI Office Studio</strong>: Tách nền ảnh thẻ vi mô & Quét OCR tiếng Việt xuất Word.<br>
+  - <strong>Bàn làm việc hàng loạt (Batch Workspace)</strong>: Xử lý đồng thời 500 video / tài liệu.<br>
+  - Tự động cào kênh YouTube Shorts / TikTok theo hashtag.`,
+        actions: [
+            { text: '💳 Nâng Cấp Pro 299.000đ (1 Thiết Bị)', func: "openVietQrCheckout('pro')" },
+            { text: '👑 Nâng Cấp Ultra 699.000đ (2 Thiết Bị)', func: "openVietQrCheckout('ultra')" },
+            { text: '💎 Mở Hộp Thoại So Sánh Chi Tiết', func: "openProModal('Tư vấn bản quyền', 'ultra')" }
+        ]
+    },
+    {
+        id: 'payment_vietqr',
+        keywords: ['thanh toán', 'chuyển khoản', 'ngân hàng', 'stk', 'mb bank', 'qr', 'vietqr', 'nạp tiền', 'cú pháp'],
+        title: 'Thanh Toán VietQR & Kích Hoạt Tức Thì',
+        response: `💳 <strong>HƯỚNG DẪN QUÉT VIETQR KÍCH HOẠT TỰ ĐỘNG:</strong><br><br>
+1. Bấm nút <strong>"Quét VietQR Mở Khóa"</strong> bên dưới.<br>
+2. Mở ứng dụng ngân hàng bất kỳ (MB Bank, Vietcombank, Techcombank, ViettelPay, Momo...).<br>
+3. Quét mã QR hiển thị trên màn hình (Hệ thống tự động điền STK: <strong>9704229209755632403</strong>, MB Bank và cú pháp đơn hàng).<br>
+4. Sau khi chuyển, hệ thống xác thực tức thì trong 3-5 giây và mở khóa bản quyền vĩnh viễn trên máy của bạn!`,
+        actions: [
+            { text: '💳 Mở Cửa Sổ Quét VietQR Pro (299k)', func: "openVietQrCheckout('pro')" },
+            { text: '👑 Mở Cửa Sổ Quét VietQR Ultra (699k)', func: "openVietQrCheckout('ultra')" }
+        ]
+    },
+    {
+        id: 'bridge_troubleshoot',
+        keywords: ['bridge', 'lỗi bridge', 'không kết nối', '8900', '8899', 'python', 'server', 'mất kết nối', 'cổng', 'ping'],
+        title: 'Khắc Phục Kết Nối Video Bridge',
+        response: `🔧 <strong>HƯỚNG DẪN KHẮC PHỤC LỖI VIDEO BRIDGE:</strong><br><br>
+Video Bridge là bộ điều khiển cục bộ viết bằng Python giúp máy tính bạn tải video không watermark và xử lý FFmpeg trực tiếp.<br><br>
+<strong>Cách khắc phục nhanh:</strong><br>
+1. Mở thư mục <code>ZeroPDF_Studio</code> trên máy tính.<br>
+2. Nhấp đúp chuột vào file <code>KHOI_DONG_BRIDGE.bat</code>.<br>
+3. Hoặc mở Terminal chạy lệnh: <code>python video_bridge.py</code>.<br>
+4. Cổng mặc định ưu tiên: <strong>8900</strong> (hoặc 8899, 8901).<br>
+Bấm nút bên dưới để ZeroAI kiểm tra tình trạng kết nối ngay cho bạn!`,
+        actions: [
+            { text: '🔄 Kiểm Tra Kết Nối Video Bridge Ngay', func: "testBridgeConnectionFromBot()" }
+        ]
+    }
+];
+
+// Initialize ZeroAI Assistant
+window.initZeroAI = function() {
+    const trigger = document.getElementById('zeroai-widget-trigger');
+    const msgList = document.getElementById('zeroai-msg-list');
+    if (!trigger || !msgList) return;
+
+    updateZeroAIModelBadge();
+
+    // Render initial welcome message if empty
+    if (msgList.children.length === 0) {
+        renderBotMessage(
+            `Xin chào! Tôi là <strong>ZeroAI Specialist</strong> – Trợ lý chuyên gia 24/7 của bạn tại ZeroStudio.<br><br>` +
+            `Tôi có thể hỗ trợ bạn ngay lập tức:<br>` +
+            `• <strong>Lách bản quyền video MMO</strong> (Auto-crop 9:16, xáo âm thanh, xóa sub/logo).<br>` +
+            `• <strong>AI Background Remover</strong> (Tách nền ảnh thẻ CCCD, Visa sắc nét).<br>` +
+            `• <strong>AI Vietnamese OCR</strong> (Quét chữ tiếng Việt trích xuất sang Word .doc).<br>` +
+            `• <strong>So sánh & Hướng dẫn kích hoạt</strong> gói Pro (299k) và Ultra (699k).<br><br>` +
+            `Hãy chọn gợi ý nhanh bên trên hoặc nhập câu hỏi của bạn nhé!`,
+            [
+                { text: '⚡ Hướng Dẫn Lách Bản Quyền Video MMO', func: "handleZeroAIQuickPrompt('Lách bản quyền video MMO thế nào?')" },
+                { text: '✂ Tách Nền & Quét Chữ OCR Sang Word', func: "switchStudioTab('ai-office')" },
+                { text: '💎 So Sánh Gói Pro 299k vs Ultra 699k', func: "handleZeroAIQuickPrompt('So sánh gói Pro và gói Ultra MMO')" }
+            ]
+        );
+    }
+};
+
+window.updateZeroAIModelBadge = function() {
+    const badge = document.getElementById('zeroai-active-mode-tag');
+    if (!badge) return;
+    const hasKey = !!localStorage.getItem(ZEROAI_STORAGE_KEY);
+    if (hasKey) {
+        badge.textContent = 'Gemini 1.5';
+        badge.style.color = '#38bdf8';
+        badge.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+        badge.style.background = 'rgba(56, 189, 248, 0.15)';
+    } else {
+        badge.textContent = 'Offline 0đ';
+        badge.style.color = '#10b981';
+        badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        badge.style.background = 'rgba(16, 185, 129, 0.18)';
+    }
+};
+
+window.toggleZeroAIChat = function(forceState) {
+    const win = document.getElementById('zeroai-chat-window');
+    const badge = document.getElementById('zeroai-unread-badge');
+    if (!win) return;
+
+    if (typeof forceState === 'boolean') {
+        isZeroAIChatOpen = forceState;
+    } else {
+        isZeroAIChatOpen = !isZeroAIChatOpen;
+    }
+
+    if (isZeroAIChatOpen) {
+        win.style.display = 'flex';
+        if (badge) badge.style.display = 'none';
+        const msgList = document.getElementById('zeroai-msg-list');
+        if (msgList) msgList.scrollTop = msgList.scrollHeight;
+        const input = document.getElementById('zeroai-chat-input');
+        if (input) setTimeout(() => input.focus(), 200);
+    } else {
+        win.style.display = 'none';
+    }
+};
+
+window.resetZeroAIChat = function() {
+    const msgList = document.getElementById('zeroai-msg-list');
+    if (msgList) msgList.innerHTML = '';
+    window.initZeroAI();
+    showToast('Đã làm mới cuộc trò chuyện với ZeroAI!', 'info');
+};
+
+window.openZeroAISettings = function() {
+    const modal = document.getElementById('zeroai-api-modal');
+    const input = document.getElementById('zeroai-gemini-key-input');
+    if (modal) modal.style.display = 'flex';
+    if (input) {
+        input.value = localStorage.getItem(ZEROAI_STORAGE_KEY) || '';
+        input.focus();
+    }
+};
+
+window.closeZeroAISettings = function() {
+    const modal = document.getElementById('zeroai-api-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+window.saveZeroAIApiKey = function() {
+    const input = document.getElementById('zeroai-gemini-key-input');
+    const key = input ? input.value.trim() : '';
+    if (key) {
+        localStorage.setItem(ZEROAI_STORAGE_KEY, key);
+        showToast('Đã lưu Google Gemini API Key! ZeroAI đã chuyển sang chế độ AI 1.5 Flash.', 'success');
+    } else {
+        localStorage.removeItem(ZEROAI_STORAGE_KEY);
+        showToast('Đã chuyển về Động cơ AI Cục Bộ (0đ chi phí)!', 'info');
+    }
+    updateZeroAIModelBadge();
+    closeZeroAISettings();
+};
+
+window.clearZeroAIApiKey = function() {
+    localStorage.removeItem(ZEROAI_STORAGE_KEY);
+    const input = document.getElementById('zeroai-gemini-key-input');
+    if (input) input.value = '';
+    updateZeroAIModelBadge();
+    closeZeroAISettings();
+    showToast('Đã thiết lập lại: Sử dụng Động cơ Cục bộ 0đ chi phí!', 'success');
+};
+
+window.handleZeroAIQuickPrompt = function(promptText) {
+    const input = document.getElementById('zeroai-chat-input');
+    if (input) {
+        input.value = promptText;
+        window.sendZeroAIMessage(promptText);
+    }
+};
+
+window.submitZeroAIChat = function(e) {
+    if (e) e.preventDefault();
+    const input = document.getElementById('zeroai-chat-input');
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    window.sendZeroAIMessage(text);
+};
+
+window.sendZeroAIMessage = async function(userText) {
+    if (!userText || !userText.trim()) return;
+
+    // Make sure window is visible
+    window.toggleZeroAIChat(true);
+
+    // Render user message
+    renderUserMessage(userText);
+
+    // Show typing indicator
+    const typingRow = showTypingIndicator();
+
+    const apiKey = localStorage.getItem(ZEROAI_STORAGE_KEY);
+
+    if (apiKey) {
+        // Try Gemini 1.5 Flash API
+        try {
+            const systemPrompt = `Bạn là ZeroAI Specialist, trợ lý ảo thông minh của ZeroStudio - ứng dụng phần mềm Windows chuyên sâu xử lý PDF, Lách bản quyền Video MMO (TikTok, YouTube Shorts, Reels), Tách nền ảnh thẻ CCCD/Visa và Quét OCR tiếng Việt sang Word. Trả lời súc tích, chuyên nghiệp, tiếng Việt thân thiện, dùng định dạng markdown gọn gàng.`;
+            
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [
+                        { role: 'user', parts: [{ text: `${systemPrompt}\n\nNgười dùng hỏi: ${userText}` }] }
+                    ],
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 600
+                    }
+                })
+            });
+
+            if (!res.ok) {
+                throw new Error(`Gemini API Error: ${res.status}`);
+            }
+
+            const data = await res.json();
+            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            removeTypingIndicator(typingRow);
+
+            if (reply) {
+                // Auto attach relevant action buttons based on keywords in reply or prompt
+                const actions = detectContextActions(userText + ' ' + reply);
+                renderBotMessage(reply.replace(/\n/g, '<br>'), actions);
+                return;
+            }
+        } catch (err) {
+            console.warn('[ZeroAI] Gemini API failed, falling back to offline KB:', err);
+            showToast('Không kết nối được Gemini API, tự động dùng Động cơ Cục bộ!', 'warning');
+        }
+    }
+
+    // Offline Intelligent Decision Engine
+    setTimeout(() => {
+        removeTypingIndicator(typingRow);
+        const match = matchOfflineIntent(userText);
+        renderBotMessage(match.response, match.actions);
+    }, 450);
+};
+
+function matchOfflineIntent(text) {
+    const clean = text.toLowerCase();
+    
+    let bestItem = null;
+    let highestScore = 0;
+
+    // Smart Score-based Intent Classifier
+    for (const item of ZEROAI_KB) {
+        let score = 0;
+        for (const kw of item.keywords) {
+            const kwLower = kw.toLowerCase();
+            if (clean.includes(kwLower)) {
+                // Longer and compound phrases receive significantly higher weights
+                score += kwLower.includes(' ') ? 18 : (6 + kwLower.length);
+            }
+        }
+        if (score > highestScore) {
+            highestScore = score;
+            bestItem = item;
+        }
+    }
+
+    if (bestItem && highestScore > 0) {
+        return bestItem;
+    }
+
+    // Default Fallback Response
+    return {
+        id: 'general_fallback',
+        title: 'Tư Vấn Tổng Quan ZeroStudio',
+        response: `Cảm ơn bạn đã nhắn tin! Tôi có thể giúp bạn thao tác nhanh các tính năng sau:<br><br>` +
+            `• <strong>Lách Video MMO:</strong> Tự động crop dọc 9:16, xáo cao độ âm thanh (Pitch) và xóa sub/logo cũ.<br>` +
+            `• <strong>AI Background Remover:</strong> Tách nền chân dung vi mô, tạo ảnh thẻ CCCD, Visa, CV.<br>` +
+            `• <strong>AI Vietnamese OCR:</strong> Bóc tách chữ tiếng Việt từ ảnh chụp tài liệu và xuất file Word .doc.<br>` +
+            `• <strong>Nén PDF:</strong> Giảm 85% dung lượng chuẩn cổng dịch vụ công & thuế.<br>` +
+            `• <strong>Bản Quyền:</strong> Gói Pro (299k) cho 1 máy hoặc Gói Ultra (699k) cho 2 máy + full AI Studio.<br><br>` +
+            `Bạn muốn thực hiện thao tác nào dưới đây?`,
+        actions: [
+            { text: '🚀 Mở Tab Auto-Crop 9:16 & MMO', func: "switchStudioTab('video')" },
+            { text: '✂ Mở Tab Tách Nền & Quét Chữ OCR', func: "switchStudioTab('ai-office')" },
+            { text: '💎 Xem Bảng Giá Gói Pro & Ultra', func: "handleZeroAIQuickPrompt('So sánh gói Pro và gói Ultra MMO')" }
+        ]
+    };
+}
+
+function detectContextActions(combinedText) {
+    const text = combinedText.toLowerCase();
+    const actions = [];
+    if (text.includes('video') || text.includes('crop') || text.includes('mmo') || text.includes('bản quyền')) {
+        actions.push({ text: '🚀 Mở Tab Auto-Crop & MMO', func: "switchStudioTab('video')" });
+    }
+    if (text.includes('tách nền') || text.includes('ảnh thẻ') || text.includes('ocr') || text.includes('word')) {
+        actions.push({ text: '✂ Mở Tab Tách Nền & OCR', func: "switchStudioTab('ai-office')" });
+    }
+    if (text.includes('nén') || text.includes('pdf')) {
+        actions.push({ text: '📑 Mở Tab Nén PDF', func: "switchStudioTab('compress')" });
+    }
+    if (text.includes('pro') || text.includes('mua') || text.includes('giá') || text.includes('299')) {
+        actions.push({ text: '💳 Nâng Cấp Pro 299k', func: "openVietQrCheckout('pro')" });
+    }
+    if (text.includes('ultra') || text.includes('699') || text.includes('batch')) {
+        actions.push({ text: '👑 Nâng Cấp Ultra 699k', func: "openVietQrCheckout('ultra')" });
+    }
+    return actions.slice(0, 3);
+}
+
+function renderUserMessage(text) {
+    const msgList = document.getElementById('zeroai-msg-list');
+    if (!msgList) return;
+
+    const row = document.createElement('div');
+    row.className = 'zeroai-msg-row user';
+    
+    const time = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+    row.innerHTML = `
+        <div class="zeroai-msg-avatar user">BẠN</div>
+        <div>
+            <div class="zeroai-bubble">${escapeHtml(text)}</div>
+            <span class="zeroai-msg-time">${time}</span>
+        </div>
+    `;
+
+    msgList.appendChild(row);
+    msgList.scrollTop = msgList.scrollHeight;
+}
+
+function renderBotMessage(htmlContent, actions = []) {
+    const msgList = document.getElementById('zeroai-msg-list');
+    if (!msgList) return;
+
+    const row = document.createElement('div');
+    row.className = 'zeroai-msg-row bot';
+    
+    const time = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+    let actionButtonsHtml = '';
+    if (actions && actions.length > 0) {
+        actionButtonsHtml = `
+            <div class="zeroai-actions-wrap">
+                ${actions.map(act => `
+                    <button class="zeroai-action-btn" onclick="${act.func}">
+                        <span>${act.text}</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    row.innerHTML = `
+        <div class="zeroai-msg-avatar bot">AI</div>
+        <div>
+            <div class="zeroai-bubble">
+                ${htmlContent}
+                ${actionButtonsHtml}
+            </div>
+            <span class="zeroai-msg-time">${time} • ZeroAI Specialist</span>
+        </div>
+    `;
+
+    msgList.appendChild(row);
+    msgList.scrollTop = msgList.scrollHeight;
+}
+
+function showTypingIndicator() {
+    const msgList = document.getElementById('zeroai-msg-list');
+    if (!msgList) return null;
+
+    const row = document.createElement('div');
+    row.className = 'zeroai-msg-row bot zeroai-typing-row';
+    row.innerHTML = `
+        <div class="zeroai-msg-avatar bot">AI</div>
+        <div>
+            <div class="zeroai-bubble" style="padding: 6px 12px;">
+                <div class="zeroai-typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    `;
+    msgList.appendChild(row);
+    msgList.scrollTop = msgList.scrollHeight;
+    return row;
+}
+
+function removeTypingIndicator(rowEl) {
+    if (rowEl && rowEl.parentNode) {
+        rowEl.parentNode.removeChild(rowEl);
+    }
+}
+
+// 1-Click Interactive Action Functions for ZeroAI
+window.switchStudioTab = function(tabName) {
+    const btn = document.querySelector(`.bento-nav-btn[data-tab="${tabName}"]`);
+    if (btn) {
+        btn.click();
+        showToast(`Đã chuyển sang Tab [${tabName.toUpperCase()}] theo lệnh ZeroAI!`, 'success');
+        return true;
+    }
+    return false;
+};
+
+window.testBridgeConnectionFromBot = async function() {
+    renderUserMessage('Kiểm tra trạng thái kết nối Video Bridge...');
+    const typing = showTypingIndicator();
+    
+    try {
+        const bridgeUrl = await getBridgeBaseUrl();
+        const start = performance.now();
+        const res = await fetch(`${bridgeUrl}/api/ping`, { mode: 'cors' });
+        const latency = Math.round(performance.now() - start);
+        
+        removeTypingIndicator(typing);
+        
+        if (res.ok) {
+            const data = await res.json();
+            renderBotMessage(
+                `🟢 <strong>Video Bridge HOẠT ĐỘNG HOÀN HẢO!</strong><br><br>` +
+                `• Địa chỉ: <code>${bridgeUrl}</code><br>` +
+                `• Trạng thái: <strong>${data.status || 'OK'}</strong> (${data.service || 'ZeroPDF Local Bridge'})<br>` +
+                `• Độ trễ: <strong>${latency}ms</strong> (Cực nhanh)<br>` +
+                `• Sẵn sàng cho: Tải video không watermark, Auto-Crop 9:16 và Xáo âm thanh.`,
+                [
+                    { text: '🚀 Thử Tải & Lách Video Ngay', func: "switchStudioTab('video')" }
+                ]
+            );
+        } else {
+            renderBotMessage(
+                `🔴 <strong>Cổng kết nối bị từ chối (${res.status})</strong><br><br>` +
+                `Hệ thống nhận diện địa chỉ máy bạn có thể đang bị khóa kiểm tra an ninh hoặc cổng bị chặn.`,
+                [
+                    { text: '🔄 Thử Lại Lần Nữa', func: "testBridgeConnectionFromBot()" }
+                ]
+            );
+        }
+    } catch (err) {
+        removeTypingIndicator(typing);
+        renderBotMessage(
+            `⚠️ <strong>Chưa phát hiện Video Bridge đang chạy!</strong><br><br>` +
+            `Vui lòng vào thư mục phần mềm và chạy file <code>KHOI_DONG_BRIDGE.bat</code> để kích hoạt dịch vụ video.`,
+            [
+                { text: '🔄 Kiểm Tra Lại', func: "testBridgeConnectionFromBot()" }
+            ]
+        );
+    }
+};
+
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
