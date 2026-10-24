@@ -182,6 +182,12 @@ mindmap
   - Hệ thống tự động polling kiểm tra sao kê mỗi 3.5 giây.
   - Ngay khi tiền vào tài khoản, hệ thống tự động kích hoạt key và chuyển sang màn hình chúc mừng trong 3-5 giây.
 
+### 3. Kênh Hỗ Trợ Khẩn Cấp & Chăm Sóc Khách Hàng Trực Tiếp (Admin Hotline 24/7):
+- **Hotline / Zalo Admin Trực Tiếp:** `0962.876.139` (Link kết nối tức thì: `https://zalo.me/0962876139`).
+- **Widget Zalo Nổi (Floating Support):** Bố trí đối xứng hoàn hảo tại góc dưới trái (`bottom: 28px; left: 28px;`), trang bị hiệu ứng ánh sáng Zalo Blue Pulse, logo Vector sắc nét và chấm tín hiệu Online 24/7.
+- **Thanh Hỗ Trợ Trong VietQR Checkout:** Gắn trực tiếp thẻ hỗ trợ bên dưới nút thanh toán, giúp khách hàng gửi biên lai hoặc yêu cầu kích hoạt thủ công siêu tốc.
+- **Tích Hợp Sâu Trong ZeroAI Chatbot:** Khi khách hàng hỏi về liên hệ admin, số điện thoại, đổi máy tính mới hoặc lỗi kỹ thuật, bot tự động hiển thị Hotline `0962.876.139` kèm nút bấm 1-click mở ứng dụng Zalo trên cả PC và Mobile.
+
 ---
 
 ## V. BẢN ĐỒ NÂNG CẤP CHIẾN LƯỢC TƯƠNG LAI (ROADMAP)
