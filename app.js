@@ -3000,6 +3000,12 @@ window.activateLicenseKey = async function() {
             // Check if device limit exceeded (Strike 1 or 2)
             if (!vRes.ok || !vData.success) {
                 showToast(vData.message || 'Mã bản quyền đã đạt tối đa số thiết bị cho phép!', 'error');
+                if (typeof playCyberAlertSiren === 'function') playCyberAlertSiren();
+                if (vData.tier === 'pro') {
+                    setTimeout(() => {
+                        showToast('💡 Mẹo: Nâng cấp lên Gói Ultra (699k) để dùng đồng thời 2 máy (PC + Laptop) không bị giới hạn!', 'info');
+                    }, 1800);
+                }
                 return;
             }
         } catch (e) {

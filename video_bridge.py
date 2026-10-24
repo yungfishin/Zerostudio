@@ -154,6 +154,7 @@ def verify_and_bind_device(license_key, device_id, client_ip):
             'message': f'BẠN ĐÃ BỊ KHÓA VĨNH VIỄN! Vi phạm cố tình kích hoạt vượt số lượng thiết bị quá 3 lần (Gói {tier.upper()}: {max_devices} máy).'
         }
     else:
+        hint = " (Gợi ý: Nâng cấp lên Gói Ultra để dùng đồng thời 2 máy PC + Laptop)." if tier == 'pro' else " (Gói Ultra chỉ hỗ trợ tối đa 2 thiết bị)."
         return {
             'success': False,
             'error': 'DEVICE_LIMIT_EXCEEDED',
@@ -162,7 +163,7 @@ def verify_and_bind_device(license_key, device_id, client_ip):
             'tier': tier,
             'max_devices': max_devices,
             'devices_used': len(devices),
-            'message': f'CẢNH BÁO VI PHẠM ({strikes}/3): Mã bản quyền này đã đạt tối đa thiết bị cho phép (Gói {tier.upper()}: {max_devices} máy). Nếu cố tình thử sai 3 lần, thiết bị và IP của bạn sẽ bị KHÓA VĨNH VIỄN!'
+            'message': f'CẢNH BÁO VI PHẠM ({strikes}/3): Mã này đã kích hoạt đủ thiết bị cho phép (Gói {tier.upper()}: tối đa {max_devices} máy).{hint} Nếu cố tình thử sai 3 lần, máy bạn sẽ bị KHÓA IP VĨNH VIỄN!'
         }
 
 def load_banned_ips():
