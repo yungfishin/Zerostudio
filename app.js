@@ -100,12 +100,23 @@ function setupDropzone(zoneId, inputId, handler) {
     if (!zone || !input) return;
 
     zone.addEventListener('click', (e) => {
-        if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
-            input.click();
+        if (zoneId === 'compress-dropzone') {
+            if (!window.requirePro('Nén PDF Thông Minh Chuẩn Cổng Thuế')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
         }
+        input.click();
     });
 
     input.addEventListener('change', (e) => {
+        if (zoneId === 'compress-dropzone') {
+            if (!window.requirePro('Nén PDF Thông Minh Chuẩn Cổng Thuế')) {
+                input.value = '';
+                return;
+            }
+        }
         if (e.target.files.length > 0) {
             handler(Array.from(e.target.files));
             input.value = '';
@@ -119,7 +130,7 @@ function setupDropzone(zoneId, inputId, handler) {
         });
     });
 
-    ['dragleave', 'drop'].forEach(name => {
+    ['dragleave'].forEach(name => {
         zone.addEventListener(name, (e) => {
             e.preventDefault();
             zone.classList.remove('drag-over');
@@ -127,6 +138,13 @@ function setupDropzone(zoneId, inputId, handler) {
     });
 
     zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        if (zoneId === 'compress-dropzone') {
+            if (!window.requirePro('Nén PDF Thông Minh Chuẩn Cổng Thuế')) {
+                return;
+            }
+        }
         const files = Array.from(e.dataTransfer.files);
         if (files.length > 0) handler(files);
     });
@@ -1548,9 +1566,20 @@ function setupAntibanDropzone() {
 
     if (!dropzone || !input) return;
 
-    dropzone.addEventListener('click', () => input.click());
+    dropzone.addEventListener('click', (e) => {
+        if (!window.requirePro('Phòng Thí Nghiệm Lách Thuật Toán & Đổi MD5')) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+        input.click();
+    });
 
     input.addEventListener('change', (e) => {
+        if (!window.requirePro('Phòng Thí Nghiệm Lách Thuật Toán & Đổi MD5')) {
+            input.value = '';
+            return;
+        }
         handleAntibanFiles(e.target.files);
     });
 
@@ -1561,7 +1590,7 @@ function setupAntibanDropzone() {
         });
     });
 
-    ['dragleave', 'drop'].forEach(eventName => {
+    ['dragleave'].forEach(eventName => {
         dropzone.addEventListener(eventName, (e) => {
             e.preventDefault();
             dropzone.classList.remove('drag-over');
@@ -1569,6 +1598,11 @@ function setupAntibanDropzone() {
     });
 
     dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('drag-over');
+        if (!window.requirePro('Phòng Thí Nghiệm Lách Thuật Toán & Đổi MD5')) {
+            return;
+        }
         if (e.dataTransfer && e.dataTransfer.files) {
             handleAntibanFiles(e.dataTransfer.files);
         }
