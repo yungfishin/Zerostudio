@@ -41,6 +41,23 @@ const state = {
     processedBytes: 0
 };
 
+// ==========================================
+// PRO LICENSE VERIFICATION & STRICT PAYWALL
+// ==========================================
+window.isProActive = function() {
+    const key = localStorage.getItem('zerostudio_pro_license');
+    return !!(key && key.startsWith('ZERO-PRO-') && key.length >= 14);
+};
+
+window.requirePro = function(featureName) {
+    if (!window.isProActive()) {
+        showToast(`Tính năng "${featureName}" chỉ dành riêng cho bản ZeroStudio Pro! Vui lòng nâng cấp để mở khóa.`, 'warning');
+        openProModal();
+        return false;
+    }
+    return true;
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initDropzones();
@@ -556,6 +573,10 @@ window.executeAiUpscale = async function() {
     if (!state.upscaleOriginalUrl) return;
 
     const scale = state.upscaleScale || 4;
+    if (scale >= 4 && !window.requirePro('Nâng Cấp Hình Ảnh AI 4X Siêu Nét')) {
+        return;
+    }
+
     showLoading(`Đang chạy thuật toán AI Super-Resolution ${scale}X trên GPU máy bạn...`);
     const t0 = performance.now();
 
@@ -864,6 +885,16 @@ window.resolveVideo = async function() {
         return;
     }
 
+    if (!window.isProActive()) {
+        const todayKey = 'zerostu_free_dl_' + new Date().toISOString().slice(0, 10);
+        const freeCount = parseInt(localStorage.getItem(todayKey) || '0');
+        if (freeCount >= 3) {
+            showToast('Bạn đã sử dụng hết 3 lượt tải video miễn phí hôm nay! Vui lòng nâng cấp Pro để tải không giới hạn.', 'warning');
+            openProModal();
+            return;
+        }
+    }
+
     showLoading('Đang phân tích & trích xuất video không watermark...');
 
     try {
@@ -906,7 +937,16 @@ window.resolveVideo = async function() {
         if (videoData && videoData.video_url) {
             state.videoResolvedData = videoData;
             renderResolvedVideo(videoData);
-            showToast('Đã gỡ logo thành công! Video sẵn sàng để xem & tải về.', 'success');
+
+            if (!window.isProActive()) {
+                const todayKey = 'zerostu_free_dl_' + new Date().toISOString().slice(0, 10);
+                const freeCount = parseInt(localStorage.getItem(todayKey) || '0');
+                localStorage.setItem(todayKey, (freeCount + 1).toString());
+                const remaining = Math.max(0, 2 - freeCount);
+                showToast(`Đã gỡ logo thành công! (Còn ${remaining} lượt tải miễn phí hôm nay - Nâng cấp Pro để tải không giới hạn)`, 'success');
+            } else {
+                showToast('Đã gỡ logo thành công! Video sẵn sàng để xem & tải về.', 'success');
+            }
         } else {
             showToast('Không thể trích xuất video. Vui lòng kiểm tra lại đường link hoặc khởi động BAT_DAU_STUDIO_VIDEO.bat!', 'error');
         }
@@ -1057,6 +1097,9 @@ window.updateRemasterParam = function(param, val) {
 };
 
 window.setVideoTargetRes = function(res) {
+    if (res === '4k' && !window.requirePro('Nâng Cấp Độ Phân Giải 4K UHD (2160p)')) {
+        return;
+    }
     state.videoTargetRes = res;
     const btn2k = document.getElementById('vres-2k');
     const btn4k = document.getElementById('vres-4k');
@@ -1103,6 +1146,10 @@ window.startVideoExport = function() {
     const videoEl = document.getElementById('remaster-source-video');
 
     if (!canvas || !videoEl) return;
+
+    if (state.videoTargetRes === '4k' && !window.requirePro('Xuất Video 4K Ultra HD')) {
+        return;
+    }
 
     showLoading('Đang mã hóa GPU & xuất video 4K...');
 
@@ -1323,10 +1370,7 @@ window.startScrapeChannel = async function() {
         return;
     }
 
-    const isPro = localStorage.getItem('zerostudio_pro_license');
-    if (!isPro && state.channelLimit > 20) {
-        showToast('Bản Web Free hỗ trợ cào tối đa 20 video demo. Mở khóa bản Pro để cào trọn bộ không giới hạn!', 'warning');
-        openProModal();
+    if (!window.requirePro('Cào Trọn Bộ Kênh TikTok / Douyin Không Giới Hạn')) {
         return;
     }
 
@@ -1444,6 +1488,9 @@ window.updateSelectedCount = function() {
 };
 
 window.batchDownloadCleanVideos = function() {
+    if (!window.requirePro('Tải Hàng Loạt Video Trọn Kênh Sạch Logo')) {
+        return;
+    }
     const selected = document.querySelectorAll('.vid-checkbox:checked');
     if (selected.length === 0) {
         showToast('Vui lòng chọn ít nhất 1 video để tải!', 'error');
@@ -1470,6 +1517,9 @@ window.batchDownloadCleanVideos = function() {
 };
 
 window.sendSelectedToAntiban = function() {
+    if (!window.requirePro('Chuyển Hàng Loạt Sang Phòng Thí Nghiệm Lách Thuật Toán')) {
+        return;
+    }
     const selected = document.querySelectorAll('.vid-checkbox:checked');
     if (selected.length === 0) {
         showToast('Vui lòng chọn ít nhất 1 video để lách bản quyền!', 'error');
@@ -1527,6 +1577,9 @@ function setupAntibanDropzone() {
 
 function handleAntibanFiles(files) {
     if (!files || files.length === 0) return;
+    if (!window.requirePro('Phòng Thí Nghiệm Lách Thuật Toán & Đổi MD5')) {
+        return;
+    }
 
     state.antibanFiles = Array.from(files);
     const workspace = document.getElementById('antiban-cockpit-workspace');
@@ -1558,6 +1611,9 @@ function renderAntibanStreamPending() {
 }
 
 window.processAntibanBatch = async function() {
+    if (!window.requirePro('Lách Thuật Toán & Đổi Mã Băm MD5 Hàng Loạt')) {
+        return;
+    }
     if (!state.antibanFiles || state.antibanFiles.length === 0) {
         showToast('Vui lòng chọn ít nhất 1 video để xử lý!', 'error');
         return;
@@ -1658,6 +1714,12 @@ state.delogoEnabled = false;
 state.delogoCorner = 'bottom-right';
 
 window.toggleDelogo = function(enabled) {
+    if (enabled && !window.requirePro('Xóa Mờ Watermark & Logo Góc AI')) {
+        const toggle = document.getElementById('toggle-delogo-enable');
+        if (toggle) toggle.checked = false;
+        state.delogoEnabled = false;
+        return;
+    }
     state.delogoEnabled = enabled;
     showToast(enabled ? 'Đã bật bộ lọc xóa mờ logo góc!' : 'Đã tắt xóa logo', 'info');
 };
@@ -1687,6 +1749,9 @@ window.setSubtitleLang = function(mode) {
 };
 
 window.startExtractSubtitles = async function() {
+    if (!window.requirePro('Bóc Tách Phụ Đề AI & Dịch Thuật SRT')) {
+        return;
+    }
     showLoading('AI đang bóc tách âm thanh, nhận diện lời thoại & dịch sang Tiếng Việt...');
     setTimeout(() => {
         hideLoading();
@@ -1761,6 +1826,9 @@ window.updateCueText = function(idx, val) {
 };
 
 window.downloadSrtFile = function() {
+    if (!window.requirePro('Xuất File Phụ Đề .SRT Cho CapCut/Premiere')) {
+        return;
+    }
     if (!state.extractedSubtitles || state.extractedSubtitles.length === 0) {
         showToast('Chưa có phụ đề để xuất!', 'error');
         return;
@@ -1780,6 +1848,9 @@ window.downloadSrtFile = function() {
 };
 
 window.copyAllSubtitles = function() {
+    if (!window.requirePro('Sao Chép Toàn Bộ Phụ Đề')) {
+        return;
+    }
     let allText = state.extractedSubtitles.map(c => `[${c.start}] ${c.text}`).join('\n');
     copyPaymentField(allText, 'Toàn bộ phụ đề');
 };
@@ -1792,6 +1863,9 @@ state.compressPreset = 'gov';
 state.compressFile = null;
 
 window.selectCompressPreset = function(preset) {
+    if (preset === 'gov' && !window.requirePro('Siêu Nén PDF Nộp Cổng Dịch Vụ Công & Thuế (-90%)')) {
+        return;
+    }
     state.compressPreset = preset;
     document.querySelectorAll('.compress-preset-card').forEach(c => c.classList.remove('active'));
     const card = document.getElementById(`cp-preset-${preset}`);
@@ -1836,6 +1910,10 @@ function updateCompressTelemetry() {
 window.downloadCompressedPdf = async function() {
     if (!state.compressFile) {
         showToast('Vui lòng chọn file PDF cần nén!', 'error');
+        return;
+    }
+
+    if (!window.requirePro('Nén PDF Thông Minh Chuẩn Cổng Thuế & Dịch Vụ Công')) {
         return;
     }
 
