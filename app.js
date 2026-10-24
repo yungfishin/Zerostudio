@@ -87,6 +87,17 @@ function getDeviceFingerprint() {
     return fp;
 }
 
+function generateLicenseSignature(key, deviceId) {
+    if (!key || !deviceId) return '';
+    const raw = `${key}###${deviceId}###ZEROSTUDIO_SALT_2026`;
+    let hash = 0;
+    for (let i = 0; i < raw.length; i++) {
+        hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+        hash |= 0;
+    }
+    return 'SIG-' + Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
+}
+
 function playCyberAlertSiren() {
     try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -256,6 +267,79 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
+// 5-LAYER ANTI-DEVTOOLS & ANTI-TAMPER SHIELD
+// ==========================================
+function initAntiDevToolsShield() {
+    // 1. Intercept F12 and DevTools shortcuts
+    window.addEventListener('keydown', (e) => {
+        // Exempt Admin Emergency Rescue Hatch (Ctrl + Shift + Alt + B)
+        if (e.ctrlKey && e.shiftKey && e.altKey && (e.key === 'B' || e.key === 'b')) {
+            return;
+        }
+
+        const isF12 = e.key === 'F12' || e.keyCode === 123;
+        const isInspect = e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73);
+        const isConsole = e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74);
+        const isElementPicker = e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.keyCode === 67);
+        const isViewSource = e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85);
+
+        if (isF12 || isInspect || isConsole || isElementPicker || isViewSource) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof showToast === 'function') {
+                showToast('⚠️ Chức năng F12 / Inspect đã bị khóa để bảo vệ bản quyền!', 'warning');
+            }
+            return false;
+        }
+    }, true);
+
+    // 2. Intercept Context Menu (Right Click) outside of text inputs
+    window.addEventListener('contextmenu', (e) => {
+        const target = e.target;
+        const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+        if (!isInput) {
+            e.preventDefault();
+            if (typeof showToast === 'function') {
+                showToast('⚠️ Chuột phải đã được bảo vệ để ngăn chặn sao chép mã nguồn.', 'info');
+            }
+            return false;
+        }
+    }, true);
+
+    // 3. Active DevTools Detection (Window Dimension delta)
+    let devToolsAlertTimer = null;
+    function checkDevToolsOpen() {
+        if (window.outerWidth < 500 || window.outerHeight < 400) return;
+        const threshold = 160;
+        const widthDelta = window.outerWidth - window.innerWidth > threshold;
+        const heightDelta = window.outerHeight - window.innerHeight > threshold;
+        
+        if (widthDelta || heightDelta) {
+            if (!devToolsAlertTimer) {
+                if (typeof showToast === 'function') {
+                    showToast('⚠️ CẢNH BÁO AN NINH: Phát hiện DevTools / F12 đang mở! Vui lòng đóng lại trong vòng 15 giây.', 'error');
+                }
+                devToolsAlertTimer = setTimeout(() => {
+                    const stillOpen = (window.outerWidth - window.innerWidth > threshold) || (window.outerHeight - window.innerHeight > threshold);
+                    if (stillOpen) {
+                        window.triggerPermanentLockdown('Cố tình mở DevTools / F12 để soi mã nguồn hoặc can thiệp hệ thống');
+                    }
+                    devToolsAlertTimer = null;
+                }, 15000);
+            }
+        } else {
+            if (devToolsAlertTimer) {
+                clearTimeout(devToolsAlertTimer);
+                devToolsAlertTimer = null;
+            }
+        }
+    }
+
+    window.addEventListener('resize', checkDevToolsOpen);
+    setInterval(checkDevToolsOpen, 4000);
+}
+
+// ==========================================
 // PRO LICENSE VERIFICATION & STRICT PAYWALL
 // ==========================================
 const REVOKED_KEYS = [
@@ -265,7 +349,7 @@ const REVOKED_KEYS = [
     'ZERO-PRO-8492-HIEU-9F2A'
 ];
 
-window.isProActive = function() {
+function getProActiveStatus() {
     const testTier = localStorage.getItem('zerostudio_test_tier');
     if (testTier === 'free') return false;
     if (testTier === 'pro' || testTier === 'ultra') return true;
@@ -277,10 +361,21 @@ window.isProActive = function() {
         localStorage.removeItem('zerostudio_pro_license');
         return false;
     }
-    return (cleanKey.startsWith('ZERO-PRO-') || cleanKey.startsWith('ZERO-ULTRA-')) && cleanKey.length >= 14;
-};
+    const isValid = (cleanKey.startsWith('ZERO-PRO-') || cleanKey.startsWith('ZERO-ULTRA-')) && cleanKey.length >= 14;
+    if (!isValid) return false;
 
-window.isUltraActive = function() {
+    // Check hardware signature if present
+    const deviceId = getDeviceFingerprint();
+    const storedSig = localStorage.getItem('zerostudio_license_sig');
+    const expectedSig = generateLicenseSignature(cleanKey, deviceId);
+    if (storedSig && storedSig !== expectedSig && !cleanKey.includes('MASTER') && !cleanKey.includes('ADMIN')) {
+        console.warn('[SECURITY] Hardware signature mismatch!');
+        return false;
+    }
+    return true;
+}
+
+function getUltraActiveStatus() {
     const testTier = localStorage.getItem('zerostudio_test_tier');
     if (testTier === 'free' || testTier === 'pro') return false;
     if (testTier === 'ultra') return true;
@@ -292,10 +387,43 @@ window.isUltraActive = function() {
         localStorage.removeItem('zerostudio_pro_license');
         return false;
     }
-    // Master Admin Key has Ultra privileges
-    if (cleanKey.includes('MASTER') || cleanKey.includes('ADMIN') || cleanKey.includes('SECURE')) return true;
-    return cleanKey.startsWith('ZERO-ULTRA-') && cleanKey.length >= 16;
-};
+
+    const isUltraTier = (cleanKey.startsWith('ZERO-ULTRA-') && cleanKey.length >= 16) || cleanKey.includes('MASTER') || cleanKey.includes('ADMIN') || cleanKey.includes('SECURE');
+    if (!isUltraTier) return false;
+
+    // Check hardware signature if present
+    const deviceId = getDeviceFingerprint();
+    const storedSig = localStorage.getItem('zerostudio_license_sig');
+    const expectedSig = generateLicenseSignature(cleanKey, deviceId);
+    if (storedSig && storedSig !== expectedSig && !cleanKey.includes('MASTER') && !cleanKey.includes('ADMIN')) {
+        console.warn('[SECURITY] Ultra hardware signature mismatch!');
+        return false;
+    }
+    return true;
+}
+
+// Tamper-Proof Lock using Object.defineProperty (Prevents console overriding)
+try {
+    Object.defineProperty(window, 'isProActive', {
+        value: getProActiveStatus,
+        writable: false,
+        configurable: false,
+        enumerable: true
+    });
+} catch {
+    window.isProActive = getProActiveStatus;
+}
+
+try {
+    Object.defineProperty(window, 'isUltraActive', {
+        value: getUltraActiveStatus,
+        writable: false,
+        configurable: false,
+        enumerable: true
+    });
+} catch {
+    window.isUltraActive = getUltraActiveStatus;
+}
 
 window.requirePro = function(featureName) {
     if (!window.isProActive()) {
@@ -316,6 +444,7 @@ window.requireUltra = function(featureName) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    initAntiDevToolsShield();
     initTabs();
     initDropzones();
     initSecurityMonitor();
@@ -2734,9 +2863,11 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
 
 window.setTestTier = async function(tier) {
     const bridgeUrl = await getBridgeBaseUrl();
+    const deviceId = getDeviceFingerprint();
     if (tier === 'free') {
         localStorage.setItem('zerostudio_test_tier', 'free');
         localStorage.removeItem('zerostudio_pro_license');
+        localStorage.removeItem('zerostudio_license_sig');
         try {
             await fetch(`${bridgeUrl}/api/delete-license`, { method: 'POST' });
         } catch {}
@@ -2746,19 +2877,23 @@ window.setTestTier = async function(tier) {
         setTimeout(() => window.location.reload(), 400);
     } else if (tier === 'pro') {
         localStorage.setItem('zerostudio_test_tier', 'pro');
-        localStorage.setItem('zerostudio_pro_license', 'ZERO-PRO-DEMO-TESTER-VIP');
+        const key = 'ZERO-PRO-DEMO-TESTER-VIP';
+        localStorage.setItem('zerostudio_pro_license', key);
+        localStorage.setItem('zerostudio_license_sig', generateLicenseSignature(key, deviceId));
         updateProHeaderBadge();
         closeProModal();
         showToast('⚡ ĐÃ CHUYỂN SANG GÓI PRO (299k) ĐỂ TEST!', 'success');
         setTimeout(() => window.location.reload(), 400);
     } else if (tier === 'ultra') {
         localStorage.removeItem('zerostudio_test_tier');
-        localStorage.setItem('zerostudio_pro_license', 'ZERO-PRO-HIEU-MASTER-2026-SECURE');
+        const key = 'ZERO-PRO-HIEU-MASTER-2026-SECURE';
+        localStorage.setItem('zerostudio_pro_license', key);
+        localStorage.setItem('zerostudio_license_sig', generateLicenseSignature(key, deviceId));
         try {
             await fetch(`${bridgeUrl}/api/save-license`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ license_key: 'ZERO-PRO-HIEU-MASTER-2026-SECURE' })
+                body: JSON.stringify({ license_key: key })
             });
         } catch {}
         updateProHeaderBadge();
@@ -2809,7 +2944,7 @@ window.buyProLicense = function() {
     openVietQrCheckout();
 };
 
-window.activateLicenseKey = function() {
+window.activateLicenseKey = async function() {
     const input = document.getElementById('license-key-input');
     const key = input ? input.value.trim().toUpperCase() : '';
 
@@ -2835,10 +2970,41 @@ window.activateLicenseKey = function() {
     }
 
     if ((key.startsWith('ZERO-PRO-') || key.startsWith('ZERO-ULTRA-')) && key.length >= 14) {
+        // Device Limit Verification (Pro: 1 device, Ultra: 2 devices)
+        const deviceId = getDeviceFingerprint();
+        try {
+            const bridgeUrl = await getBridgeBaseUrl();
+            const vRes = await fetch(`${bridgeUrl}/api/verify-device`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ license_key: key, device_id: deviceId })
+            });
+            const vData = await vRes.json();
+            
+            // Check if 3 strikes resulted in permanent ban
+            if (vRes.status === 403 || vData.banned || vData.error === 'ACCESS_DENIED_PERMANENT_BAN') {
+                window.triggerPermanentLockdown(vData.message || 'Vi phạm cố tình kích hoạt vượt quá số lượng thiết bị cho phép 3 lần liên tiếp');
+                return;
+            }
+
+            // Check if device limit exceeded (Strike 1 or 2)
+            if (!vRes.ok || !vData.success) {
+                showToast(vData.message || 'Mã bản quyền đã đạt tối đa số thiết bị cho phép!', 'error');
+                return;
+            }
+        } catch (e) {
+            console.log("Device verification offline fallback...", e);
+        }
+
         failedLicenseAttempts = 0;
         const tier = (key.startsWith('ZERO-ULTRA-') || key.includes('MASTER') || key.includes('ADMIN')) ? 'Ultra' : 'Pro';
         localStorage.setItem('zerostudio_pro_license', key);
         localStorage.removeItem('zerostudio_test_tier');
+
+        // Generate and save hardware-bound signature
+        const sig = generateLicenseSignature(key, deviceId);
+        localStorage.setItem('zerostudio_license_sig', sig);
+
         syncLicenseWithDisk(key);
         showToast(`CHÚC MỪNG: Bạn đã kích hoạt thành công ZeroStudio Desktop ${tier} vĩnh viễn!`, 'success');
         updateProHeaderBadge();
@@ -2895,6 +3061,8 @@ async function loadPermanentDiskLicense() {
             const data = await res.json();
             if (data.has_license && data.license_key && !REVOKED_KEYS.includes(data.license_key.trim().toUpperCase())) {
                 localStorage.setItem('zerostudio_pro_license', data.license_key);
+                const deviceId = getDeviceFingerprint();
+                localStorage.setItem('zerostudio_license_sig', generateLicenseSignature(data.license_key, deviceId));
                 updateProHeaderBadge();
                 return;
             }
@@ -2904,6 +3072,10 @@ async function loadPermanentDiskLicense() {
     // 2. Fallback to localStorage
     const localKey = localStorage.getItem('zerostudio_pro_license');
     if (localKey && (localKey.startsWith('ZERO-PRO-') || localKey.startsWith('ZERO-ULTRA-')) && !REVOKED_KEYS.includes(localKey.trim().toUpperCase())) {
+        const deviceId = getDeviceFingerprint();
+        if (!localStorage.getItem('zerostudio_license_sig')) {
+            localStorage.setItem('zerostudio_license_sig', generateLicenseSignature(localKey, deviceId));
+        }
         updateProHeaderBadge();
         syncLicenseWithDisk(localKey);
     } else {

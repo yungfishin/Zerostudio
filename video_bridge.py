@@ -25,6 +25,7 @@ if sys.stderr and hasattr(sys.stderr, 'reconfigure'):
 
 PORT = 8900
 BANNED_IPS_FILE = Path.home() / '.zerostudio_banned_ips.json'
+DEVICE_REGISTRY_FILE = Path.home() / '.zerostudio_device_registry.json'
 
 MALICIOUS_PATTERNS = [
     r'\.\./', r'\.\.\\', r'/etc/passwd', r'win\.ini', r'boot\.ini',
@@ -32,6 +33,119 @@ MALICIOUS_PATTERNS = [
     r'union\s+select', r'xp_cmdshell', r'exec\s*\(', r'0x[0-9a-fA-F]{4,}',
     r'%00', r'nullbyte'
 ]
+
+def load_device_registry():
+    if not DEVICE_REGISTRY_FILE.exists():
+        return {}
+    try:
+        return json.loads(DEVICE_REGISTRY_FILE.read_text(encoding='utf-8'))
+    except Exception:
+        return {}
+
+def save_device_registry(registry):
+    try:
+        DEVICE_REGISTRY_FILE.write_text(json.dumps(registry, indent=2, ensure_ascii=False), encoding='utf-8')
+    except Exception as e:
+        print(f"[SECURITY] Error writing device registry: {e}")
+
+def verify_and_bind_device(license_key, device_id, client_ip):
+    clean_key = str(license_key).strip().upper()
+    REVOKED = {'ZERO-PRO-ADMIN-VIP-2026', 'ZERO-PRO-DEV-MASTER-9999', 'ZERO-PRO-VIP-PERMANENT', 'ZERO-PRO-8492-HIEU-9F2A'}
+    if clean_key in REVOKED:
+        return {
+            'success': False,
+            'revoked': True,
+            'error': 'KEY_REVOKED',
+            'message': 'Mã bản quyền này đã bị THU HỒI / VÔ HIỆU HÓA do bị rò rỉ công khai!'
+        }
+
+    # Determine max devices
+    is_master = any(k in clean_key for k in ['MASTER', 'ADMIN', 'DEMO'])
+    if is_master:
+        tier = 'master'
+        max_devices = 999
+    elif clean_key.startswith('ZERO-ULTRA-'):
+        tier = 'ultra'
+        max_devices = 2
+    elif clean_key.startswith('ZERO-PRO-'):
+        tier = 'pro'
+        max_devices = 1
+    else:
+        return {
+            'success': False,
+            'error': 'INVALID_KEY_FORMAT',
+            'message': 'Mã bản quyền không đúng định dạng ZERO-PRO-... hoặc ZERO-ULTRA-...'
+        }
+
+    registry = load_device_registry()
+    if clean_key not in registry:
+        registry[clean_key] = {
+            'tier': tier,
+            'max_devices': max_devices,
+            'devices': [],
+            'violations': {}
+        }
+
+    key_record = registry[clean_key]
+    devices = key_record.setdefault('devices', [])
+    violations = key_record.setdefault('violations', {})
+
+    # Case 1: Device is already registered
+    if device_id in devices:
+        return {
+            'success': True,
+            'tier': tier,
+            'already_registered': True,
+            'max_devices': max_devices,
+            'devices_used': len(devices),
+            'message': f'Thiết bị đã được xác thực cho gói {tier.upper()} ({len(devices)}/{max_devices} máy).'
+        }
+
+    # Case 2: Room to register a new device
+    if len(devices) < max_devices:
+        devices.append(device_id)
+        save_device_registry(registry)
+        return {
+            'success': True,
+            'tier': tier,
+            'newly_registered': True,
+            'max_devices': max_devices,
+            'devices_used': len(devices),
+            'message': f'Kích hoạt thành công gói {tier.upper()} trên thiết bị mới ({len(devices)}/{max_devices} máy).'
+        }
+
+    # Case 3: Device limit exceeded! Unauthorized extra device
+    dev_violation = violations.setdefault(device_id, {'strikes': 0, 'ip': client_ip})
+    dev_violation['strikes'] = dev_violation.get('strikes', 0) + 1
+    dev_violation['last_attempt'] = datetime.now().isoformat()
+    dev_violation['ip'] = client_ip
+    strikes = dev_violation['strikes']
+    save_device_registry(registry)
+
+    if strikes >= 3:
+        # Strike 3: Ban device and IP permanently!
+        ban_reason = f"Cố tình kích hoạt vượt số thiết bị cho phép của mã {clean_key} (Gói {tier.upper()}: tối đa {max_devices} máy, đã vi phạm 3 lần)"
+        ban_info = save_banned_ip(client_ip, ban_reason, {'license_key': clean_key, 'device_id': device_id, 'strikes': strikes})
+        return {
+            'success': False,
+            'banned': True,
+            'error': 'ACCESS_DENIED_PERMANENT_BAN',
+            'strikes': strikes,
+            'max_strikes': 3,
+            'ban_info': ban_info,
+            'message': f'BẠN ĐÃ BỊ KHÓA VĨNH VIỄN! Vi phạm cố tình kích hoạt vượt số lượng thiết bị quá 3 lần (Gói {tier.upper()}: {max_devices} máy).'
+        }
+    else:
+        return {
+            'success': False,
+            'error': 'DEVICE_LIMIT_EXCEEDED',
+            'strikes': strikes,
+            'max_strikes': 3,
+            'tier': tier,
+            'max_devices': max_devices,
+            'devices_used': len(devices),
+            'message': f'CẢNH BÁO VI PHẠM ({strikes}/3): Mã bản quyền này đã đạt tối đa thiết bị cho phép (Gói {tier.upper()}: {max_devices} máy). Nếu cố tình thử sai 3 lần, thiết bị và IP của bạn sẽ bị KHÓA VĨNH VIỄN!'
+        }
 
 def load_banned_ips():
     if not BANNED_IPS_FILE.exists():
@@ -64,6 +178,11 @@ def unban_ip(target_ip="all"):
     bans = load_banned_ips()
     if target_ip == "all":
         bans = {}
+        if DEVICE_REGISTRY_FILE.exists():
+            try:
+                DEVICE_REGISTRY_FILE.unlink()
+            except Exception:
+                pass
     elif target_ip in bans:
         del bans[target_ip]
     try:
@@ -459,6 +578,25 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 'banned_ip': client_ip,
                 'ban_info': ban_info
             }).encode())
+            return
+
+        # ----------------------------------------------------
+        # DEVICE LIMIT VERIFICATION & 3-STRIKE DEFENSE
+        # ----------------------------------------------------
+        if parsed.path == '/api/verify-device':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+            except Exception:
+                data = {}
+            license_key = data.get('license_key', '').strip()
+            device_id = data.get('device_id', '').strip() or 'DEV-SEC-UNKNOWN'
+            result = verify_and_bind_device(license_key, device_id, client_ip)
+            status_code = 403 if result.get('banned') or result.get('error') == 'ACCESS_DENIED_PERMANENT_BAN' else (400 if not result.get('success') else 200)
+            self.send_response(status_code)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(result).encode())
             return
 
         if parsed.path == '/api/save-license':
