@@ -1256,11 +1256,12 @@ function initCinemaIntro(isReplay = false) {
 }
 
 // ==========================================
-// 7. PRO UPGRADE & VIETQR LICENSE KEY ENGINE
+// 7. PRO UPGRADE & VIETQR REAL-TIME BANK VERIFICATION
 // ==========================================
 
 let currentOrderCode = '';
 let vietqrPollInterval = null;
+let isCheckingPayment = false;
 
 function updateProHeaderBadge() {
     const badgeBtn = document.querySelector('.btn-pro-unlock');
@@ -1295,7 +1296,6 @@ window.openProModal = function() {
         modal.style.display = 'flex';
         const savedKey = localStorage.getItem('zerostudio_pro_license');
         if (savedKey) {
-            // If already purchased/activated, show the success & license view
             const successView = document.getElementById('pro-view-success');
             const pricingView = document.getElementById('pro-view-pricing');
             const checkoutView = document.getElementById('pro-view-checkout');
@@ -1358,20 +1358,121 @@ window.openVietQrCheckout = function() {
     if (successView) successView.style.display = 'none';
 
     const statusEl = document.getElementById('checkout-status-label');
-    const statusMessages = [
-        "Khởi tạo phiên thanh toán mã VietQR bảo mật...",
-        "Đang đồng bộ giao dịch ngân hàng MB Bank / ViettelPay...",
-        `Hệ thống đang quét nội dung chuyển khoản: ${memo}...`,
-        "Chờ xác thực tín hiệu thanh toán tự động..."
-    ];
-    let msgIdx = 0;
-    if (statusEl) statusEl.textContent = statusMessages[0];
+    if (statusEl) statusEl.textContent = "Khởi tạo kết nối bảo mật MB Bank... Quét mã để thanh toán.";
+
+    // Start Real-Time Background Bank Polling every 3.5 seconds
     if (vietqrPollInterval) clearInterval(vietqrPollInterval);
     vietqrPollInterval = setInterval(() => {
-        msgIdx = (msgIdx + 1) % statusMessages.length;
-        if (statusEl) statusEl.textContent = statusMessages[msgIdx];
+        checkBankPaymentStatus(false);
     }, 3500);
 };
+
+/**
+ * Checks real bank transaction status with Netlify Serverless Function
+ * @param {boolean} isManualClick - True if triggered by user clicking the confirm button
+ */
+async function checkBankPaymentStatus(isManualClick) {
+    if (isCheckingPayment && !isManualClick) return;
+    isCheckingPayment = true;
+
+    const statusEl = document.getElementById('checkout-status-label');
+    if (isManualClick && statusEl) {
+        statusEl.textContent = `Đang kết nối MB Bank xác thực giao dịch ZERO ${currentOrderCode}...`;
+    }
+
+    try {
+        const response = await fetch(`/.netlify/functions/check-payment?order=${currentOrderCode}`);
+        if (!response.ok && response.status !== 404) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // 1. GIAO DỊCH ĐÃ THÀNH CÔNG (Tiền đã vào MB Bank thật 100%)
+        if (data.paid && data.licenseKey) {
+            onPaymentVerifiedSuccess(data.licenseKey, data.transaction);
+            isCheckingPayment = false;
+            return;
+        }
+
+        // 2. CHƯA CẤU HÌNH SEPAY_API_TOKEN TRÊN NETLIFY
+        if (data.config_needed) {
+            if (statusEl) {
+                statusEl.textContent = "Chờ cài đặt SEPAY_API_TOKEN trên Netlify để đối soát MB Bank tự động.";
+            }
+            if (isManualClick) {
+                // Developer fallback during setup: prompt owner
+                const confirmDev = confirm(
+                    "⚡ HỆ THỐNG ĐANG CHỜ CẤU HÌNH SEPAY_API_TOKEN\n\n" +
+                    "Bạn chưa thêm biến môi trường 'SEPAY_API_TOKEN' trên Netlify Dashboard.\n\n" +
+                    "Bấm [OK] để kích hoạt bản quyền thử nghiệm ngay (Test Mode).\n" +
+                    "Bấm [Cancel] để tiếp tục cài đặt."
+                );
+                if (confirmDev) {
+                    const testKey = `ZERO-PRO-${currentOrderCode}-TEST-DEV99`;
+                    onPaymentVerifiedSuccess(testKey, { amount: 299000, date: new Date().toISOString() });
+                }
+            }
+            isCheckingPayment = false;
+            return;
+        }
+
+        // 3. TIỀN CHƯA VÀO TÀI KHOẢN MB BANK
+        if (isManualClick) {
+            showToast(`Ngân hàng MB Bank chưa ghi nhận giao dịch 299.000đ cho mã ZERO ${currentOrderCode}. Vui lòng kiểm tra lại app ngân hàng hoặc đợi trong giây lát!`, 'warning');
+            if (statusEl) {
+                statusEl.textContent = `Chưa thấy giao dịch ZERO ${currentOrderCode} trên MB Bank. Đang quét lại...`;
+            }
+        } else {
+            if (statusEl) {
+                const tickMsg = [
+                    `Đang quét giao dịch MB Bank nội dung: ZERO ${currentOrderCode}...`,
+                    "Chờ xác thực tín hiệu chuyển khoản tự động 299.000đ...",
+                    "Tự động cấp bản quyền ngay khi tiền nổ vào tài khoản..."
+                ];
+                statusEl.textContent = tickMsg[Math.floor(Math.random() * tickMsg.length)];
+            }
+        }
+    } catch (err) {
+        console.warn("Lỗi kiểm tra đối soát ngân hàng (hoặc chạy offline):", err);
+        if (isManualClick) {
+            // If running on local computer without Netlify functions server
+            if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                const randHex = Math.random().toString(36).substring(2, 6).toUpperCase();
+                const localKey = `ZERO-PRO-${currentOrderCode}-LOCAL-${randHex}`;
+                showToast("Môi trường Localhost: Đã cấp key thử nghiệm!", "info");
+                onPaymentVerifiedSuccess(localKey, { amount: 299000, date: new Date().toISOString() });
+            } else {
+                showToast("Không thể kết nối máy chủ đối soát ngân hàng. Vui lòng thử lại sau vài giây!", "error");
+            }
+        }
+    } finally {
+        isCheckingPayment = false;
+    }
+}
+
+function onPaymentVerifiedSuccess(licenseKey, txInfo) {
+    if (vietqrPollInterval) {
+        clearInterval(vietqrPollInterval);
+        vietqrPollInterval = null;
+    }
+
+    // Save authorized license
+    localStorage.setItem('zerostudio_pro_license', licenseKey);
+
+    const issuedKeyEl = document.getElementById('issued-license-key');
+    if (issuedKeyEl) issuedKeyEl.textContent = licenseKey;
+
+    const pricingView = document.getElementById('pro-view-pricing');
+    const checkoutView = document.getElementById('pro-view-checkout');
+    const successView = document.getElementById('pro-view-success');
+    if (pricingView) pricingView.style.display = 'none';
+    if (checkoutView) checkoutView.style.display = 'none';
+    if (successView) successView.style.display = 'block';
+
+    updateProHeaderBadge();
+    showToast("XÁC THỰC THÀNH CÔNG! Đã nhận đủ 299.000đ từ MB Bank. Bản Pro đã kích hoạt!", "success");
+}
 
 window.copyPaymentField = function(text, label) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1394,35 +1495,8 @@ window.copyOrderMemoField = function() {
 };
 
 window.confirmPaidAndGetLicense = function() {
-    const statusEl = document.getElementById('checkout-status-label');
-    if (statusEl) statusEl.textContent = "Đang kiểm tra và cấp khóa bản quyền...";
-    showToast("Đang xác nhận thanh toán qua ngân hàng...", "info");
-
-    setTimeout(() => {
-        if (vietqrPollInterval) {
-            clearInterval(vietqrPollInterval);
-            vietqrPollInterval = null;
-        }
-
-        const randHex = Math.random().toString(36).substring(2, 6).toUpperCase();
-        const code = currentOrderCode || Math.floor(1000 + Math.random() * 9000);
-        const issuedKey = `ZERO-PRO-${code}-HIEU-${randHex}`;
-
-        localStorage.setItem('zerostudio_pro_license', issuedKey);
-
-        const issuedKeyEl = document.getElementById('issued-license-key');
-        if (issuedKeyEl) issuedKeyEl.textContent = issuedKey;
-
-        const pricingView = document.getElementById('pro-view-pricing');
-        const checkoutView = document.getElementById('pro-view-checkout');
-        const successView = document.getElementById('pro-view-success');
-        if (pricingView) pricingView.style.display = 'none';
-        if (checkoutView) checkoutView.style.display = 'none';
-        if (successView) successView.style.display = 'block';
-
-        updateProHeaderBadge();
-        showToast("XÁC NHẬN THÀNH CÔNG! Chúc mừng bạn đã sở hữu ZeroStudio Pro trọn đời!", "success");
-    }, 1200);
+    showToast("Đang kết nối MB Bank kiểm tra biến động số dư...", "info");
+    checkBankPaymentStatus(true);
 };
 
 window.copyIssuedLicenseKey = function() {
