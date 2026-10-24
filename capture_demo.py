@@ -224,8 +224,14 @@ async def capture_demo():
         await page.wait_for_timeout(600)
         await page.screenshot(path=str(BRAIN_DIR / "ZEROPDF_DEMO_07_VIDEO_REMASTER.png"))
 
+        # 8. Desktop Pro Modal
+        print("Capturing 8. Desktop Pro Modal...")
+        await page.evaluate("openProModal()")
+        await page.wait_for_timeout(400)
+        await page.screenshot(path=str(BRAIN_DIR / "ZEROPDF_DEMO_08_PRO_MODAL.png"))
+
         await browser.close()
-        print("SUCCESS: All 7 demo snapshots captured successfully!")
+        print("SUCCESS: All 8 demo snapshots captured successfully!")
 
 if __name__ == "__main__":
     asyncio.run(capture_demo())

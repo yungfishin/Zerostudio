@@ -1254,3 +1254,70 @@ function initCinemaIntro(isReplay = false) {
         }
     });
 }
+
+// ==========================================
+// 7. PRO UPGRADE & LICENSE KEY ENGINE
+// ==========================================
+
+window.openProModal = function() {
+    const modal = document.getElementById('pro-modal');
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeProModal = function() {
+    const modal = document.getElementById('pro-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+window.buyProLicense = function() {
+    showToast('Cổng nhận bản quyền Pro: Vui lòng chuyển khoản hoặc nhập mã kích hoạt.', 'info');
+    alert(
+        "⚡ ZEROSTUDIO DESKTOP PRO (LIFETIME DEAL - 299.000đ)\n\n" +
+        "1. Chuyển khoản 299.000đ với nội dung: ZERO PRO [Email của bạn]\n" +
+        "2. Mã kích hoạt bản quyền vĩnh viễn (ZERO-PRO-XXXX) sẽ được gửi tự động qua Email/Zalo.\n" +
+        "3. Nhập mã vào ô 'Đã có mã kích hoạt Pro' để mở khóa trọn đời không giới hạn!"
+    );
+};
+
+window.activateLicenseKey = function() {
+    const input = document.getElementById('license-key-input');
+    const key = input ? input.value.trim().toUpperCase() : '';
+
+    if (!key) {
+        showToast('Vui lòng nhập mã kích hoạt bản quyền!', 'error');
+        return;
+    }
+
+    if (key.startsWith('ZERO-PRO-') && key.length >= 14) {
+        localStorage.setItem('zerostudio_pro_license', key);
+        showToast('CHÚC MỪNG: Bạn đã kích hoạt thành công ZeroStudio Desktop Pro vĩnh viễn!', 'success');
+
+        const badgeBtn = document.querySelector('.btn-pro-unlock');
+        if (badgeBtn) {
+            badgeBtn.innerHTML = `
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #34d399; width: 15px; height: 15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <span style="color: #34d399;">Đã Kích Hoạt Pro</span>
+            `;
+            badgeBtn.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+            badgeBtn.style.background = 'rgba(52, 211, 153, 0.12)';
+        }
+        setTimeout(() => closeProModal(), 1500);
+    } else {
+        showToast('Mã bản quyền không hợp lệ. Vui lòng kiểm tra lại định dạng: ZERO-PRO-XXXX-XXXX', 'error');
+    }
+};
+
+// Check existing Pro license on boot
+if (localStorage.getItem('zerostudio_pro_license')) {
+    setTimeout(() => {
+        const badgeBtn = document.querySelector('.btn-pro-unlock');
+        if (badgeBtn) {
+            badgeBtn.innerHTML = `
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #34d399; width: 15px; height: 15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <span style="color: #34d399;">Bản Pro Vĩnh Viễn</span>
+            `;
+            badgeBtn.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+            badgeBtn.style.background = 'rgba(52, 211, 153, 0.12)';
+        }
+    }, 500);
+}
