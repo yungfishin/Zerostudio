@@ -44,9 +44,22 @@ const state = {
 // ==========================================
 // PRO LICENSE VERIFICATION & STRICT PAYWALL
 // ==========================================
+const REVOKED_KEYS = [
+    'ZERO-PRO-ADMIN-VIP-2026',
+    'ZERO-PRO-DEV-MASTER-9999',
+    'ZERO-PRO-VIP-PERMANENT',
+    'ZERO-PRO-8492-HIEU-9F2A'
+];
+
 window.isProActive = function() {
     const key = localStorage.getItem('zerostudio_pro_license');
-    return !!(key && key.startsWith('ZERO-PRO-') && key.length >= 14);
+    if (!key) return false;
+    const cleanKey = key.trim().toUpperCase();
+    if (REVOKED_KEYS.includes(cleanKey)) {
+        localStorage.removeItem('zerostudio_pro_license');
+        return false;
+    }
+    return cleanKey.startsWith('ZERO-PRO-') && cleanKey.length >= 14;
 };
 
 window.requirePro = function(featureName) {
@@ -2276,6 +2289,11 @@ window.activateLicenseKey = function() {
         return;
     }
 
+    if (REVOKED_KEYS.includes(key)) {
+        showToast('CẢNH BÁO: Mã bản quyền này đã bị THU HỒI / VÔ HIỆU HÓA do bị rò rỉ công khai!', 'error');
+        return;
+    }
+
     if (key.startsWith('ZERO-PRO-') && key.length >= 14) {
         localStorage.setItem('zerostudio_pro_license', key);
         syncLicenseWithDisk(key);
@@ -2291,7 +2309,7 @@ window.activateLicenseKey = function() {
 // TRIPLE-LOCK PERMANENT LICENSE SYNC
 // ==========================================
 async function syncLicenseWithDisk(key) {
-    if (!key || !key.startsWith('ZERO-PRO-')) return;
+    if (!key || !key.startsWith('ZERO-PRO-') || REVOKED_KEYS.includes(key.trim().toUpperCase())) return;
     try {
         await fetch('http://127.0.0.1:8899/api/save-license', {
             method: 'POST',
@@ -2302,12 +2320,18 @@ async function syncLicenseWithDisk(key) {
 }
 
 async function loadPermanentDiskLicense() {
+    // 0. Purge any leaked or revoked key immediately
+    const existingKey = localStorage.getItem('zerostudio_pro_license');
+    if (existingKey && REVOKED_KEYS.includes(existingKey.trim().toUpperCase())) {
+        localStorage.removeItem('zerostudio_pro_license');
+    }
+
     // 1. Check local bridge on disk first (survives browser cache wipes)
     try {
         const res = await fetch('http://127.0.0.1:8899/api/license', { signal: AbortSignal.timeout(1200) });
         if (res.ok) {
             const data = await res.json();
-            if (data.has_license && data.license_key) {
+            if (data.has_license && data.license_key && !REVOKED_KEYS.includes(data.license_key.trim().toUpperCase())) {
                 localStorage.setItem('zerostudio_pro_license', data.license_key);
                 updateProHeaderBadge();
                 return;
@@ -2317,7 +2341,7 @@ async function loadPermanentDiskLicense() {
 
     // 2. Fallback to localStorage
     const localKey = localStorage.getItem('zerostudio_pro_license');
-    if (localKey && localKey.startsWith('ZERO-PRO-')) {
+    if (localKey && localKey.startsWith('ZERO-PRO-') && !REVOKED_KEYS.includes(localKey.trim().toUpperCase())) {
         updateProHeaderBadge();
         syncLicenseWithDisk(localKey);
     }

@@ -43,6 +43,8 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             user_license_file = Path.home() / '.zerostudio_license'
             key = None
 
+            REVOKED = {'ZERO-PRO-ADMIN-VIP-2026', 'ZERO-PRO-DEV-MASTER-9999', 'ZERO-PRO-VIP-PERMANENT', 'ZERO-PRO-8492-HIEU-9F2A'}
+
             if license_file.exists():
                 try:
                     key = license_file.read_text(encoding='utf-8').strip()
@@ -53,6 +55,16 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                     key = user_license_file.read_text(encoding='utf-8').strip()
                 except Exception:
                     pass
+
+            if key in REVOKED:
+                # Purge revoked keys immediately
+                try:
+                    if license_file.exists(): license_file.unlink()
+                except Exception: pass
+                try:
+                    if user_license_file.exists(): user_license_file.unlink()
+                except Exception: pass
+                key = None
 
             self.send_response(200)
             self._send_cors_headers()
@@ -207,9 +219,19 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
         if parsed.path == '/api/save-license':
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)
+            REVOKED = {'ZERO-PRO-ADMIN-VIP-2026', 'ZERO-PRO-DEV-MASTER-9999', 'ZERO-PRO-VIP-PERMANENT', 'ZERO-PRO-8492-HIEU-9F2A'}
             try:
                 data = json.loads(post_data.decode('utf-8'))
                 key = data.get('license_key', '').strip()
+
+                if key in REVOKED:
+                    self.send_response(403)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': 'Key is revoked'}).encode())
+                    return
+
                 if key and key.startswith('ZERO-PRO-'):
                     license_file = Path(__file__).parent / 'license.key'
                     user_license_file = Path.home() / '.zerostudio_license'

@@ -6,10 +6,14 @@ echo =======================================================
 echo.
 
 if exist "%USERPROFILE%\.zerostudio_license" (
-    ren "%USERPROFILE%\.zerostudio_license" ".zerostudio_license.bak"
-    echo [OK] Đã tạm ẩn file bản quyền trên ổ cứng.
+    del /f /q "%USERPROFILE%\.zerostudio_license"
+    echo [OK] Đã xóa file bản quyền trên ổ cứng.
 ) else (
     echo [INFO] Không tìm thấy file bản quyền trên ổ cứng.
+)
+
+if exist "%USERPROFILE%\.zerostudio_license.bak" (
+    del /f /q "%USERPROFILE%\.zerostudio_license.bak"
 )
 
 if exist "license.key" (
