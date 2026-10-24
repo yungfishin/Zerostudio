@@ -2706,6 +2706,12 @@
                 </svg>
                 Ảnh Sang PDF
             </button>
+            <button class="bento-nav-btn" data-tab="compress">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+                Nén PDF Thông Minh
+            </button>
             <button class="bento-nav-btn btn-sparkle" data-tab="upscale">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -2938,6 +2944,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                     Lách Thuật Toán & Đổi MD5 <span class="badge-pro-mini">PRO</span>
+                </button>
+                <button class="video-subnav-btn" id="subnav-btn-subtitles" onclick="switchVideoSubMode('subtitles')">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+                    </svg>
+                    Bóc Phụ Đề & Dịch SRT <span class="badge-pro-mini">PRO</span>
                 </button>
                 <button class="video-subnav-btn" id="subnav-btn-remaster" onclick="switchVideoSubMode('remaster')">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -3278,6 +3290,145 @@
                                 <button class="upscale-ratio-btn active" id="vres-4k" onclick="setVideoTargetRes('4k')">4K UHD (2160p)</button>
                             </div>
                         </div>
+
+                        <!-- Smart Corner Delogo / Logo Remover Tool -->
+                        <div class="control-row" style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 12px; padding: 0.85rem 1rem;">
+                            <div class="control-label" style="margin-bottom: 0.5rem;">
+                                <span style="color: #e879f9; font-weight: 700;">Xóa Mờ Logo & Watermark Góc (Smart Delogo AI)</span>
+                                <label class="switch-control" style="width: 38px; height: 20px;">
+                                    <input type="checkbox" id="toggle-delogo-enable" onchange="toggleDelogo(this.checked)">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                            <div class="delogo-corner-row" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <button type="button" class="limit-pill-btn active" id="delogo-pos-br" onclick="setDelogoCorner('bottom-right')">Góc Dưới-Phải</button>
+                                <button type="button" class="limit-pill-btn" id="delogo-pos-tr" onclick="setDelogoCorner('top-right')">Góc Trên-Phải</button>
+                                <button type="button" class="limit-pill-btn" id="delogo-pos-tl" onclick="setDelogoCorner('top-left')">Góc Trên-Trái</button>
+                                <button type="button" class="limit-pill-btn" id="delogo-pos-bl" onclick="setDelogoCorner('bottom-left')">Góc Dưới-Trái</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-PANE 5: BÓC PHỤ ĐỀ AI & DỊCH SRT (PRO) -->
+            <div id="video-pane-subtitles" style="display: none;">
+                <div class="bento-spotlight" style="padding: 2.5rem 2rem; text-align: center;">
+                    <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 9999px; padding: 0.35rem 0.85rem; font-size: 0.75rem; color: #e879f9; font-weight: 700; margin-bottom: 1.25rem;">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" /></svg>
+                        TÍNH NĂNG ĐỘC QUYỀN PRO • SPEECH-TO-TEXT & AUTO SUBTITLE
+                    </div>
+                    <h2 style="font-size: 1.5rem; font-weight: 800; color: #ffffff; margin-bottom: 0.4rem;">Trích Xuất Phụ Đề & Dịch Tự Động Ra File .SRT</h2>
+                    <p style="color: #94a3b8; font-size: 0.88rem; max-width: 620px; margin: 0 auto 1.5rem;">Tự động nghe âm thanh video Douyin, TikTok, YouTube -> Khớp thời gian từng câu và dịch sang Tiếng Việt chuẩn xác để kéo vào CapCut dựng ngay.</p>
+
+                    <!-- Target Language Selection -->
+                    <div class="channel-limit-selector" style="margin-bottom: 1.25rem;">
+                        <span style="font-size: 0.78rem; color: #94a3b8; font-weight: 600;">Chế độ dịch thuật:</span>
+                        <button class="limit-pill-btn active" id="sub-mode-zh" onclick="setSubtitleLang('zh-vi')">Tiếng Trung (Douyin) ➜ Tiếng Việt</button>
+                        <button class="limit-pill-btn" id="sub-mode-en" onclick="setSubtitleLang('en-vi')">Tiếng Anh ➜ Tiếng Việt</button>
+                        <button class="limit-pill-btn" id="sub-mode-vi" onclick="setSubtitleLang('vi-vi')">Tiếng Việt (Tự Động Bóc Text & Khớp Giây)</button>
+                    </div>
+
+                    <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn-glow-action" style="background: linear-gradient(135deg, #a855f7, #ec4899);" onclick="startExtractSubtitles()">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Bắt Đầu Bóc Tách & Khớp Phụ Đề AI
+                        </button>
+                        <button class="btn-outline" onclick="loadSampleSubtitles()">
+                            Xem Mẫu Phụ Đề Demo (.srt)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Subtitle Results & Editor Workspace -->
+                <div id="subtitle-workspace" style="display: none; margin-top: 1.5rem;">
+                    <div class="channel-batch-toolbar">
+                        <div class="channel-toolbar-info">
+                            <span style="font-weight: 700; color: #ffffff;" id="sub-timeline-count">Đã khớp: 8 câu thoại (00:00 - 00:32)</span>
+                            <span style="color: #64748b;">•</span>
+                            <span style="color: #34d399; font-weight: 600;">Chuẩn Định Dạng CapCut & Premiere</span>
+                        </div>
+                        <div class="channel-toolbar-actions">
+                            <button class="btn-outline" onclick="copyAllSubtitles()">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                Sao Chép Toàn Bộ
+                            </button>
+                            <button class="btn-glow-action" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="downloadSrtFile()">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 15px; height: 15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Tải File .SRT (Khớp Giây)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Editable Subtitle Blocks List -->
+                    <div id="subtitle-blocks-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: NÉN PDF THÔNG MINH -->
+        <div class="tab-pane" id="tab-compress">
+            <div class="bento-spotlight" id="compress-dropzone-wrap" style="padding: 2.5rem 2rem; text-align: center;">
+                <div class="drop-stage" id="compress-dropzone">
+                    <input type="file" id="compress-file-input" accept=".pdf" multiple style="display: none;">
+                    <div class="radar-rings">
+                        <div class="radar-circle circle-3" style="border-color: rgba(6, 182, 212, 0.1);"></div>
+                        <div class="radar-circle circle-2" style="border-color: rgba(6, 182, 212, 0.2);"></div>
+                        <div class="radar-circle circle-1" style="border-color: #06b6d4;"></div>
+                        <div class="radar-center" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2)); border-color: rgba(6, 182, 212, 0.4); box-shadow: 0 4px 18px rgba(6, 182, 212, 0.4);">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #22d3ee; width: 26px; height: 26px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stage-title">Kéo & thả file PDF cần nén dung lượng</div>
+                    <div class="stage-subtitle">Thuật toán nén tối ưu hóa luồng Stream: Giảm 50% - 90% dung lượng, giữ nguyên 100% nét chữ ký và dấu mộc đỏ</div>
+                    <button class="shimmer-button" type="button" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">Chọn File PDF Cần Nén</button>
+                </div>
+            </div>
+
+            <!-- PDF Compress Workspace -->
+            <div id="compress-workspace" style="display: none; margin-top: 1.5rem;">
+                <!-- 3 Bento Preset Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+                    <div class="pricing-card compress-preset-card active" id="cp-preset-gov" onclick="selectCompressPreset('gov')">
+                        <div class="pricing-badge" style="color: #34d399; border-color: rgba(52, 211, 153, 0.4);">KHUYÊN DÙNG</div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0.5rem 0 0.25rem;">Nộp Dịch Vụ Công & Thuế</h3>
+                        <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 0.75rem;">Siêu nén ép dưới 5MB. Tối ưu hóa đặc biệt để giữ nét từng nét mực con dấu đỏ và chữ ký số.</p>
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; color: #34d399;">Giảm ~85% - 90%</div>
+                    </div>
+
+                    <div class="pricing-card compress-preset-card" id="cp-preset-mail" onclick="selectCompressPreset('mail')">
+                        <div class="pricing-badge">GỬI EMAIL & ZALO</div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0.5rem 0 0.25rem;">Nén Đính Kèm Nhanh</h3>
+                        <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 0.75rem;">Cân bằng hoàn hảo giữa độ nét và dung lượng nhẹ để gửi qua Outlook, Gmail, Zalo.</p>
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; color: #38bdf8;">Giảm ~60% - 75%</div>
+                    </div>
+
+                    <div class="pricing-card compress-preset-card" id="cp-preset-std" onclick="selectCompressPreset('std')">
+                        <div class="pricing-badge">IN ẤN CHẤT LƯỢNG CAO</div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0.5rem 0 0.25rem;">Nén Tiêu Chuẩn</h3>
+                        <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 0.75rem;">Bảo toàn 100% DPI gốc để đem ra tiệm in ấn tài liệu mà không vỡ hạt.</p>
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; color: #cbd5e1;">Giảm ~40% - 50%</div>
+                    </div>
+                </div>
+
+                <!-- Action & Results Deck -->
+                <div class="bento-spotlight" style="padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <div style="font-weight: 700; color: #ffffff; font-size: 0.95rem;" id="compress-file-name">hop_dong_kinh_te.pdf</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem;" id="compress-size-telemetry">
+                            Gốc: <span style="color: #cbd5e1; font-weight: 700;">18.45 MB</span> ➔ Sau khi nén: <span style="color: #34d399; font-weight: 700;">2.15 MB (-88%)</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button class="btn-outline" onclick="resetCompressView()">Chọn File Khác</button>
+                        <button class="btn-glow-action" style="background: linear-gradient(135deg, #06b6d4, #10b981);" onclick="downloadCompressedPdf()">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Tải File PDF Đã Nén
+                        </button>
                     </div>
                 </div>
             </div>
