@@ -166,6 +166,25 @@ def verify_and_bind_device(license_key, device_id, client_ip):
             'message': f'CẢNH BÁO VI PHẠM ({strikes}/3): Mã này đã kích hoạt đủ thiết bị cho phép (Gói {tier.upper()}: tối đa {max_devices} máy).{hint} Nếu cố tình thử sai 3 lần, máy bạn sẽ bị KHÓA IP VĨNH VIỄN!'
         }
 
+def unbind_device(license_key, device_id):
+    clean_key = str(license_key).strip().upper()
+    registry = load_device_registry()
+    if clean_key not in registry:
+        return {'success': True, 'message': 'Đã đặt lại trạng thái thiết bị thành công!'}
+    
+    key_record = registry[clean_key]
+    devices = key_record.setdefault('devices', [])
+    if device_id in devices:
+        devices.remove(device_id)
+    violations = key_record.setdefault('violations', {})
+    if device_id in violations:
+        del violations[device_id]
+    save_device_registry(registry)
+    return {
+        'success': True,
+        'message': f'Đã hủy liên kết máy {device_id} thành công! Bây giờ bạn có thể mang key sang máy mới để kích hoạt.'
+    }
+
 def load_banned_ips():
     if not BANNED_IPS_FILE.exists():
         return {}
@@ -611,6 +630,24 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             result = verify_and_bind_device(license_key, device_id, client_ip)
             status_code = 403 if result.get('banned') or result.get('error') == 'ACCESS_DENIED_PERMANENT_BAN' else (400 if not result.get('success') else 200)
             self.send_response(status_code)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(result).encode())
+            return
+
+        # ----------------------------------------------------
+        # UNBIND DEVICE (ALLOW MIGRATION TO NEW MACHINE)
+        # ----------------------------------------------------
+        if parsed.path == '/api/unbind-device':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+            except Exception:
+                data = {}
+            license_key = data.get('license_key', '').strip()
+            device_id = data.get('device_id', '').strip() or 'DEV-SEC-UNKNOWN'
+            result = unbind_device(license_key, device_id)
+            self.send_response(200 if result.get('success') else 400)
             self._send_cors_headers()
             self.send_header('Content-Type', 'application/json')
             self.end_headers()

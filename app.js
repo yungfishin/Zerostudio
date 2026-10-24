@@ -3113,6 +3113,51 @@ window.downloadLicenseFile = function() {
     showToast('Đã tải file license.key! Giữ file này trong thư mục app để tự kích hoạt Pro vĩnh viễn.', 'success');
 };
 
+window.unbindCurrentDevice = async function() {
+    const key = localStorage.getItem('zerostudio_pro_license');
+    if (!key) {
+        showToast('Chưa có mã bản quyền nào được kích hoạt trên máy này.', 'warning');
+        return;
+    }
+    
+    const confirmUnbind = confirm(
+        'BẠN CÓ CHẮC MUỐN HỦY LIÊN KẾT MÁY NÀY?\n\n' +
+        '• Sau khi hủy, máy tính này sẽ trở về bản dùng thử miễn phí.\n' +
+        '• Slot thiết bị của mã bản quyền này sẽ được giải phóng hoàn toàn.\n' +
+        '• Bạn sẽ có thể mang mã bản quyền này sang kích hoạt trên MÁY TÍNH MỚI!'
+    );
+    if (!confirmUnbind) return;
+
+    const deviceId = getDeviceFingerprint();
+    try {
+        const bridgeUrl = await getBridgeBaseUrl();
+        const res = await fetch(`${bridgeUrl}/api/unbind-device`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ license_key: key, device_id: deviceId })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            localStorage.removeItem('zerostudio_pro_license');
+            localStorage.removeItem('zerostudio_license_sig');
+            syncLicenseWithDisk('');
+            updateProHeaderBadge();
+            showToast('Đã hủy liên kết máy thành công! Bây giờ bạn có thể mang key sang máy mới.', 'success');
+            setTimeout(() => location.reload(), 1500);
+            return;
+        } else {
+            showToast(data.message || 'Không thể hủy liên kết!', 'error');
+        }
+    } catch (e) {
+        localStorage.removeItem('zerostudio_pro_license');
+        localStorage.removeItem('zerostudio_license_sig');
+        syncLicenseWithDisk('');
+        updateProHeaderBadge();
+        showToast('Đã đặt lại bản quyền trên máy này! Bạn có thể kích hoạt trên máy mới.', 'success');
+        setTimeout(() => location.reload(), 1500);
+    }
+};
+
 // ----------------------------------------------------
 // SHOWCASE THEATER VIDEO CONTROLS
 // ----------------------------------------------------
@@ -4075,6 +4120,23 @@ Tương thích hoàn hảo: <strong>Windows 10 & Windows 11 (64-bit)</strong>.`,
         actions: [
             { text: '📥 Tải Bộ Cài Đặt ZeroStudio-Setup.exe', func: "downloadAppExe()" },
             { text: '📦 Tải Trọn Gói Portable (.ZIP)', func: "downloadAppZip()" }
+        ]
+    },
+    {
+        id: 'unbind_device',
+        keywords: ['đổi máy', 'máy mới', 'chuyển máy', 'hủy liên kết', 'reset key', 'cài lại win', 'thay máy', 'máy hỏng'],
+        title: 'Hướng Dẫn Chuyển Bản Quyền Sang Máy Tính Mới',
+        response: `🔄 <strong>HƯỚNG DẪN CHUYỂN BẢN QUYỀN SANG MÁY TÍNH MỚI:</strong><br><br>
+1. <strong>Nếu bạn còn giữ máy tính cũ:</strong><br>
+   - Bấm nút <strong>"Hủy liên kết máy này"</strong> bên dưới.<br>
+   - Hệ thống sẽ giải phóng slot thiết bị của mã key đó.<br>
+   - Sau đó bạn sang máy tính mới, nhập lại mã key là kích hoạt được ngay lập tức!<br><br>
+2. <strong>Nếu máy cũ bị hỏng, mất hoặc đã bán:</strong><br>
+   - Bạn chỉ cần nhắn tin cho Admin hỗ trợ (qua Zalo/Telegram) kèm thông tin mua hàng hoặc mã đơn.<br>
+   - Admin sẽ hỗ trợ reset thiết bị cũ từ xa cho bạn chỉ trong 30 giây!`,
+        actions: [
+            { text: '🔄 Hủy Liên Kết Bản Quyền Máy Này', func: "unbindCurrentDevice()" },
+            { text: '💎 Xem Lại Thông Tin Bản Quyền', func: "openProModal('Kiểm tra bản quyền', 'pro')" }
         ]
     }
 ];
