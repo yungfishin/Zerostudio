@@ -1,16 +1,101 @@
 """
-ZeroStudio - Local High-Speed Video Bridge
+ZeroStudio - Local High-Speed Video Bridge & Cyber Defense Core
 Runs a lightweight, zero-log, zero-storage local micro-bridge on 127.0.0.1:8899.
 Uses yt-dlp to extract clean watermark-free video and audio streams for TikTok, Douyin, Reels, Shorts, etc.
+Equipped with Permanent IP Banning and Anti-Hack Perimeter Defense.
 """
 import sys
+import os
 import json
 import urllib.parse
+import subprocess
+import time
+import re
+from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 import yt_dlp
 
-PORT = 8899
+if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
+    try: sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception: pass
+if sys.stderr and hasattr(sys.stderr, 'reconfigure'):
+    try: sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception: pass
+
+PORT = 8900
+BANNED_IPS_FILE = Path.home() / '.zerostudio_banned_ips.json'
+
+MALICIOUS_PATTERNS = [
+    r'\.\./', r'\.\.\\', r'/etc/passwd', r'win\.ini', r'boot\.ini',
+    r'cmd\.exe', r'powershell', r'<script', r'javascript:',
+    r'union\s+select', r'xp_cmdshell', r'exec\s*\(', r'0x[0-9a-fA-F]{4,}',
+    r'%00', r'nullbyte'
+]
+
+def load_banned_ips():
+    if not BANNED_IPS_FILE.exists():
+        return {}
+    try:
+        return json.loads(BANNED_IPS_FILE.read_text(encoding='utf-8'))
+    except Exception:
+        return {}
+
+def save_banned_ip(ip, reason="Cố tình can thiệp hoặc tấn công hệ thống ZeroStudio", details=None):
+    bans = load_banned_ips()
+    now_iso = datetime.now().isoformat()
+    bans[ip] = {
+        "ip": ip,
+        "banned_at": now_iso,
+        "reason": reason,
+        "details": details or {}
+    }
+    try:
+        BANNED_IPS_FILE.write_text(json.dumps(bans, indent=2, ensure_ascii=False), encoding='utf-8')
+    except Exception as e:
+        print(f"[SECURITY] Error writing banned IP: {e}")
+    try:
+        print(f"[SECURITY ALERT] Permanently BANNED IP: {ip} | Reason: {reason.encode('ascii', errors='replace').decode()}")
+    except Exception:
+        pass
+    return bans[ip]
+
+def unban_ip(target_ip="all"):
+    bans = load_banned_ips()
+    if target_ip == "all":
+        bans = {}
+    elif target_ip in bans:
+        del bans[target_ip]
+    try:
+        BANNED_IPS_FILE.write_text(json.dumps(bans, indent=2, ensure_ascii=False), encoding='utf-8')
+        print(f"[SECURITY] Unbanned: {target_ip}")
+        return True
+    except Exception as e:
+        print(f"[SECURITY] Error unbanning: {e}")
+        return False
+
+def is_ip_banned(ip):
+    bans = load_banned_ips()
+    return ip in bans
+
+def scan_malicious_payload(text):
+    if not text:
+        return None
+    for pattern in MALICIOUS_PATTERNS:
+        if re.search(pattern, str(text), re.IGNORECASE):
+            return pattern
+    return None
+
+def get_client_ip(handler):
+    forwarded = handler.headers.get('X-Forwarded-For')
+    if forwarded:
+        return forwarded.split(',')[0].strip()
+    real_ip = handler.headers.get('X-Real-IP')
+    if real_ip:
+        return real_ip.strip()
+    if hasattr(handler, 'client_address') and handler.client_address:
+        return handler.client_address[0]
+    return '127.0.0.1'
 
 class VideoBridgeHandler(BaseHTTPRequestHandler):
     def _send_cors_headers(self):
@@ -23,16 +108,103 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
         self._send_cors_headers()
         self.end_headers()
 
+    def check_security_barrier(self, parsed, params, raw_body=None):
+        client_ip = get_client_ip(self)
+
+        # 1. EMERGENCY ADMIN RESCUE HATCH (ALWAYS OPEN TO ADMIN WITH PASSCODE)
+        if parsed.path == '/api/admin-unban':
+            secret = params.get('secret', [''])[0]
+            if secret == 'HIEU2026':
+                target_ip = params.get('ip', ['all'])[0]
+                unban_ip(target_ip)
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'unbanned': target_ip,
+                    'message': 'Admin Emergency Rescue Hatch đã gỡ lệnh khóa thành công!'
+                }).encode())
+                return True
+
+        # 2. CHECK IF IP IS ALREADY BANNED
+        if is_ip_banned(client_ip):
+            ban_info = load_banned_ips().get(client_ip, {})
+            self.send_response(403)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'error': 'ACCESS_DENIED_PERMANENT_BAN',
+                'message': 'Địa chỉ IP và Thiết bị của bạn đã bị KHÓA VĨNH VIỄN do cố tình can thiệp hoặc tấn công hệ thống ZeroStudio.',
+                'banned_ip': client_ip,
+                'ban_info': ban_info
+            }).encode())
+            return True
+
+        # 3. SCAN REQUEST FOR MALICIOUS ATTACK / FUZZING / PATH TRAVERSAL
+        payload_to_scan = self.path
+        if raw_body:
+            try:
+                payload_to_scan += " " + raw_body.decode('utf-8', errors='ignore')
+            except Exception:
+                pass
+        
+        detected_attack = scan_malicious_payload(payload_to_scan)
+        if detected_attack:
+            ban_info = save_banned_ip(client_ip, f"Tấn công Fuzzing / Injection / Path Traversal ({detected_attack})")
+            self.send_response(403)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'error': 'ACCESS_DENIED_PERMANENT_BAN',
+                'message': 'Địa chỉ IP của bạn đã bị KHÓA VĨNH VIỄN do phát hiện hành vi tấn công hệ thống.',
+                'banned_ip': client_ip,
+                'ban_info': ban_info
+            }).encode())
+            return True
+
+        return False
+
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         params = urllib.parse.parse_qs(parsed.query)
+
+        if self.check_security_barrier(parsed, params):
+            return
+
+        client_ip = get_client_ip(self)
 
         if parsed.path == '/api/ping':
             self.send_response(200)
             self._send_cors_headers()
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps({'status': 'ok', 'service': 'ZeroStudio Video Bridge', 'version': '1.0'}).encode())
+            self.wfile.write(json.dumps({'status': 'ok', 'service': 'ZeroStudio Video Bridge & Cyber Defense', 'version': '2.0'}).encode())
+            return
+
+        if parsed.path == '/api/my-ip':
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'client_ip': client_ip}).encode())
+            return
+
+        if parsed.path == '/api/banned-status':
+            banned = is_ip_banned(client_ip)
+            bans = load_banned_ips()
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'client_ip': client_ip,
+                'is_banned': banned,
+                'ban_info': bans.get(client_ip, None)
+            }).encode())
             return
 
         # ----------------------------------------------------
@@ -57,7 +229,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                     pass
 
             if key in REVOKED:
-                # Purge revoked keys immediately
                 try:
                     if license_file.exists(): license_file.unlink()
                 except Exception: pass
@@ -66,7 +237,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 except Exception: pass
                 key = None
 
-            # Always clean up repo-local license.key to prevent accidental upload to Netlify
             if license_file.exists():
                 try:
                     license_file.unlink()
@@ -110,7 +280,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                     thumbnail = info.get('thumbnail', '')
                     ext = info.get('ext', 'mp4')
 
-                    # Audio format
                     audio_url = None
                     if 'formats' in info:
                         audio_formats = [f for f in info['formats'] if f.get('vcodec') == 'none' and f.get('acodec') != 'none']
@@ -144,9 +313,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
             return
 
-        # ----------------------------------------------------
-        # PRO API 1: TIKTOK / DOUYIN FULL CHANNEL SCRAPER
-        # ----------------------------------------------------
         if parsed.path == '/api/channel-scrape':
             url = params.get('url', [None])[0]
             limit_str = params.get('limit', ['30'])[0]
@@ -183,7 +349,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                         v_id = entry.get('id') or f"vid_{idx+1}"
                         v_title = entry.get('title') or f"Video #{idx+1}"
                         
-                        # Normalize URL across TikTok, YouTube Shorts, Reels, Facebook
                         v_raw_url = entry.get('url') or entry.get('webpage_url')
                         if v_raw_url and str(v_raw_url).startswith('http'):
                             v_url = v_raw_url
@@ -200,7 +365,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                         v_dur = entry.get('duration') or 0
                         v_views = entry.get('view_count') or 0
                         if not v_views or v_views == 0:
-                            # Generate a realistic baseline count if platform hides views in flat list
                             v_views = 15000 + (abs(hash(v_id)) % 850000)
 
                         v_timestamp = entry.get('timestamp') or 0
@@ -261,10 +425,43 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
+        params = urllib.parse.parse_qs(parsed.query)
+
+        content_length = int(self.headers.get('Content-Length', 0))
+        post_data = self.rfile.read(content_length) if content_length > 0 else b''
+
+        if self.check_security_barrier(parsed, params, post_data):
+            return
+
+        client_ip = get_client_ip(self)
+
+        # ----------------------------------------------------
+        # PERMANENT BAN REPORTING FROM CLIENT DEFENSE SYSTEM
+        # ----------------------------------------------------
+        if parsed.path == '/api/report-hack':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+            except Exception:
+                data = {}
+            reason = data.get('reason', 'Cố tình tấn công Brute-force dò quét mã bản quyền')
+            fingerprint = data.get('fingerprint', 'unknown')
+            ban_info = save_banned_ip(client_ip, reason, {
+                'fingerprint': fingerprint,
+                'user_agent': self.headers.get('User-Agent', '')
+            })
+            self.send_response(403)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'success': False,
+                'banned': True,
+                'banned_ip': client_ip,
+                'ban_info': ban_info
+            }).encode())
+            return
 
         if parsed.path == '/api/save-license':
-            content_length = int(self.headers.get('Content-Length', 0))
-            post_data = self.rfile.read(content_length)
             REVOKED = {'ZERO-PRO-ADMIN-VIP-2026', 'ZERO-PRO-DEV-MASTER-9999', 'ZERO-PRO-VIP-PERMANENT', 'ZERO-PRO-8492-HIEU-9F2A'}
             try:
                 data = json.loads(post_data.decode('utf-8'))
@@ -285,7 +482,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                     except Exception:
                         pass
 
-                    # Clean up any local license.key in repo folder so it never gets uploaded to Netlify
                     license_file = Path(__file__).parent / 'license.key'
                     if license_file.exists():
                         try:
@@ -324,8 +520,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             return
 
         if parsed.path == '/api/batch-mmo':
-            content_length = int(self.headers.get('Content-Length', 0))
-            post_data = self.rfile.read(content_length)
             try:
                 data = json.loads(post_data.decode('utf-8'))
                 input_file = data.get('input_file', '')
@@ -347,7 +541,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 out_name = f"MMO_{input_path.stem}_{os.urandom(3).hex()}.mp4"
                 output_path = out_dir / out_name
 
-                # Build filter complex
                 filters = []
                 last_v = "0:v"
                 if auto_crop:
@@ -398,8 +591,21 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
 def run_server():
-    server = HTTPServer(('127.0.0.1', PORT), VideoBridgeHandler)
-    print(f"ZeroStudio Local Video Bridge active at http://127.0.0.1:{PORT}")
+    server = None
+    active_port = None
+    for p in [8900, 8901, 8899]:
+        try:
+            server = HTTPServer(('127.0.0.1', p), VideoBridgeHandler)
+            active_port = p
+            break
+        except OSError:
+            continue
+
+    if not server:
+        print("[ERROR] Could not bind to any bridge port (8899, 8900, 8901)")
+        sys.exit(1)
+
+    print(f"ZeroStudio Local Video Bridge & Cyber Defense Core active at http://127.0.0.1:{active_port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

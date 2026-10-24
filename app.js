@@ -42,6 +42,220 @@ const state = {
 };
 
 // ==========================================
+// ZEROSTUDIO CYBER DEFENSE & PERMANENT IP BAN SYSTEM
+// ==========================================
+let ACTIVE_BRIDGE_URL = 'http://127.0.0.1:8900';
+let failedLicenseAttempts = 0;
+let shieldClicks = 0;
+let shieldClickTimeout = null;
+
+async function getBridgeBaseUrl() {
+    for (const port of [8900, 8899]) {
+        try {
+            const res = await fetch(`http://127.0.0.1:${port}/api/ping`, { mode: 'cors', signal: AbortSignal.timeout(400) });
+            if (res.ok) {
+                ACTIVE_BRIDGE_URL = `http://127.0.0.1:${port}`;
+                return ACTIVE_BRIDGE_URL;
+            }
+        } catch {}
+    }
+    return ACTIVE_BRIDGE_URL;
+}
+
+function getDeviceFingerprint() {
+    let fp = null;
+    try { fp = localStorage.getItem('zerostudio_device_id'); } catch {}
+    if (!fp) {
+        const nav = window.navigator || {};
+        const scr = window.screen || {};
+        const raw = [
+            nav.userAgent || 'UA',
+            nav.language || 'vi',
+            scr.colorDepth || 24,
+            (scr.width || 1920) + 'x' + (scr.height || 1080),
+            new Date().getTimezoneOffset(),
+            nav.hardwareConcurrency || 4
+        ].join('###');
+        let hash = 0;
+        for (let i = 0; i < raw.length; i++) {
+            hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+            hash |= 0;
+        }
+        fp = 'DEV-SEC-' + Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
+        try { localStorage.setItem('zerostudio_device_id', fp); } catch {}
+    }
+    return fp;
+}
+
+function playCyberAlertSiren() {
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.2);
+        osc.frequency.exponentialRampToValueAtTime(320, ctx.currentTime + 0.4);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.6);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.85);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.9);
+    } catch {}
+}
+
+window.triggerPermanentLockdown = async function(reason, detectedIp) {
+    console.warn('[CYBER DEFENSE] Permanent Device & IP Lockdown Engaged: ' + reason);
+    const nowIso = new Date().toISOString().replace('T', ' ').slice(0, 19);
+    const fp = getDeviceFingerprint();
+
+    // 1. Triple-lock storage persistence
+    const banRecord = {
+        banned: true,
+        reason: reason || 'Phát hiện hành vi can thiệp hoặc tấn công hệ thống ZeroStudio',
+        timestamp: nowIso,
+        device_id: fp
+    };
+    try { localStorage.setItem('zerostudio_banned', JSON.stringify(banRecord)); } catch {}
+    try { sessionStorage.setItem('zerostudio_banned', JSON.stringify(banRecord)); } catch {}
+    try { document.cookie = 'zerostudio_banned=1; max-age=315360000; path=/'; } catch {}
+
+    // 2. Play warning sound
+    playCyberAlertSiren();
+
+    // 3. Resolve client IP
+    let clientIp = detectedIp || '127.0.0.1';
+    try {
+        const bridge = await getBridgeBaseUrl();
+        const ipRes = await fetch(`${bridge}/api/my-ip`, { signal: AbortSignal.timeout(800) });
+        const ipData = await ipRes.json();
+        if (ipData && ipData.client_ip) clientIp = ipData.client_ip;
+    } catch {}
+
+    // 4. Report to bridge to write disk blacklist
+    try {
+        const bridge = await getBridgeBaseUrl();
+        await fetch(`${bridge}/api/report-hack`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reason: banRecord.reason, fingerprint: fp })
+        });
+    } catch {}
+
+    // 5. Update UI Telemetry & Render Overlay
+    const overlay = document.getElementById('cyber-lockdown-overlay');
+    const ipEl = document.getElementById('lockdown-telemetry-ip');
+    const devEl = document.getElementById('lockdown-telemetry-device');
+    const timeEl = document.getElementById('lockdown-telemetry-time');
+    const reasonEl = document.getElementById('lockdown-telemetry-reason');
+
+    if (ipEl) ipEl.textContent = clientIp;
+    if (devEl) devEl.textContent = fp;
+    if (timeEl) timeEl.textContent = nowIso;
+    if (reasonEl) reasonEl.textContent = banRecord.reason;
+
+    if (overlay) {
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+    }
+};
+
+window.checkSecurityBanStatus = async function() {
+    // 1. Check local storage / session / cookie
+    let localBan = null;
+    try {
+        const raw = localStorage.getItem('zerostudio_banned');
+        if (raw) localBan = JSON.parse(raw);
+    } catch {}
+    if (!localBan) {
+        try {
+            const raw = sessionStorage.getItem('zerostudio_banned');
+            if (raw) localBan = JSON.parse(raw);
+        } catch {}
+    }
+    if (!localBan && document.cookie.includes('zerostudio_banned=1')) {
+        localBan = { banned: true, reason: 'Thiết bị đã bị ghi nhận trong Blacklist Cookie' };
+    }
+
+    if (localBan && localBan.banned) {
+        window.triggerPermanentLockdown(localBan.reason);
+        return true;
+    }
+
+    // 2. Check bridge server ban status
+    try {
+        const bridge = await getBridgeBaseUrl();
+        const res = await fetch(`${bridge}/api/banned-status`, { signal: AbortSignal.timeout(600) });
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.is_banned) {
+                window.triggerPermanentLockdown(data.ban_info?.reason || 'Địa chỉ IP của bạn bị khóa trên Máy chủ Bảo mật', data.client_ip);
+                return true;
+            }
+        }
+    } catch {}
+
+    return false;
+};
+
+// Immediately check ban status synchronously if possible
+try {
+    if (localStorage.getItem('zerostudio_banned') || document.cookie.includes('zerostudio_banned=1')) {
+        setTimeout(() => { window.checkSecurityBanStatus(); }, 50);
+    }
+} catch {}
+
+window.openAdminRescueHatch = async function() {
+    const passcode = prompt("🔐 XÁC THỰC BẢO MẬT ADMIN ZEROSTUDIO\n\nVui lòng nhập Mật mã Cứu hộ Khẩn cấp Admin:");
+    if (!passcode) return;
+
+    if (passcode.trim() === 'HIEU2026') {
+        try { localStorage.removeItem('zerostudio_banned'); } catch {}
+        try { sessionStorage.removeItem('zerostudio_banned'); } catch {}
+        try { document.cookie = 'zerostudio_banned=; max-age=0; path=/'; } catch {}
+        failedLicenseAttempts = 0;
+
+        try {
+            const bridge = await getBridgeBaseUrl();
+            await fetch(`${bridge}/api/admin-unban?secret=HIEU2026&ip=all`);
+        } catch {}
+
+        alert("✅ XÁC THỰC ADMIN THÀNH CÔNG!\n\nLệnh khóa đã được gỡ bỏ vĩnh viễn trên toàn hệ thống. Trang sẽ tự động khởi động lại.");
+        window.location.reload();
+    } else {
+        alert("❌ SAI MẬT MÃ ADMIN! Quyền truy cập bị từ chối.");
+    }
+};
+
+// Secret Shortcut Listener (Ctrl + Shift + Alt + B) & Shield Click Counter
+window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.altKey && (e.key === 'B' || e.key === 'b')) {
+        e.preventDefault();
+        window.openAdminRescueHatch();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const shieldTrigger = document.getElementById('cyber-shield-trigger');
+    if (shieldTrigger) {
+        shieldTrigger.addEventListener('click', () => {
+            shieldClicks++;
+            clearTimeout(shieldClickTimeout);
+            if (shieldClicks >= 5) {
+                shieldClicks = 0;
+                window.openAdminRescueHatch();
+            } else {
+                shieldClickTimeout = setTimeout(() => { shieldClicks = 0; }, 3000);
+            }
+        });
+    }
+});
+
+// ==========================================
 // PRO LICENSE VERIFICATION & STRICT PAYWALL
 // ==========================================
 const REVOKED_KEYS = [
@@ -830,15 +1044,23 @@ function initVideoStudio() {
     initUrlInputDetector();
 }
 
-function checkBridgeStatus() {
+async function checkBridgeStatus() {
     const statusText = document.getElementById('bridge-status-text');
     const dot = document.getElementById('bridge-dot');
+    const bridgeUrl = await getBridgeBaseUrl();
 
-    fetch('http://127.0.0.1:8899/api/ping', { mode: 'cors' })
-        .then(r => r.json())
+    fetch(`${bridgeUrl}/api/ping`, { mode: 'cors' })
+        .then(async r => {
+            if (r.status === 403) {
+                const errData = await r.json();
+                window.triggerPermanentLockdown(errData.message || 'Địa chỉ IP bị khóa trong Blacklist', errData.banned_ip);
+                return;
+            }
+            return r.json();
+        })
         .then(data => {
             if (data && data.status === 'ok') {
-                if (statusText) statusText.innerText = 'Local Video Bridge: Đang hoạt động (yt-dlp v2026.10, Zero-Log)';
+                if (statusText) statusText.innerText = `Local Video Bridge & Cyber Defense: Đang hoạt động (${data.version || 'v2.0'})`;
                 if (statusText) statusText.style.color = '#34d399';
                 if (dot) dot.style.background = '#10b981';
             }
@@ -984,7 +1206,14 @@ window.resolveVideo = async function() {
 
         // Try local high-speed bridge first
         try {
-            const bridgeRes = await fetch(`http://127.0.0.1:8899/api/resolve?url=${encodeURIComponent(url)}`, { mode: 'cors' });
+            const bridgeUrl = await getBridgeBaseUrl();
+            const bridgeRes = await fetch(`${bridgeUrl}/api/resolve?url=${encodeURIComponent(url)}`, { mode: 'cors' });
+            if (bridgeRes.status === 403) {
+                const errData = await bridgeRes.json();
+                window.triggerPermanentLockdown(errData.message || 'IP bị khóa bởi máy chủ bảo mật', errData.banned_ip);
+                hideLoading();
+                return;
+            }
             if (bridgeRes.ok) {
                 const data = await bridgeRes.json();
                 if (data.success && data.video_url) {
@@ -1496,7 +1725,14 @@ window.startScrapeChannel = async function() {
 
         // Try local video bridge first
         try {
-            const bridgeRes = await fetch(`http://127.0.0.1:8899/api/channel-scrape?url=${encodeURIComponent(url)}&limit=${state.channelLimit}`, { signal: AbortSignal.timeout(15000) });
+            const bridgeUrl = await getBridgeBaseUrl();
+            const bridgeRes = await fetch(`${bridgeUrl}/api/channel-scrape?url=${encodeURIComponent(url)}&limit=${state.channelLimit}`, { signal: AbortSignal.timeout(15000) });
+            if (bridgeRes.status === 403) {
+                const errData = await bridgeRes.json();
+                window.triggerPermanentLockdown(errData.message || 'IP bị khóa bởi máy chủ bảo mật', errData.banned_ip);
+                hideLoading();
+                return;
+            }
             if (bridgeRes.ok) {
                 const json = await bridgeRes.json();
                 if (json.success && json.videos && json.videos.length > 0) {
@@ -2497,11 +2733,12 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
 }
 
 window.setTestTier = async function(tier) {
+    const bridgeUrl = await getBridgeBaseUrl();
     if (tier === 'free') {
         localStorage.setItem('zerostudio_test_tier', 'free');
         localStorage.removeItem('zerostudio_pro_license');
         try {
-            await fetch('http://127.0.0.1:8899/api/delete-license', { method: 'POST' });
+            await fetch(`${bridgeUrl}/api/delete-license`, { method: 'POST' });
         } catch {}
         updateProHeaderBadge();
         closeProModal();
@@ -2518,7 +2755,7 @@ window.setTestTier = async function(tier) {
         localStorage.removeItem('zerostudio_test_tier');
         localStorage.setItem('zerostudio_pro_license', 'ZERO-PRO-HIEU-MASTER-2026-SECURE');
         try {
-            await fetch('http://127.0.0.1:8899/api/save-license', {
+            await fetch(`${bridgeUrl}/api/save-license`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ license_key: 'ZERO-PRO-HIEU-MASTER-2026-SECURE' })
@@ -2581,19 +2818,38 @@ window.activateLicenseKey = function() {
         return;
     }
 
-    if (REVOKED_KEYS.includes(key)) {
-        showToast('CẢNH BÁO: Mã bản quyền này đã bị THU HỒI / VÔ HIỆU HÓA do bị rò rỉ công khai!', 'error');
+    // Malicious Attack / Injection detection
+    if (key.includes('<SCRIPT') || key.includes("' OR ") || key.includes('../') || key.includes('SELECT ') || key.includes('UNION ')) {
+        window.triggerPermanentLockdown('Phát hiện Payload tấn công Injection / XSS trong ô mã kích hoạt');
         return;
     }
 
-    if (key.startsWith('ZERO-PRO-') && key.length >= 14) {
+    if (REVOKED_KEYS.includes(key)) {
+        failedLicenseAttempts++;
+        if (failedLicenseAttempts >= 5) {
+            window.triggerPermanentLockdown('Cố tình tấn công Brute-force mã bản quyền thu hồi (5 lần thất bại)');
+            return;
+        }
+        showToast(`CẢNH BÁO: Mã này đã bị THU HỒI! Thử sai (${failedLicenseAttempts}/5). Sai 5 lần sẽ bị KHÓA VĨNH VIỄN!`, 'error');
+        return;
+    }
+
+    if ((key.startsWith('ZERO-PRO-') || key.startsWith('ZERO-ULTRA-')) && key.length >= 14) {
+        failedLicenseAttempts = 0;
+        const tier = (key.startsWith('ZERO-ULTRA-') || key.includes('MASTER') || key.includes('ADMIN')) ? 'Ultra' : 'Pro';
         localStorage.setItem('zerostudio_pro_license', key);
+        localStorage.removeItem('zerostudio_test_tier');
         syncLicenseWithDisk(key);
-        showToast('CHÚC MỪNG: Bạn đã kích hoạt thành công ZeroStudio Desktop Pro vĩnh viễn!', 'success');
+        showToast(`CHÚC MỪNG: Bạn đã kích hoạt thành công ZeroStudio Desktop ${tier} vĩnh viễn!`, 'success');
         updateProHeaderBadge();
         setTimeout(() => closeProModal(), 1500);
     } else {
-        showToast('Mã bản quyền không hợp lệ. Vui lòng kiểm tra lại định dạng: ZERO-PRO-XXXX-XXXX', 'error');
+        failedLicenseAttempts++;
+        if (failedLicenseAttempts >= 5) {
+            window.triggerPermanentLockdown('Cố tình tấn công Brute-force dò quét mã bản quyền (5 lần thất bại)');
+            return;
+        }
+        showToast(`Mã không hợp lệ! Thử sai (${failedLicenseAttempts}/5). Cảnh báo: Sai 5 lần sẽ bị KHÓA THIẾT BỊ VĨNH VIỄN!`, 'error');
     }
 };
 
@@ -2601,9 +2857,10 @@ window.activateLicenseKey = function() {
 // TRIPLE-LOCK PERMANENT LICENSE SYNC
 // ==========================================
 async function syncLicenseWithDisk(key) {
-    if (!key || !key.startsWith('ZERO-PRO-') || REVOKED_KEYS.includes(key.trim().toUpperCase())) return;
+    if (!key || (!key.startsWith('ZERO-PRO-') && !key.startsWith('ZERO-ULTRA-')) || REVOKED_KEYS.includes(key.trim().toUpperCase())) return;
     try {
-        await fetch('http://127.0.0.1:8899/api/save-license', {
+        const bridgeUrl = await getBridgeBaseUrl();
+        await fetch(`${bridgeUrl}/api/save-license`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ license_key: key })
@@ -2627,7 +2884,13 @@ async function loadPermanentDiskLicense() {
 
     // 1. Check local bridge on disk first (survives browser cache wipes)
     try {
-        const res = await fetch('http://127.0.0.1:8899/api/license', { signal: AbortSignal.timeout(1200) });
+        const bridgeUrl = await getBridgeBaseUrl();
+        const res = await fetch(`${bridgeUrl}/api/license`, { signal: AbortSignal.timeout(1200) });
+        if (res.status === 403) {
+            const errData = await res.json();
+            window.triggerPermanentLockdown(errData.message || 'IP bị khóa bởi máy chủ', errData.banned_ip);
+            return;
+        }
         if (res.ok) {
             const data = await res.json();
             if (data.has_license && data.license_key && !REVOKED_KEYS.includes(data.license_key.trim().toUpperCase())) {
@@ -2643,6 +2906,8 @@ async function loadPermanentDiskLicense() {
     if (localKey && (localKey.startsWith('ZERO-PRO-') || localKey.startsWith('ZERO-ULTRA-')) && !REVOKED_KEYS.includes(localKey.trim().toUpperCase())) {
         updateProHeaderBadge();
         syncLicenseWithDisk(localKey);
+    } else {
+        updateProHeaderBadge();
     }
 }
 
@@ -2966,7 +3231,8 @@ async function processBatchItem(item, index) {
         const cleanSub = document.getElementById('mmo-recipe-clean-sub')?.checked;
 
         if (item.type === 'file' && item.fileObj && item.fileObj.path) {
-            const res = await fetch('http://127.0.0.1:8899/api/batch-mmo', {
+            const bridgeUrl = await getBridgeBaseUrl();
+            const res = await fetch(`${bridgeUrl}/api/batch-mmo`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -3603,6 +3603,168 @@
             color: #ffffff;
             transform: translateY(-1px);
         }
+
+        /* ========================================================
+           CYBER SECURITY PERMANENT BAN LOCKDOWN SYSTEM
+           ======================================================== */
+        .cyber-lockdown-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a0507 0%, #080102 60%, #000000 100%);
+            z-index: 99999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: #ffffff;
+            padding: 24px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .cyber-lockdown-wrap.active {
+            display: flex;
+        }
+        .cyber-lockdown-card {
+            background: rgba(22, 6, 8, 0.94);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            border-radius: 24px;
+            box-shadow: 0 0 80px rgba(239, 68, 68, 0.28), 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            width: 100%;
+            max-width: 680px;
+            padding: 44px 36px;
+            text-align: center;
+            backdrop-filter: blur(24px);
+            position: relative;
+            overflow: hidden;
+        }
+        .cyber-lockdown-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444, #f97316, #dc2626);
+            box-shadow: 0 0 16px #ef4444;
+        }
+        .cyber-lockdown-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .cyber-shield-icon-wrap {
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 20px;
+            border-radius: 24px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.05) 70%);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+        .cyber-shield-icon-wrap:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 24px rgba(239, 68, 68, 0.5);
+        }
+        .cyber-shield-icon-wrap svg {
+            width: 44px;
+            height: 44px;
+            fill: none;
+            stroke: #ef4444;
+            stroke-width: 1.8;
+            filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));
+            animation: cyberPulse 2s infinite ease-in-out;
+        }
+        @keyframes cyberPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.75; transform: scale(0.96); }
+        }
+        .cyber-lockdown-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fee2e2;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .cyber-lockdown-sub {
+            font-size: 14px;
+            color: #f87171;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+        .cyber-telemetry-box {
+            background: rgba(10, 2, 3, 0.85);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 16px;
+            padding: 18px 20px;
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .cyber-telemetry-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(239, 68, 68, 0.15);
+            padding-bottom: 8px;
+        }
+        .cyber-telemetry-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .cyber-telemetry-label {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .cyber-telemetry-val {
+            color: #f87171;
+            font-weight: 700;
+        }
+        .cyber-telemetry-val.highlight {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .cyber-admin-rescue-btn {
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #94a3b8;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cyber-admin-rescue-btn:hover {
+            color: #ffffff;
+            border-color: rgba(239, 68, 68, 0.8);
+            background: rgba(239, 68, 68, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -5268,6 +5430,59 @@
             });
         });
     </script>
+    <!-- ========================================================
+         CYBER SECURITY PERMANENT BAN LOCKDOWN OVERLAY
+         ======================================================== -->
+    <div id="cyber-lockdown-overlay" class="cyber-lockdown-wrap" role="alertdialog" aria-modal="true" aria-hidden="true">
+        <div class="cyber-lockdown-card">
+            <div class="cyber-lockdown-badge">
+                <span style="width:8px; height:8px; border-radius:50%; background:#ef4444; box-shadow:0 0 8px #ef4444; display:inline-block;"></span>
+                Hệ Thống Phòng Thủ An Ninh Mạng ZeroStudio
+            </div>
+            
+            <div class="cyber-shield-icon-wrap" id="cyber-shield-trigger" title="Nhấp 5 lần để kích hoạt Khóa Cứu Hộ Khẩn Cấp Admin">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    <circle cx="12" cy="16.5" r="1" fill="#ef4444" />
+                </svg>
+            </div>
+
+            <h1 class="cyber-lockdown-title">TRUY CẬP BỊ TỪ CHỐI - ĐÃ KHÓA VĨNH VIỄN</h1>
+            <p class="cyber-lockdown-sub">
+                Hệ thống bảo mật phát hiện hành vi cố tình can thiệp trái phép, tấn công mã nguồn hoặc dò quét bản quyền hệ thống ZeroStudio. Địa chỉ IP và ID thiết bị của bạn đã bị đưa vào Danh Sách Đen Vĩnh Viễn.
+            </p>
+
+            <div class="cyber-telemetry-box">
+                <div class="cyber-telemetry-row">
+                    <span class="cyber-telemetry-label">IP Address:</span>
+                    <span class="cyber-telemetry-val highlight" id="lockdown-telemetry-ip">127.0.0.1</span>
+                </div>
+                <div class="cyber-telemetry-row">
+                    <span class="cyber-telemetry-label">Device Fingerprint:</span>
+                    <span class="cyber-telemetry-val" id="lockdown-telemetry-device">DEV-SEC-XXXX</span>
+                </div>
+                <div class="cyber-telemetry-row">
+                    <span class="cyber-telemetry-label">Thời điểm khóa:</span>
+                    <span class="cyber-telemetry-val" id="lockdown-telemetry-time">2026-10-24 20:45:00</span>
+                </div>
+                <div class="cyber-telemetry-row">
+                    <span class="cyber-telemetry-label">Lý do vi phạm:</span>
+                    <span class="cyber-telemetry-val highlight" id="lockdown-telemetry-reason">Cố tình tấn công Brute-force mã bản quyền</span>
+                </div>
+                <div class="cyber-telemetry-row">
+                    <span class="cyber-telemetry-label">Trạng thái bảo mật:</span>
+                    <span class="cyber-telemetry-val highlight" style="color:#ef4444;">BLACKLISTED (PERMANENT)</span>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:center; align-items:center; gap:16px;">
+                <button type="button" class="cyber-admin-rescue-btn" onclick="openAdminRescueHatch()">
+                    <span style="opacity:0.6;">[Phím tắt: Ctrl + Shift + Alt + B]</span> Mở Khóa Cứu Hộ Admin
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="./app.js"></script>
 </body>
 </html>
