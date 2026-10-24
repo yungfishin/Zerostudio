@@ -2068,6 +2068,10 @@ window.openProModal = function(reason) {
             if (successView) successView.style.display = 'block';
             if (pricingView) pricingView.style.display = 'none';
             if (checkoutView) checkoutView.style.display = 'none';
+            const titleEl = document.getElementById('pro-success-title');
+            if (titleEl) titleEl.textContent = "BẢN QUYỀN PRO ĐÃ KÍCH HOẠT";
+            const descEl = document.getElementById('pro-success-desc');
+            if (descEl) descEl.textContent = "Thiết bị của bạn đang sử dụng gói ZeroStudio Pro vĩnh viễn.";
             const issuedKeyEl = document.getElementById('issued-license-key');
             if (issuedKeyEl) issuedKeyEl.textContent = savedKey;
         } else {
@@ -2232,6 +2236,11 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
     const issuedKeyEl = document.getElementById('issued-license-key');
     if (issuedKeyEl) issuedKeyEl.textContent = licenseKey;
 
+    const titleEl = document.getElementById('pro-success-title');
+    if (titleEl) titleEl.textContent = "THANH TOÁN THÀNH CÔNG!";
+    const descEl = document.getElementById('pro-success-desc');
+    if (descEl) descEl.textContent = "Cảm ơn bạn đã nâng cấp ZeroStudio Desktop Pro. Khóa bản quyền vĩnh viễn đã được tạo và tự động kích hoạt trên thiết bị này!";
+
     const pricingView = document.getElementById('pro-view-pricing');
     const checkoutView = document.getElementById('pro-view-checkout');
     const successView = document.getElementById('pro-view-success');
@@ -2242,6 +2251,18 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
     updateProHeaderBadge();
     showToast("XÁC THỰC THÀNH CÔNG! Đã nhận đủ 299.000đ từ MB Bank. Bản Pro đã kích hoạt vĩnh viễn!", "success");
 }
+
+window.deactivateProToFree = async function() {
+    localStorage.removeItem('zerostudio_pro_license');
+    try {
+        await fetch('http://127.0.0.1:8899/api/delete-license', { method: 'POST' });
+    } catch {}
+    closeProModal();
+    showToast('Đã chuyển về bản FREE! Trình duyệt đang tải lại...', 'info');
+    setTimeout(() => {
+        window.location.reload();
+    }, 500);
+};
 
 window.copyPaymentField = function(text, label) {
     if (navigator.clipboard && navigator.clipboard.writeText) {

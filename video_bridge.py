@@ -217,6 +217,22 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({'success': False, 'error': f'Lỗi quét kênh: {str(e)}'}).encode())
             return
 
+        if parsed.path == '/api/delete-license':
+            user_license_file = Path.home() / '.zerostudio_license'
+            license_file = Path(__file__).parent / 'license.key'
+            try:
+                if user_license_file.exists(): user_license_file.unlink()
+            except Exception: pass
+            try:
+                if license_file.exists(): license_file.unlink()
+            except Exception: pass
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'success': True, 'deleted': True}).encode())
+            return
+
         self.send_response(404)
         self.end_headers()
 
@@ -267,6 +283,22 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
                 return
+
+        if parsed.path == '/api/delete-license':
+            user_license_file = Path.home() / '.zerostudio_license'
+            license_file = Path(__file__).parent / 'license.key'
+            try:
+                if user_license_file.exists(): user_license_file.unlink()
+            except Exception: pass
+            try:
+                if license_file.exists(): license_file.unlink()
+            except Exception: pass
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'success': True, 'deleted': True}).encode())
+            return
 
         self.send_response(404)
         self.end_headers()
