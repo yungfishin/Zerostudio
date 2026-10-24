@@ -2737,6 +2737,9 @@ window.openVietQrCheckout = function(tier = 'pro') {
         };
     }
 
+    const modal = document.getElementById('pro-modal');
+    if (modal) modal.style.display = 'flex';
+
     const pricingView = document.getElementById('pro-view-pricing');
     const checkoutView = document.getElementById('pro-view-checkout');
     const successView = document.getElementById('pro-view-success');
@@ -4125,10 +4128,29 @@ const ZEROAI_KB = [
 1. Bấm nút <strong>"Quét VietQR Mở Khóa"</strong> bên dưới.<br>
 2. Mở ứng dụng ngân hàng bất kỳ (MB Bank, Vietcombank, Techcombank, ViettelPay, Momo...).<br>
 3. Quét mã QR hiển thị trên màn hình (Hệ thống tự động điền STK: <strong>9704229209755632403</strong>, MB Bank và cú pháp đơn hàng).<br>
-4. Sau khi chuyển, hệ thống xác thực tức thì trong 3-5 giây và mở khóa bản quyền vĩnh viễn trên máy của bạn!`,
+4. Sau khi chuyển, hệ thống xác thực tức thì trong 3-5 giây và mở khóa bản quyền vĩnh viễn trên máy của bạn!<br><br>
+<em>Nếu cần kích hoạt thủ công gấp, vui lòng nhắn Zalo Admin: <strong>0962.876.139</strong>.</em>`,
         actions: [
             { text: '💳 Mở Cửa Sổ Quét VietQR Pro (299k)', func: "openVietQrCheckout('pro')" },
-            { text: '👑 Mở Cửa Sổ Quét VietQR Ultra (699k)', func: "openVietQrCheckout('ultra')" }
+            { text: '👑 Mở Cửa Sổ Quét VietQR Ultra (699k)', func: "openVietQrCheckout('ultra')" },
+            { text: '💬 Nhắn Zalo Admin (0962.876.139)', func: "window.open('https://zalo.me/0962876139', '_blank')" }
+        ]
+    },
+    {
+        id: 'contact_admin',
+        keywords: ['zalo', 'admin', 'liên hệ', 'hotline', 'sđt', 'số điện thoại', 'gặp admin', 'hỗ trợ gấp', 'tổng đài', 'cần hỗ trợ', 'tư vấn viên', 'kết nối', '0962876139', '0962.876.139', 'chủ shop'],
+        title: 'Hotline / Zalo Admin Trực Tiếp 24/7',
+        response: `💬 <strong>KÊNH HỖ TRỢ TRỰC TIẾP TỪ ADMIN ZEROSTUDIO (24/7):</strong><br><br>` +
+            `• <strong>Hotline / Zalo Admin:</strong> <span style="color: #60a5fa; font-weight: 800; font-size: 1.05rem;">0962.876.139</span><br>` +
+            `• <strong>Thời gian phản hồi:</strong> Thường dưới 60 giây (luôn online hỗ trợ).<br>` +
+            `• <strong>Hỗ trợ toàn diện:</strong><br>` +
+            `  - Cấp mã bản quyền Pro / Ultra ngay sau khi chuyển khoản.<br>` +
+            `  - Hỗ trợ đổi thiết bị / reset bản quyền khi đổi máy tính mới hoặc cài lại Win.<br>` +
+            `  - Hỗ trợ kỹ thuật UltraViewer / AnyDesk từ xa không thu phí.<br>` +
+            `  - Tư vấn chiến lược kéo traffic và xây kênh MMO thực chiến.`,
+        actions: [
+            { text: '💬 Nhắn Zalo Admin Ngay (0962.876.139)', func: "window.open('https://zalo.me/0962876139', '_blank')" },
+            { text: '💳 Mở Cửa Sổ Nâng Cấp Pro (299k)', func: "openVietQrCheckout('pro')" }
         ]
     },
     {
@@ -4174,6 +4196,7 @@ Tương thích hoàn hảo: <strong>Windows 10 & Windows 11 (64-bit)</strong>.`,
    - Admin sẽ hỗ trợ reset thiết bị cũ từ xa cho bạn chỉ trong 30 giây!`,
         actions: [
             { text: '🔄 Hủy Liên Kết Bản Quyền Máy Này', func: "unbindCurrentDevice()" },
+            { text: '💬 Nhắn Zalo Admin Đổi Máy (0962.876.139)', func: "window.open('https://zalo.me/0962876139', '_blank')" },
             { text: '💎 Xem Lại Thông Tin Bản Quyền', func: "openProModal('Kiểm tra bản quyền', 'pro')" }
         ]
     }
@@ -4412,7 +4435,7 @@ function matchOfflineIntent(text) {
         actions: [
             { text: '🚀 Mở Tab Auto-Crop 9:16 & MMO', func: "switchStudioTab('video')" },
             { text: '✂ Mở Tab Tách Nền & Quét Chữ OCR', func: "switchStudioTab('ai-office')" },
-            { text: '💎 Xem Bảng Giá Gói Pro & Ultra', func: "handleZeroAIQuickPrompt('So sánh gói Pro và gói Ultra MMO')" }
+            { text: '💬 Nhắn Zalo Admin (0962.876.139)', func: "window.open('https://zalo.me/0962876139', '_blank')" }
         ]
     };
 }
@@ -4420,6 +4443,9 @@ function matchOfflineIntent(text) {
 function detectContextActions(combinedText) {
     const text = combinedText.toLowerCase();
     const actions = [];
+    if (text.includes('zalo') || text.includes('admin') || text.includes('liên hệ') || text.includes('hotline') || text.includes('gấp') || text.includes('0962876139')) {
+        actions.push({ text: '💬 Nhắn Zalo Admin (0962.876.139)', func: "window.open('https://zalo.me/0962876139', '_blank')" });
+    }
     if (text.includes('video') || text.includes('crop') || text.includes('mmo') || text.includes('bản quyền')) {
         actions.push({ text: '🚀 Mở Tab Auto-Crop & MMO', func: "switchStudioTab('video')" });
     }
