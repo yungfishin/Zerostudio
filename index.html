@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroPDF • Cybernetic Zero-Knowledge PDF & AI Studio</title>
+    <meta name="description" content="Nền tảng xử lý PDF & AI Phóng to 4K bảo mật tuyệt đối kiến trúc Bento Grid & WebAssembly 100% Client-Side.">
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Local Core Libraries (100% Offline) -->
+    <script src="./libs/gsap.min.js"></script>
+    <script src="./libs/pdf-lib.min.js"></script>
+    <script src="./libs/pdf.min.js"></script>
+    <style>
+        :root {
+            --bg-void: #050608;
+            --bg-surface: #0a0c10;
+            --bg-card: rgba(14, 17, 23, 0.65);
+            --bg-card-hover: rgba(20, 25, 36, 0.85);
+            
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(255, 255, 255, 0.16);
+            --border-glow: rgba(99, 102, 241, 0.5);
+            
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            
+            --cyan: #06b6d4;
+            --cyan-glow: rgba(6, 182, 212, 0.4);
+            
+            --emerald: #10b981;
+            --emerald-glow: rgba(16, 185, 129, 0.35);
+            
+            --rose: #f43f5e;
+            
+            --text-heading: #ffffff;
+            --text-sub: #94a3b8;
+            --text-muted: #64748b;
+            
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-heading);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 1. Cybernetic Blueprint Dotted Grid */
+        .blueprint-grid {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 100%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        /* 2. Floating Aurora Mesh Orbs */
+        .aurora-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 700px;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .aurora-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.35;
+            animation: float-orb 14s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+            top: -150px;
+            left: 20%;
+        }
+
+        .orb-2 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+            top: -100px;
+            right: 15%;
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+            top: 150px;
+            left: 45%;
+            animation-duration: 20s;
+            animation-delay: -8s;
+            opacity: 0.2;
+        }
+
+        @keyframes float-orb {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, 30px) scale(1.1); }
+            100% { transform: translate(-30px, -20px) scale(0.95); }
+        }
+
+        /* 3. Navigation Bar (Frosted Obsidian) */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(6, 8, 12, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 0.85rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+        }
+
+        .brand-gem {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            position: relative;
+        }
+
+        .brand-gem::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: rgba(10, 12, 16, 0.4);
+            border-radius: 9px;
+        }
+
+        .brand-gem svg {
+            width: 19px;
+            height: 19px;
+            color: #ffffff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .brand-version {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-muted);
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        /* Live Zero-Knowledge Badge */
+        .zk-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .zk-badge:hover {
+            background: rgba(16, 185, 129, 0.16);
+            border-color: rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px var(--emerald-glow);
+        }
+
+        .zk-led {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--emerald);
+            box-shadow: 0 0 10px var(--emerald);
+            animation: pulse-emerald 2s infinite;
+        }
+
+        @keyframes pulse-emerald {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .zk-text {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #6ee7b7;
+            letter-spacing: 0.02em;
+        }
+
+        /* 4. Bento Hero Area */
+        .hero-bento {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 3.5rem 1.5rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass);
+            padding: 5px 14px;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #c7d2fe;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-bento h1 {
+            font-size: 3.25rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            line-height: 1.1;
+            margin-bottom: 1.15rem;
+            background: linear-gradient(180deg, #ffffff 40%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-bento p {
+            color: var(--text-sub);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 5. Webflow Style Bento Switcher (4 Tabs) */
+        .bento-nav-wrap {
+            display: inline-flex;
+            background: rgba(14, 18, 25, 0.85);
+            border: 1px solid var(--border-glass);
+            padding: 5px;
+            border-radius: 16px;
+            gap: 5px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+            position: relative;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .bento-nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 18px;
+            border-radius: 11px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .bento-nav-btn svg {
+            width: 16px;
+            height: 16px;
+            transition: color 0.2s;
+        }
+
+        .bento-nav-btn:hover {
+            color: #ffffff;
+        }
+
+        .bento-nav-btn.active {
+            color: #ffffff;
+            background: rgba(30, 38, 54, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .bento-nav-btn.active svg {
+            color: var(--primary-light);
+        }
+
+        .bento-nav-btn.btn-sparkle.active svg {
+            color: #06b6d4;
+        }
+
+        /* 6. Main Container with Bento Spotlight Cards */
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 980px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 1.5rem 5rem;
+            flex: 1;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: bento-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes bento-in {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Magnetic Spotlight Bento Stage */
+        .bento-spotlight {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: 28px;
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .bento-spotlight::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(99, 102, 241, 0.12),
+                transparent 70%
+            );
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .bento-spotlight:hover::before {
+            opacity: 1;
+        }
+
+        .bento-spotlight:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        /* Tactical Drop Stage */
+        .drop-stage {
+            padding: 4.5rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Pulsing Radar Rings */
+        .radar-rings {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .radar-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .circle-1 { width: 100%; height: 100%; }
+        .circle-2 { width: 140%; height: 140%; border-color: rgba(99, 102, 241, 0.12); }
+        .circle-3 { width: 180%; height: 180%; border-color: rgba(99, 102, 241, 0.05); }
+
+        .drop-stage:hover .circle-1 { transform: scale(1.08); border-color: var(--primary); }
+        .drop-stage:hover .circle-2 { transform: scale(1.05); border-color: rgba(99, 102, 241, 0.25); }
+
+        .radar-center {
+            width: 52px;
+            height: 52px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.15));
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 3;
+            box-shadow: 0 4px 18px var(--primary-glow);
+            transition: transform 0.25s;
+        }
+
+        .drop-stage:hover .radar-center {
+            transform: scale(1.1);
+        }
+
+        .radar-center svg {
+            width: 24px;
+            height: 24px;
+            color: #818cf8;
+        }
+
+        .stage-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-heading);
+            margin-bottom: 0.35rem;
+        }
+
+        .stage-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.75rem;
+        }
+
+        /* Shimmer Button */
+        .shimmer-button {
+            position: relative;
+            background: #ffffff;
+            color: #050608;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 9999px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .shimmer-button:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.35);
+        }
+
+        .shimmer-button:active {
+            transform: scale(0.98);
+        }
+
+        /* 7. File Items (Linear Card List) */
+        .card-stack {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .stack-item {
+            background: rgba(14, 18, 26, 0.8);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 0.9rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .stack-item:hover {
+            background: rgba(22, 28, 42, 0.95);
+            border-color: var(--border-highlight);
+            transform: translateY(-1px);
+        }
+
+        .stack-item-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stack-item-icon svg {
+            width: 19px;
+            height: 19px;
+            color: #fb7185;
+        }
+
+        .stack-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stack-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stack-badges {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 3px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .stack-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        .ctrl-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass);
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .ctrl-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .ctrl-btn:hover:not(:disabled) {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-highlight);
+        }
+
+        .ctrl-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        .ctrl-btn.btn-delete:hover {
+            color: #f43f5e;
+            background: rgba(244, 63, 94, 0.15);
+            border-color: rgba(244, 63, 94, 0.35);
+        }
+
+        /* 8. Tactical Command Bar (Bottom Actions) */
+        .command-bar {
+            margin-top: 1.5rem;
+            background: rgba(14, 18, 26, 0.9);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 1.15rem 1.6rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .command-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-sub);
+        }
+
+        .command-btns {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-glass);
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-highlight);
+        }
+
+        .btn-glow-action {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 11px 24px;
+            border-radius: 11px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-glow-action svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-glow-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 28px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-glow-action:active {
+            transform: scale(0.98);
+        }
+
+        /* 9. Matrix Page Grid (Split & Extract) */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .matrix-tile {
+            background: rgba(14, 18, 26, 0.85);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 0.65rem;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .matrix-tile:hover {
+            border-color: var(--border-highlight);
+            transform: translateY(-2px);
+        }
+
+        .matrix-tile.selected {
+            border-color: var(--primary-light);
+            background: rgba(99, 102, 241, 0.09);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
+        }
+
+        .tile-pill-num {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(5, 6, 8, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            z-index: 5;
+        }
+
+        .tile-check-ring {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 19px;
+            height: 19px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border-highlight);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(5, 6, 8, 0.6);
+            z-index: 5;
+            transition: all 0.2s;
+        }
+
+        .matrix-tile.selected .tile-check-ring {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .tile-check-ring svg {
+            width: 11px;
+            height: 11px;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .matrix-tile.selected .tile-check-ring svg {
+            opacity: 1;
+        }
+
+        .tile-viewport {
+            width: 100%;
+            height: 190px;
+            background: #ffffff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: transform 0.25s ease;
+        }
+
+        .tile-viewport img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .tile-footer {
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .btn-tile-tool {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-muted);
+            border-radius: 6px;
+            padding: 3px 9px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+        }
+
+        .btn-tile-tool:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-tile-tool svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* 10. Images Grid */
+        .images-bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .img-pod {
+            background: rgba(14, 18, 26, 0.85);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 0.65rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .img-pod img {
+            width: 100%;
+            height: 135px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .img-pod-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0 4px;
+        }
+
+        /* 11. AI 4K Upscale Studio Styles */
+        .upscale-options-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ratio-pill-group {
+            display: inline-flex;
+            background: rgba(14, 18, 26, 0.9);
+            border: 1px solid var(--border-glass);
+            padding: 4px;
+            border-radius: 12px;
+            gap: 4px;
+        }
+
+        .upscale-ratio-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upscale-ratio-btn.active {
+            background: #6366f1;
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+        }
+
+        .comparison-stage {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-stage {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .compare-box {
+            background: rgba(14, 18, 26, 0.85);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .compare-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .compare-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-muted);
+        }
+
+        .compare-tag.tag-ai {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: rgba(6, 182, 212, 0.3);
+            color: #67e8f9;
+        }
+
+        .compare-viewport {
+            width: 100%;
+            height: 320px;
+            background: #050608;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-glass);
+        }
+
+        .compare-viewport img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* 12. Laser Scanner Overlay */
+        .laser-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 6, 8, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .laser-hud-card {
+            background: #0d1017;
+            border: 1px solid var(--border-highlight);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            max-width: 440px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .laser-beam {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #06b6d4, #6366f1, transparent);
+            box-shadow: 0 0 16px #06b6d4;
+            animation: laser-sweep 1.8s infinite ease-in-out;
+            top: 0;
+        }
+
+        @keyframes laser-sweep {
+            0% { top: 0%; opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .hud-icon-gem {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            box-shadow: 0 0 24px var(--primary-glow);
+        }
+
+        .hud-icon-gem svg {
+            width: 26px;
+            height: 26px;
+            color: #818cf8;
+            animation: spin-pulse 2s infinite linear;
+        }
+
+        @keyframes spin-pulse {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 13. Security Audit Modal */
+        .audit-hud-card {
+            background: #0d1017;
+            border: 1px solid var(--border-highlight);
+            border-radius: 24px;
+            padding: 2.75rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+        }
+
+        .audit-badge-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            box-shadow: 0 0 20px var(--emerald-glow);
+        }
+
+        .audit-badge-icon svg {
+            width: 28px;
+            height: 28px;
+            color: #10b981;
+        }
+
+        /* Toast notifications */
+        .toast-deck {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            z-index: 500;
+        }
+
+        .toast-pill {
+            background: #11151f;
+            border: 1px solid var(--border-highlight);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toast-fly-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .toast-pill.toast-success { border-left: 3px solid var(--emerald); }
+        .toast-pill.toast-error { border-left: 3px solid var(--rose); }
+
+        @keyframes toast-fly-in {
+            from { transform: translateY(12px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border-glass);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer strong {
+            color: #ffffff;
+        }
+
+        /* 11. Video Studio 4K & Clean Downloader */
+        .btn-video-glow.active svg {
+            color: #c084fc;
+        }
+
+        .video-subnav-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .video-subnav-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-glass);
+            border-radius: 9999px;
+            padding: 0.55rem 1.35rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .video-subnav-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .video-subnav-btn:hover {
+            color: #ffffff;
+            border-color: rgba(168, 85, 247, 0.4);
+        }
+
+        .video-subnav-btn.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.25));
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 4px 16px rgba(168, 85, 247, 0.25);
+        }
+
+        .platform-badges-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .platform-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-glass);
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .chip-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .chip-tiktok { color: #22d3ee; }
+        .chip-douyin { color: #f43f5e; }
+        .chip-reels { color: #ec4899; }
+        .chip-shorts { color: #ef4444; }
+        .chip-fb { color: #3b82f6; }
+
+        .video-url-input-wrap {
+            display: flex;
+            align-items: center;
+            background: rgba(11, 15, 25, 0.85);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 0.5rem 0.6rem 0.5rem 1rem;
+            gap: 0.75rem;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-url-input-wrap:focus-within {
+            border-color: rgba(168, 85, 247, 0.6);
+            box-shadow: 0 8px 32px rgba(168, 85, 247, 0.25);
+        }
+
+        .video-url-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+        }
+
+        .video-url-field {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .video-url-field::placeholder {
+            color: #64748b;
+        }
+
+        .paste-clip-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.45rem 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .paste-clip-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .paste-clip-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .bridge-status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.25rem;
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .bridge-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        .video-result-card {
+            margin-top: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 1.75rem;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            animation: bento-in 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .video-result-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .video-preview-player-wrap {
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000000;
+            aspect-ratio: 9/16;
+            max-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-preview-player-wrap video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-details-col {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .video-meta-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: #22d3ee;
+            letter-spacing: 0.05em;
+        }
+
+        .video-meta-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .video-meta-author {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .video-actions-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            margin-top: 0.75rem;
+        }
+
+        .btn-sparkle-send {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2));
+            border: 1px solid rgba(168, 85, 247, 0.5);
+            border-radius: 14px;
+            color: #f3e8ff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.25s ease;
+        }
+
+        .btn-sparkle-send:hover {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(236, 72, 153, 0.35));
+            border-color: #c084fc;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+            color: #ffffff;
+        }
+
+        .btn-sparkle-send svg {
+            width: 18px;
+            height: 18px;
+            color: #e879f9;
+        }
+
+        /* Video Remaster Studio */
+        .video-compare-stage {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .video-compare-stage {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .video-compare-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-screen-wrap {
+            aspect-ratio: 16/9;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .video-screen-wrap video,
+        .video-screen-wrap canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-remaster-controls {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .control-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .control-val {
+            font-family: 'JetBrains Mono', monospace;
+            color: #c084fc;
+            font-size: 0.8rem;
+        }
+
+        .control-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+            border: 2px solid #ffffff;
+        }
+
+        /* 12. Cybernetic Optical Intro Sequence */
+        .hyper-intro {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            background: #030406;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .intro-ambient-aurora {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.18), rgba(6, 182, 212, 0.12), transparent 70%);
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        .intro-grid-wire {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center center;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            pointer-events: none;
+        }
+
+        .intro-laser-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #06b6d4, #818cf8, #c084fc, transparent);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.8), 0 0 40px rgba(129, 140, 248, 0.5);
+            transform-origin: center center;
+            pointer-events: none;
+        }
+
+        .intro-center-stage {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            perspective: 1000px;
+        }
+
+        .intro-gem-wrap {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .intro-gem-aura {
+            position: absolute;
+            inset: -8px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.4), rgba(99, 102, 241, 0.4));
+            filter: blur(14px);
+            opacity: 0.8;
+        }
+
+        .intro-gem-icon {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .intro-gem-icon svg {
+            width: 34px;
+            height: 34px;
+            color: #ffffff;
+            filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.6));
+        }
+
+        .intro-brand-name {
+            display: flex;
+            align-items: center;
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+        }
+
+        .intro-letter {
+            display: inline-block;
+        }
+
+        .intro-letter-accent {
+            display: inline-block;
+            background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            margin-left: 0.25rem;
+        }
+
+        .intro-telemetry-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            color: #34d399;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            min-height: 18px;
+            text-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+        }
+
+        .intro-meter-wrap {
+            width: 260px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 0.75rem;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+        }
+
+        .intro-meter-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #06b6d4, #818cf8, #ec4899);
+            border-radius: 9999px;
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.8);
+            transition: width 0.05s linear;
+        }
+
+        .intro-counter-row {
+            width: 260px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: #64748b;
+        }
+
+        .intro-counter-num {
+            color: #e2e8f0;
+            font-weight: 700;
+        }
+
+        .intro-skip-pill {
+            position: absolute;
+            bottom: 2rem;
+            right: 2.5rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            border-radius: 9999px;
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            transition: all 0.2s ease;
+        }
+
+        .intro-skip-pill:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(15, 23, 42, 0.85);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 0. Cybernetic Optical Intro Sequence (ZeroStudio Reveal) -->
+    <div id="hyper-intro-overlay" class="hyper-intro">
+        <div class="intro-ambient-aurora"></div>
+        <div class="intro-grid-wire"></div>
+        <div class="intro-laser-line"></div>
+
+        <div class="intro-center-stage">
+            <div class="intro-gem-wrap">
+                <div class="intro-gem-aura"></div>
+                <div class="intro-gem-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="intro-brand-name">
+                <span class="intro-letter">Z</span>
+                <span class="intro-letter">E</span>
+                <span class="intro-letter">R</span>
+                <span class="intro-letter">O</span>
+                <span class="intro-letter-accent">STUDIO</span>
+            </div>
+
+            <div class="intro-telemetry-tag" id="intro-telemetry">
+                INITIALIZING SECURE RAM ENVIRONMENT
+            </div>
+
+            <div class="intro-meter-wrap">
+                <div class="intro-meter-bar" id="intro-progress-bar"></div>
+            </div>
+
+            <div class="intro-counter-row">
+                <span class="intro-counter-mode">CLIENT-SIDE AI CORE</span>
+                <span class="intro-counter-num" id="intro-counter-num">00%</span>
+            </div>
+        </div>
+
+        <button class="intro-skip-pill" onclick="skipIntro()">Bỏ qua [ESC]</button>
+    </div>
+
+    <!-- 1. Blueprint Grid & Aurora Orbs -->
+    <div class="blueprint-grid"></div>
+    <div class="aurora-mesh">
+        <div class="aurora-orb orb-1"></div>
+        <div class="aurora-orb orb-2"></div>
+        <div class="aurora-orb orb-3"></div>
+    </div>
+
+    <!-- 2. Obsidian Navigation Bar -->
+    <header>
+        <a href="#" class="brand-link" onclick="replayCinemaIntro(event)" title="Bấm để xem lại hiệu ứng Intro mở màn">
+            <div class="brand-gem">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <div class="brand-title">
+                ZeroStudio
+                <span class="brand-version">v1.3 AI WASM</span>
+            </div>
+        </a>
+
+        <!-- Live Zero-Knowledge Badge -->
+        <div class="zk-badge" onclick="runLeakAudit()" title="Bấm để kiểm toán luồng mạng (Network Audit)">
+            <div class="zk-led"></div>
+            <span class="zk-text">Zero-Knowledge • 100% Offline</span>
+        </div>
+    </header>
+
+    <!-- 3. Hero Area -->
+    <section class="hero-bento">
+        <div class="meta-pill">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Bảo Mật RAM Cục Bộ • WebGPU & 4K Studio
+        </div>
+        <h1>Studio PDF, Ảnh & Video 4K</h1>
+        <p>Toàn bộ tài liệu, ảnh và video được xử lý an toàn với kiến trúc Zero-Knowledge. Tải video không logo & nâng cấp 4K siêu nét.</p>
+
+        <!-- Webflow Bento Segmented Tabs (5 Tabs) -->
+        <div class="bento-nav-wrap">
+            <button class="bento-nav-btn active" data-tab="merge">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                </svg>
+                Gộp PDF
+            </button>
+            <button class="bento-nav-btn" data-tab="split">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z" />
+                </svg>
+                Tách & Cắt Trang
+            </button>
+            <button class="bento-nav-btn" data-tab="images">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Ảnh Sang PDF
+            </button>
+            <button class="bento-nav-btn btn-sparkle" data-tab="upscale">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                ✨ Phóng To Ảnh 4K
+            </button>
+            <button class="bento-nav-btn btn-video-glow" data-tab="video">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                🎬 Video Không Logo & 4K
+            </button>
+        </div>
+    </section>
+
+    <!-- 4. Bento Workspace -->
+    <main>
+        <!-- TAB 1: GỘP PDF -->
+        <div class="tab-pane active" id="tab-merge">
+            <div class="bento-spotlight">
+                <div class="drop-stage" id="merge-dropzone">
+                    <input type="file" id="merge-file-input" multiple accept=".pdf" style="display: none;">
+                    <div class="radar-rings">
+                        <div class="radar-circle circle-3"></div>
+                        <div class="radar-circle circle-2"></div>
+                        <div class="radar-circle circle-1"></div>
+                        <div class="radar-center">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stage-title">Kéo & thả các tệp PDF vào đây</div>
+                    <div class="stage-subtitle">Hoặc chọn nhiều file cùng lúc từ máy tính của bạn</div>
+                    <button class="shimmer-button" type="button">Chọn Tệp PDF</button>
+                </div>
+            </div>
+
+            <div class="card-stack" id="merge-list"></div>
+
+            <div class="command-bar" id="merge-actions" style="display: none;">
+                <div class="command-status" id="merge-summary">0 file</div>
+                <div class="command-btns">
+                    <button class="btn-outline" onclick="clearMergeList()">Xóa Hết</button>
+                    <button class="btn-glow-action" onclick="executeMerge()">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Gộp & Tải Về Ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: TÁCH & CẮT TRANG -->
+        <div class="tab-pane" id="tab-split">
+            <div class="bento-spotlight" id="split-dropzone-wrap">
+                <div class="drop-stage" id="split-dropzone">
+                    <input type="file" id="split-file-input" accept=".pdf" style="display: none;">
+                    <div class="radar-rings">
+                        <div class="radar-circle circle-3"></div>
+                        <div class="radar-circle circle-2"></div>
+                        <div class="radar-circle circle-1"></div>
+                        <div class="radar-center">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stage-title">Chọn tệp PDF cần Tách hoặc Cắt trang</div>
+                    <div class="stage-subtitle">Tự động dựng ma trận hình thu nhỏ từng trang để bạn chọn lọc</div>
+                    <button class="shimmer-button" type="button">Chọn Tệp PDF</button>
+                </div>
+            </div>
+
+            <div id="split-workspace" style="display: none;">
+                <div class="command-bar">
+                    <div class="command-status" id="split-summary">0 trang</div>
+                    <div class="command-btns">
+                        <button class="btn-outline" onclick="selectAllPages(true)">Chọn Tất Cả</button>
+                        <button class="btn-outline" onclick="selectAllPages(false)">Bỏ Chọn</button>
+                        <button class="btn-outline" onclick="rotateAllPages(90)">🔄 Xoay 90°</button>
+                        <button class="btn-glow-action" onclick="executeSplitExtract()">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Xuất Trang Đã Chọn
+                        </button>
+                    </div>
+                </div>
+
+                <div class="matrix-grid" id="split-pages-grid"></div>
+            </div>
+        </div>
+
+        <!-- TAB 3: ẢNH SANG PDF -->
+        <div class="tab-pane" id="tab-images">
+            <div class="bento-spotlight">
+                <div class="drop-stage" id="images-dropzone">
+                    <input type="file" id="images-file-input" multiple accept="image/png, image/jpeg" style="display: none;">
+                    <div class="radar-rings">
+                        <div class="radar-circle circle-3"></div>
+                        <div class="radar-circle circle-2"></div>
+                        <div class="radar-circle circle-1"></div>
+                        <div class="radar-center">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stage-title">Kéo & thả hình ảnh JPG / PNG vào đây</div>
+                    <div class="stage-subtitle">Đóng gói hàng loạt ảnh thành file PDF sắc nét đúng tỉ lệ</div>
+                    <button class="shimmer-button" type="button">Chọn Hình Ảnh</button>
+                </div>
+            </div>
+
+            <div class="images-bento-grid" id="images-grid"></div>
+
+            <div class="command-bar" id="images-actions" style="display: none;">
+                <div class="command-status">Đã chọn ảnh</div>
+                <div class="command-btns">
+                    <button class="btn-outline" onclick="clearImagesList()">Xóa Hết</button>
+                    <button class="btn-glow-action" onclick="executeImagesToPdf()">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Xuất File PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: ✨ AI PHÓNG TO 4K (UPSCALE ENGINE) -->
+        <div class="tab-pane" id="tab-upscale">
+            <div class="bento-spotlight" id="upscale-dropzone-wrap">
+                <div class="drop-stage" id="upscale-dropzone">
+                    <input type="file" id="upscale-file-input" accept="image/png, image/jpeg, image/webp" style="display: none;">
+                    <div class="radar-rings">
+                        <div class="radar-circle circle-3" style="border-color: rgba(6, 182, 212, 0.1);"></div>
+                        <div class="radar-circle circle-2" style="border-color: rgba(6, 182, 212, 0.2);"></div>
+                        <div class="radar-circle circle-1" style="border-color: var(--cyan);"></div>
+                        <div class="radar-center" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.2)); border-color: rgba(6, 182, 212, 0.4); box-shadow: 0 4px 18px var(--cyan-glow);">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #67e8f9;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stage-title">Kéo & thả ảnh cần Phóng to 4K vào đây</div>
+                    <div class="stage-subtitle">Khử nhiễu, tái tạo chi tiết và phóng to 2X / 4X bằng WebAssembly GPU</div>
+                    <button class="shimmer-button" type="button">Chọn Hình Ảnh</button>
+                </div>
+            </div>
+
+            <!-- Workspace when image selected -->
+            <div id="upscale-workspace" style="display: none;">
+                <div class="command-bar" id="upscale-execute-bar">
+                    <div class="command-status" id="upscale-original-info">Ảnh gốc</div>
+                    <div class="command-btns">
+                        <div class="ratio-pill-group">
+                            <button class="upscale-ratio-btn" id="ratio-2x" onclick="setUpscaleRatio(2)">2X (2K)</button>
+                            <button class="upscale-ratio-btn active" id="ratio-4x" onclick="setUpscaleRatio(4)">4X (4K UHD)</button>
+                        </div>
+                        <button class="btn-outline" onclick="resetUpscale()">Đổi Ảnh</button>
+                        <button class="btn-glow-action" onclick="executeAiUpscale()">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            Chạy AI Upscale Ngay
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Comparison Showcase -->
+                <div class="comparison-stage">
+                    <div class="compare-box">
+                        <div class="compare-header">
+                            <span>ẢNH GỐC</span>
+                            <span class="compare-tag">Input</span>
+                        </div>
+                        <div class="compare-viewport">
+                            <img id="preview-before" src="" alt="Ảnh gốc" />
+                        </div>
+                    </div>
+
+                    <div class="compare-box" id="compare-after-box">
+                        <div class="compare-header">
+                            <span style="color: #67e8f9;">KẾT QUẢ AI 4K ULTRA HD</span>
+                            <span class="compare-tag tag-ai">AI Super-Res</span>
+                        </div>
+                        <div class="compare-viewport">
+                            <img id="preview-after" src="" alt="Chưa xử lý" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Actions Bar -->
+                <div class="command-bar" id="upscale-result-wrap" style="display: none; margin-top: 1.5rem;">
+                    <div class="command-status" id="upscale-result-info" style="color: #6ee7b7;">Hoàn tất</div>
+                    <div class="command-btns">
+                        <button class="btn-outline" onclick="resetUpscale()">Thử Ảnh Khác</button>
+                        <button class="btn-glow-action" style="background: linear-gradient(135deg, #06b6d4, #10b981);" onclick="downloadUpscaleResult()">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Tải Ảnh 4K Về Máy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: 🎬 VIDEO GỠ LOGO & NÂNG CẤP 4K -->
+        <div class="tab-pane" id="tab-video">
+            <!-- Mode Switcher (Tải Gỡ Logo vs Nâng Cấp 4K) -->
+            <div class="video-subnav-wrap">
+                <button class="video-subnav-btn active" id="subnav-btn-dl" onclick="switchVideoSubMode('download')">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Tải Video Gỡ Logo
+                </button>
+                <button class="video-subnav-btn" id="subnav-btn-remaster" onclick="switchVideoSubMode('remaster')">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    ✨ Bộ Lọc Nâng Cấp Video 4K
+                </button>
+            </div>
+
+            <!-- SUB-PANE 1: TẢI VIDEO GỠ LOGO -->
+            <div id="video-pane-download">
+                <div class="bento-spotlight" style="padding: 2.5rem 2rem; text-align: center;">
+                    <!-- Platform Badges -->
+                    <div class="platform-badges-row">
+                        <span class="platform-chip chip-tiktok">
+                            <span class="chip-dot"></span> TikTok
+                        </span>
+                        <span class="platform-chip chip-douyin">
+                            <span class="chip-dot"></span> Douyin (抖音)
+                        </span>
+                        <span class="platform-chip chip-reels">
+                            <span class="chip-dot"></span> Instagram Reels
+                        </span>
+                        <span class="platform-chip chip-shorts">
+                            <span class="chip-dot"></span> YouTube Shorts
+                        </span>
+                        <span class="platform-chip chip-fb">
+                            <span class="chip-dot"></span> Facebook Video
+                        </span>
+                    </div>
+
+                    <!-- URL Input Bar -->
+                    <div class="video-url-input-wrap">
+                        <div class="video-url-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                            </svg>
+                        </div>
+                        <input type="text" id="video-url-input" class="video-url-field" placeholder="Dán liên kết video TikTok, Douyin, Reels, Shorts vào đây..." />
+                        <button class="paste-clip-btn" onclick="pasteVideoClipboard()" title="Dán từ Clipboard">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            Dán Link
+                        </button>
+                        <button class="btn-glow-action" id="btn-fetch-video" style="background: linear-gradient(135deg, #a855f7, #ec4899);" onclick="resolveVideo()">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            Gỡ Logo & Tải
+                        </button>
+                    </div>
+
+                    <!-- Bridge Connection Status Indicator -->
+                    <div class="bridge-status-indicator" id="bridge-status-pill">
+                        <span class="bridge-pulse-dot" id="bridge-dot"></span>
+                        <span id="bridge-status-text">Đang đồng bộ Local Video Bridge (Zero-Log)...</span>
+                    </div>
+                </div>
+
+                <!-- Video Resolved Result Card -->
+                <div id="video-result-card" class="video-result-card" style="display: none;">
+                    <div class="video-preview-player-wrap">
+                        <video id="video-preview-el" controls playsinline></video>
+                    </div>
+                    <div class="video-details-col">
+                        <div class="video-meta-tag" id="video-meta-platform">TIKTOK HD • KHÔNG WATERMARK</div>
+                        <h3 class="video-meta-title" id="video-meta-title">Tiêu đề video</h3>
+                        <div class="video-meta-author">
+                            <span id="video-meta-uploader">Tác giả</span> • <span id="video-meta-duration">0s</span>
+                        </div>
+                        <div class="video-actions-deck">
+                            <a id="btn-download-clean-video" class="btn-glow-action" style="background: linear-gradient(135deg, #10b981, #059669); text-decoration: none;" href="#" download="video_khong_logo.mp4" target="_blank">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Tải Video HD Không Logo
+                            </a>
+                            <a id="btn-download-audio" class="btn-outline" style="text-decoration: none;" href="#" download="audio.mp3" target="_blank">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                                </svg>
+                                Tải Âm Thanh MP3
+                            </a>
+                            <button class="btn-sparkle-send" onclick="sendVideoToRemaster()">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                                ✨ Nâng Cấp Video Lên 4K Ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-PANE 2: BỘ LỌC NÂNG CẤP VIDEO 4K (GPU CANVAS REMASTER) -->
+            <div id="video-pane-remaster" style="display: none;">
+                <!-- Drag drop local video -->
+                <div class="bento-spotlight" id="video-remaster-dropzone-wrap">
+                    <div class="drop-stage" id="video-remaster-dropzone">
+                        <input type="file" id="video-remaster-file-input" accept="video/mp4, video/webm, video/quicktime" style="display: none;">
+                        <div class="radar-rings">
+                            <div class="radar-circle circle-3" style="border-color: rgba(168, 85, 247, 0.1);"></div>
+                            <div class="radar-circle circle-2" style="border-color: rgba(168, 85, 247, 0.2);"></div>
+                            <div class="radar-circle circle-1" style="border-color: #c084fc;"></div>
+                            <div class="radar-center" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2)); border-color: rgba(168, 85, 247, 0.4); box-shadow: 0 4px 18px rgba(168, 85, 247, 0.4);">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #e879f9;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stage-title">Kéo & thả video MP4 / WebM cần nâng cấp 4K</div>
+                        <div class="stage-subtitle">Khử nhiễu, tái tạo vi độ sắc nét & nâng cấp độ phân giải 2K / 4K UHD bằng GPU Canvas</div>
+                        <button class="shimmer-button" type="button">Chọn Video Từ Máy</button>
+                    </div>
+                </div>
+
+                <!-- Video Remaster Workspace -->
+                <div id="video-remaster-workspace" style="display: none;">
+                    <div class="command-bar">
+                        <div class="command-status" id="video-remaster-meta">Video: 1920x1080 • 60fps</div>
+                        <div class="command-btns">
+                            <button class="btn-outline" onclick="resetVideoRemaster()">Đổi Video Khác</button>
+                            <button class="btn-glow-action" style="background: linear-gradient(135deg, #a855f7, #ec4899);" onclick="startVideoExport()">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Xuất Video 4K Đã Nâng Cấp
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Player Studio -->
+                    <div class="video-compare-stage">
+                        <div class="video-compare-box">
+                            <div class="compare-header">
+                                <span>VIDEO GỐC</span>
+                                <span class="compare-tag">Input 1080p</span>
+                            </div>
+                            <div class="video-screen-wrap">
+                                <video id="remaster-source-video" playsinline loop muted controls></video>
+                            </div>
+                        </div>
+
+                        <div class="video-compare-box" style="border-color: rgba(168, 85, 247, 0.4); box-shadow: 0 4px 24px rgba(168, 85, 247, 0.15);">
+                            <div class="compare-header">
+                                <span style="color: #e879f9;">KẾT QUẢ NÂNG CẤP 4K ULTRA HD</span>
+                                <span class="compare-tag" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); color: #e879f9;">GPU Remaster</span>
+                            </div>
+                            <div class="video-screen-wrap">
+                                <canvas id="remaster-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls Deck -->
+                    <div class="video-remaster-controls">
+                        <div class="control-row">
+                            <div class="control-label">
+                                <span>Độ Sắc Nét Vi Mô (Detail Sharpness)</span>
+                                <span id="sharpness-val" class="control-val">75%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="75" class="control-slider" id="slider-sharpness" oninput="updateRemasterParam('sharpness', this.value)" />
+                        </div>
+
+                        <div class="control-row">
+                            <div class="control-label">
+                                <span>Tương Phản Điện Ảnh & Màu Sắc (Cinema HDR Vibrance)</span>
+                                <span id="vibrance-val" class="control-val">30%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="30" class="control-slider" id="slider-vibrance" oninput="updateRemasterParam('vibrance', this.value)" />
+                        </div>
+
+                        <div class="control-row">
+                            <div class="control-label">
+                                <span>Độ Phân Giải Mục Tiêu (Canvas Super-Resolution)</span>
+                                <span id="vres-target-label" class="control-val">3840 x 2160 (4K UHD)</span>
+                            </div>
+                            <div class="ratio-pill-group">
+                                <button class="upscale-ratio-btn" id="vres-2k" onclick="setVideoTargetRes('2k')">2K QHD (1440p)</button>
+                                <button class="upscale-ratio-btn active" id="vres-4k" onclick="setVideoTargetRes('4k')">4K UHD (2160p)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p><strong>ZeroPDF Studio</strong> • Kiến trúc WebAssembly 100% Client-Side.</p>
+        <p style="margin-top: 0.35rem; color: #475569;">Bảo mật tuyệt đối • Không máy chủ trung gian • Không thu thập dữ liệu cá nhân</p>
+    </footer>
+
+    <!-- Cybernetic Laser Scanner Modal -->
+    <div class="laser-modal" id="loading-overlay">
+        <div class="laser-hud-card">
+            <div class="laser-beam"></div>
+            <div class="hud-icon-gem">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h3 id="loading-text" style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;">Đang xử lý tài liệu...</h3>
+            <p style="color: #64748b; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">RAM Engine • 0 Byte Outgoing</p>
+        </div>
+    </div>
+
+    <!-- Security Audit Modal -->
+    <div class="laser-modal" id="leak-modal">
+        <div class="audit-hud-card">
+            <div class="audit-badge-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem;">Chứng Nhận An Ninh Mạng</h2>
+            <div id="leak-results"></div>
+            <button class="btn-outline" style="margin: 1.25rem auto 0; display: block;" onclick="closeLeakAudit()">Đóng Kiểm Toán</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-deck" id="toast-container"></div>
+
+    <!-- Dynamic Spotlight Cursor Engine & Logic -->
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const spotlights = document.querySelectorAll('.bento-spotlight');
+            spotlights.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+    <script src="./app.js"></script>
+</body>
+</html>
