@@ -39,20 +39,20 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
         # PERMANENT LOCAL DISK LICENSE STORAGE
         # ----------------------------------------------------
         if parsed.path == '/api/license':
-            license_file = Path(__file__).parent / 'license.key'
             user_license_file = Path.home() / '.zerostudio_license'
+            license_file = Path(__file__).parent / 'license.key'
             key = None
 
             REVOKED = {'ZERO-PRO-ADMIN-VIP-2026', 'ZERO-PRO-DEV-MASTER-9999', 'ZERO-PRO-VIP-PERMANENT', 'ZERO-PRO-8492-HIEU-9F2A'}
 
-            if license_file.exists():
-                try:
-                    key = license_file.read_text(encoding='utf-8').strip()
-                except Exception:
-                    pass
-            elif user_license_file.exists():
+            if user_license_file.exists():
                 try:
                     key = user_license_file.read_text(encoding='utf-8').strip()
+                except Exception:
+                    pass
+            elif license_file.exists():
+                try:
+                    key = license_file.read_text(encoding='utf-8').strip()
                 except Exception:
                     pass
 
@@ -65,6 +65,13 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                     if user_license_file.exists(): user_license_file.unlink()
                 except Exception: pass
                 key = None
+
+            # Always clean up repo-local license.key to prevent accidental upload to Netlify
+            if license_file.exists():
+                try:
+                    license_file.unlink()
+                except Exception:
+                    pass
 
             self.send_response(200)
             self._send_cors_headers()
@@ -233,13 +240,19 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                     return
 
                 if key and key.startswith('ZERO-PRO-'):
-                    license_file = Path(__file__).parent / 'license.key'
                     user_license_file = Path.home() / '.zerostudio_license'
-                    license_file.write_text(key, encoding='utf-8')
                     try:
                         user_license_file.write_text(key, encoding='utf-8')
                     except Exception:
                         pass
+
+                    # Clean up any local license.key in repo folder so it never gets uploaded to Netlify
+                    license_file = Path(__file__).parent / 'license.key'
+                    if license_file.exists():
+                        try:
+                            license_file.unlink()
+                        except Exception:
+                            pass
 
                     self.send_response(200)
                     self._send_cors_headers()
