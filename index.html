@@ -11205,6 +11205,241 @@
             border-color: rgba(245, 158, 11, 0.8) !important;
         }
 
+
+        /* GIFT ORDER & DIGITAL GIFT CARD STYLES */
+        .gift-order-toggle-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 1px dashed rgba(245, 158, 11, 0.45);
+            border-radius: 14px;
+            padding: 10px 14px;
+            margin: 12px 0;
+            text-align: left;
+            transition: all 0.25s ease;
+        }
+        .gift-order-toggle-card:hover {
+            border-color: rgba(245, 158, 11, 0.7);
+            background: rgba(245, 158, 11, 0.1);
+        }
+        .gift-checkbox-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .gift-checkbox-row input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .gift-checkbox-custom {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(245, 158, 11, 0.6);
+            border-radius: 5px;
+            margin-top: 2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: rgba(15, 23, 42, 0.8);
+            transition: all 0.2s ease;
+        }
+        .gift-checkbox-row input[type="checkbox"]:checked + .gift-checkbox-custom {
+            background: #f59e0b;
+            border-color: #f59e0b;
+        }
+        .gift-checkbox-row input[type="checkbox"]:checked + .gift-checkbox-custom::after {
+            content: '';
+            width: 5px;
+            height: 9px;
+            border: solid #000;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-bottom: 2px;
+        }
+        .gift-label-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .gift-title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: #fbbf24;
+        }
+        .gift-subtitle {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            line-height: 1.35;
+        }
+        .gift-input-field {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 0.82rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease;
+        }
+        .gift-input-field:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        /* DIGITAL GIFT CARD UI */
+        .digital-gift-card {
+            background: linear-gradient(135deg, rgba(20, 20, 35, 0.95) 0%, rgba(30, 27, 75, 0.95) 100%);
+            border: 2px solid rgba(245, 158, 11, 0.6);
+            border-radius: 20px;
+            padding: 1.75rem 1.5rem;
+            max-width: 500px;
+            margin: 1.25rem auto;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(245, 158, 11, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .digital-gift-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f59e0b, #10b981, #6366f1, #f59e0b);
+        }
+        .gift-card-ribbon {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            color: #fbbf24;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        .gift-card-to {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        .gift-card-tier {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #34d399;
+            margin-bottom: 0.65rem;
+        }
+        .gift-card-msg {
+            font-size: 0.84rem;
+            font-style: italic;
+            color: #cbd5e1;
+            background: rgba(0, 0, 0, 0.35);
+            border-left: 3px solid #f59e0b;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 0 auto 1.25rem auto;
+            max-width: 420px;
+            line-height: 1.4;
+            text-align: left;
+        }
+        .gift-code-box {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px dashed rgba(245, 158, 11, 0.5);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 1.25rem;
+        }
+        .gift-code-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .gift-code-val {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #fbbf24;
+            letter-spacing: 1px;
+        }
+        .gift-card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .btn-glow-gold {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000000;
+            font-weight: 800;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+        }
+        .btn-glow-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55);
+        }
+        .btn-outline-gold {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            color: #fbbf24;
+            font-weight: 700;
+            padding: 9px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.84rem;
+            transition: all 0.2s ease;
+        }
+        .btn-outline-gold:hover {
+            background: rgba(245, 158, 11, 0.18);
+            border-color: rgba(245, 158, 11, 0.8);
+        }
+        .gift-gem-glow {
+            font-size: 2.2rem;
+            line-height: 1;
+            animation: bounceGift 2s infinite ease-in-out;
+        }
+        @keyframes bounceGift {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .gift-badge-pill {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
 </style>
 
 </head>
@@ -15009,6 +15244,23 @@
 
 
 
+                        
+                        <!-- GIFT ORDER TOGGLE DECK -->
+                        <div class="gift-order-toggle-card">
+                            <label class="gift-checkbox-row">
+                                <input type="checkbox" id="checkout-is-gift" onchange="window.toggleGiftOrderMode(this.checked)" />
+                                <span class="gift-checkbox-custom"></span>
+                                <div class="gift-label-content">
+                                    <span class="gift-title" data-i18n="gift_toggle_title">🎁 Mua Làm Quà Tặng Cho Người Khác</span>
+                                    <span class="gift-subtitle" data-i18n="gift_toggle_subtitle">Không tự động kích hoạt máy này. Tạo Thẻ Quà Tặng để bạn gửi cho bạn bè/nhân viên.</span>
+                                </div>
+                            </label>
+                            <div id="gift-extra-inputs" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(245, 158, 11, 0.3);">
+                                <input type="text" id="gift-recipient-name" class="gift-input-field" placeholder="Tên người nhận (ví dụ: Hoàng Nam / Team Editor)..." data-i18n-ph="gift_ph_name" maxlength="60" />
+                                <input type="text" id="gift-message" class="gift-input-field" placeholder="Lời nhắn chúc mừng (ví dụ: Chúc bạn kiếm triệu view MMO!)..." data-i18n-ph="gift_ph_msg" maxlength="150" style="margin-top: 6px;" />
+                            </div>
+                        </div>
+
                         <div class="checkout-status-stream">
 
                             <span class="checkout-pulse-dot"></span>
@@ -15207,6 +15459,48 @@
                 </div>
 
             </div>
+            <!-- SUB-VIEW 4: MUA QUÀ TẶNG THÀNH CÔNG (DIGITAL GIFT CARD) -->
+            <div id="pro-view-gift-success" style="display: none; text-align: center; padding: 1.5rem 0;">
+                <div class="gift-gem-glow">🎁</div>
+                <div class="gift-badge-pill" data-i18n="gift_success_badge">ĐÃ TẠO THÀNH CÔNG THẺ QUÀ TẶNG BẢN QUYỀN!</div>
+                <h2 id="gift-success-title" style="font-size: 1.65rem; font-weight: 800; color: #ffffff; margin: 0.75rem 0 0.5rem 0;">CHÚC MỪNG QUÀ TẶNG ĐÃ SẴN SÀNG!</h2>
+                <p style="color: #94a3b8; font-size: 0.9rem; max-width: 520px; margin: 0 auto 1.5rem;" data-i18n="gift_success_desc">
+                    Bản quyền đã được tạo độc lập và <strong>không gán vào máy tính này</strong>. Bạn có thể gửi thông tin hoặc sao chép link quà tặng dưới đây cho người nhận!
+                </p>
+
+                <!-- THE DIGITAL GIFT CARD -->
+                <div class="digital-gift-card">
+                    <div class="gift-card-ribbon">VIP GIFT CERTIFICATE</div>
+                    <div class="gift-card-to" id="gift-card-recipient-display">Dành Tặng: Người Bạn Đặc Biệt</div>
+                    <div class="gift-card-tier" id="gift-card-tier-display">ZeroStudio Desktop Pro • Trọn Đời</div>
+                    <div class="gift-card-msg" id="gift-card-msg-display">"Chúc bạn làm việc hiệu quả và thành công rực rỡ!"</div>
+
+                    <div class="gift-code-box">
+                        <div class="gift-code-tag">MÃ BẢN QUYỀN QUÀ TẶNG</div>
+                        <div class="gift-code-val" id="gift-issued-key">ZERO-PRO-GIFT-XXXX-XXXX</div>
+                    </div>
+
+                    <div class="gift-card-actions">
+                        <button type="button" class="btn-glow-gold" onclick="copyFullGiftGreeting()" title="Sao chép toàn bộ thiệp chúc mừng và link để gửi qua Zalo/Telegram">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <span data-i18n="gift_btn_copy_full">Sao Chép Thiệp Quà Tặng (Gửi Zalo/Telegram)</span>
+                        </button>
+                        <button type="button" class="btn-outline-gold" onclick="copyGiftLink()" title="Sao chép link kích hoạt 1-chạm">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                            <span data-i18n="gift_btn_copy_link">Sao Chép Link Kích Hoạt 1-Chạm</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.85rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
+                    <button class="btn-outline" onclick="copyGiftLicenseKeyOnly()">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                        <span data-i18n="gift_btn_copy_key">Chỉ Sao Chép Mã Key</span>
+                    </button>
+                    <button class="btn-outline" onclick="closeProModal()" data-i18n="gift_btn_close">Đóng Cửa Sổ</button>
+                </div>
+            </div>
+
 
         </div>
 
@@ -15821,6 +16115,35 @@
     <script src="./libs/i18n.js?v=2.5.5"></script>
 
     <script src="./app.js?v=2.5.5"></script>
+
+
+    <!-- MODAL: CLAIM GIFT LICENSE MODAL (For Gift Recipients) -->
+    <div class="laser-modal" id="claim-gift-modal" style="display: none;">
+        <div class="pro-hud-card" style="max-width: 540px; text-align: center; position: relative;">
+            <button class="modal-close-btn" onclick="closeClaimGiftModal()">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="gift-gem-glow" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎁</div>
+            <div class="gift-badge-pill" data-i18n="claim_badge">BẠN VỪA NHẬN ĐƯỢC QUÀ TẶNG BẢN QUYỀN!</div>
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #ffffff; margin: 0.75rem 0 0.5rem 0;" data-i18n="claim_title">CHÚC MỪNG BẠN!</h2>
+            <p id="claim-gift-desc" style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.25rem;" data-i18n="claim_desc">
+                Bạn vừa được tặng bản quyền phần mềm <strong>ZeroStudio</strong>. Nhấn nút kích hoạt bên dưới để mở khóa toàn bộ tính năng bản quyền trên máy tính này ngay lập tức!
+            </p>
+
+            <div class="license-display-card" style="margin-bottom: 1.5rem;">
+                <div class="license-display-tag" data-i18n="claim_key_lbl">MÃ QUÀ TẶNG CỦA BẠN</div>
+                <div class="license-display-code" id="claim-gift-key-display">ZERO-PRO-GIFT-...</div>
+            </div>
+
+            <div style="display: flex; gap: 0.85rem; justify-content: center; flex-wrap: wrap;">
+                <button type="button" class="btn-glow-action" id="btn-claim-gift-now" onclick="claimCurrentGiftLicense()" style="background: linear-gradient(135deg, #10b981, #0ea5e9);">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    <span data-i18n="claim_btn_action">🚀 Kích Hoạt Quà Tặng Vào Máy Này Ngay</span>
+                </button>
+                <button type="button" class="btn-outline" onclick="closeClaimGiftModal()" data-i18n="claim_btn_later">Để Sau</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 

@@ -3343,9 +3343,11 @@ window.showProPricingView = function() {
     const pricingView = document.getElementById('pro-view-pricing');
     const checkoutView = document.getElementById('pro-view-checkout');
     const successView = document.getElementById('pro-view-success');
+    const giftSuccessView = document.getElementById('pro-view-gift-success');
     if (pricingView) pricingView.style.display = 'block';
     if (checkoutView) checkoutView.style.display = 'none';
     if (successView) successView.style.display = 'none';
+    if (giftSuccessView) giftSuccessView.style.display = 'none';
     if (vietqrPollInterval) {
         clearInterval(vietqrPollInterval);
         vietqrPollInterval = null;
@@ -3357,6 +3359,11 @@ window.selectedTier = 'pro';
 window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
     window.selectedTier = tier;
     window.isCurrentOrderRenewal = !!isRenewal;
+    window.isCurrentOrderGift = false;
+    const giftCheckbox = document.getElementById('checkout-is-gift');
+    if (giftCheckbox) giftCheckbox.checked = false;
+    const extraInputs = document.getElementById('gift-extra-inputs');
+    if (extraInputs) extraInputs.style.display = 'none';
     currentOrderCode = Math.floor(1000 + Math.random() * 9000).toString();
     const isUltra = (tier === 'ultra');
     const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 88;
@@ -3542,6 +3549,15 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
         vietqrPollInterval = null;
     }
 
+    // Check if this was a Gift Order!
+    if (window.isCurrentOrderGift) {
+        const recipientName = (document.getElementById('gift-recipient-name')?.value || '').trim();
+        const giftMessage = (document.getElementById('gift-message')?.value || '').trim();
+        renderGiftCardSuccess(licenseKey, recipientName, giftMessage);
+        return;
+    }
+
+    // Standard purchase for current device:
     // Save authorized license to localStorage
     localStorage.setItem('zerostudio_pro_license', licenseKey);
     // Increment founder slots claimed
@@ -3604,6 +3620,179 @@ window.copyOrderMemoField = function() {
     const memo = memoValEl ? memoValEl.textContent.trim() : `ZERO ${currentOrderCode || 'PRO'}`;
     copyPaymentField(memo, 'Nội dung chuyển khoản');
 };
+
+
+// ==========================================
+// GIFT LICENSE PURCHASE & CLAIM ENGINE
+// ==========================================
+window.isCurrentOrderGift = false;
+window.currentGiftLicenseKey = '';
+window.currentGiftRecipient = '';
+window.currentGiftMessage = '';
+window.pendingGiftKey = '';
+
+window.toggleGiftOrderMode = function(isGift) {
+    window.isCurrentOrderGift = !!isGift;
+    const extraInputs = document.getElementById('gift-extra-inputs');
+    if (extraInputs) {
+        extraInputs.style.display = isGift ? 'block' : 'none';
+        if (isGift) {
+            const nameInput = document.getElementById('gift-recipient-name');
+            if (nameInput) nameInput.focus();
+        }
+    }
+    const secureTag = document.getElementById('checkout-tier-tag');
+    if (secureTag) {
+        secureTag.textContent = isGift 
+            ? '🎁 CHẾ ĐỘ MUA QUÀ TẶNG • TỰ TẠO THẺ QUÀ TẶNG' 
+            : 'BẢO MẬT VIETQR • TỰ ĐỘNG CẤP KEY';
+    }
+};
+
+window.renderGiftCardSuccess = function(licenseKey, recipientName, giftMessage) {
+    window.currentGiftLicenseKey = licenseKey;
+    window.currentGiftRecipient = recipientName || 'Người Bạn Đặc Biệt';
+    window.currentGiftMessage = giftMessage || 'Chúc bạn làm việc hiệu quả và thành công rực rỡ!';
+
+    const isUltra = (window.selectedTier === 'ultra' || (licenseKey && licenseKey.includes('ULTRA')));
+
+    const pricingView = document.getElementById('pro-view-pricing');
+    const checkoutView = document.getElementById('pro-view-checkout');
+    const successView = document.getElementById('pro-view-success');
+    const giftSuccessView = document.getElementById('pro-view-gift-success');
+
+    if (pricingView) pricingView.style.display = 'none';
+    if (checkoutView) checkoutView.style.display = 'none';
+    if (successView) successView.style.display = 'none';
+    if (giftSuccessView) giftSuccessView.style.display = 'block';
+
+    const toEl = document.getElementById('gift-card-recipient-display');
+    if (toEl) toEl.textContent = `Dành Tặng: ${window.currentGiftRecipient}`;
+
+    const tierEl = document.getElementById('gift-card-tier-display');
+    if (tierEl) tierEl.textContent = isUltra 
+        ? 'ZeroStudio Ultra MMO Master • Trọn Đời (2 Máy)' 
+        : 'ZeroStudio Desktop Pro • Trọn Đời (1 Máy)';
+
+    const msgEl = document.getElementById('gift-card-msg-display');
+    if (msgEl) msgEl.textContent = `"${window.currentGiftMessage}"`;
+
+    const keyEl = document.getElementById('gift-issued-key');
+    if (keyEl) keyEl.textContent = licenseKey;
+
+    if (typeof launchGoldConfetti === 'function') {
+        launchGoldConfetti();
+    }
+
+    showToast("MUA QUÀ TẶNG THÀNH CÔNG! Thẻ Quà Tặng Điện Tử đã sẵn sàng để gửi tặng.", "success");
+};
+
+window.getGiftClaimLink = function(key) {
+    const license = key || window.currentGiftLicenseKey;
+    const base = (window.location.origin && window.location.origin.includes('http')) 
+        ? window.location.origin 
+        : 'https://zerostu.netlify.app';
+    return `${base}/?gift=${encodeURIComponent(license)}`;
+};
+
+window.copyFullGiftGreeting = function() {
+    const key = window.currentGiftLicenseKey;
+    const recipient = window.currentGiftRecipient || 'Bạn';
+    const msg = window.currentGiftMessage || 'Chúc bạn gặt hái nhiều thành công!';
+    const isUltra = (window.selectedTier === 'ultra' || (key && key.includes('ULTRA')));
+    const tierTitle = isUltra ? 'ZeroStudio Ultra MMO Master (Trọn Đời - 2 Thiết Bị)' : 'ZeroStudio Desktop Pro (Trọn Đời)';
+    const claimLink = window.getGiftClaimLink(key);
+
+    const fullGreeting = 
+`🎁 CHÚC MỪNG ${recipient.toUpperCase()} ĐÃ NHẬN ĐƯỢC QUÀ TẶNG BẢN QUYỀN ZEROSTUDIO!
+
+💌 Lời nhắn: "${msg}"
+💎 Gói quà tặng: ${tierTitle}
+🔑 Mã kích hoạt: ${key}
+
+🚀 KÍCH HOẠT NHANH 1-CHẠM TẠI ĐÂY:
+${claimLink}
+
+(Chỉ cần nhấn vào link trên bằng trình duyệt máy tính là bản quyền sẽ tự động kích hoạt ngay lập tức!)`;
+
+    copyPaymentField(fullGreeting, 'Thiệp Quà Tặng Đầy Đủ');
+};
+
+window.copyGiftLink = function() {
+    const link = window.getGiftClaimLink();
+    copyPaymentField(link, 'Link Quà Tặng 1-Chạm');
+};
+
+window.copyGiftLicenseKeyOnly = function() {
+    const key = window.currentGiftLicenseKey;
+    if (key) {
+        copyPaymentField(key, 'Mã Key Quà Tặng');
+    }
+};
+
+window.openClaimGiftModal = function(giftKey) {
+    window.pendingGiftKey = giftKey;
+    const modal = document.getElementById('claim-gift-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        const keyDisplay = document.getElementById('claim-gift-key-display');
+        if (keyDisplay) keyDisplay.textContent = giftKey;
+
+        const isUltra = giftKey.includes('ULTRA');
+        const descEl = document.getElementById('claim-gift-desc');
+        if (descEl) {
+            descEl.innerHTML = `Bạn vừa được tặng bản quyền phần mềm <strong>ZeroStudio ${isUltra ? 'Ultra MMO Master (2 Máy)' : 'Desktop Pro'}</strong>. Nhấn nút kích hoạt bên dưới để mở khóa toàn bộ tính năng trên máy tính này ngay lập tức!`;
+        }
+        if (typeof launchGoldConfetti === 'function') {
+            launchGoldConfetti();
+        }
+    }
+};
+
+window.closeClaimGiftModal = function() {
+    const modal = document.getElementById('claim-gift-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+window.claimCurrentGiftLicense = async function() {
+    const key = window.pendingGiftKey;
+    if (!key) return;
+
+    window.closeClaimGiftModal();
+
+    // Clean URL query param cleanly without reload
+    if (window.history && window.history.replaceState) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('gift');
+        window.history.replaceState({}, document.title, url.toString());
+    }
+
+    const input = document.getElementById('license-key-input');
+    if (input) input.value = key;
+
+    showToast(`Đang kích hoạt quà tặng bản quyền ${key}...`, 'info');
+    if (typeof activateLicenseKey === 'function') {
+        await activateLicenseKey();
+    }
+};
+
+function checkUrlParamsForGift() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const giftKey = params.get('gift');
+        if (giftKey && (giftKey.startsWith('ZERO-PRO-') || giftKey.startsWith('ZERO-ULTRA-'))) {
+            setTimeout(() => {
+                window.openClaimGiftModal(giftKey.trim().toUpperCase());
+            }, 800);
+        }
+    } catch (e) {}
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkUrlParamsForGift);
+} else {
+    checkUrlParamsForGift();
+}
 
 window.confirmPaidAndGetLicense = function() {
     showToast("Đang kết nối MB Bank kiểm tra biến động số dư...", "info");
@@ -5094,7 +5283,25 @@ Tương thích hoàn hảo: <strong>Windows 10 & Windows 11 (64-bit)</strong>.`,
             { text: '📦 Tải Trọn Gói Portable (.ZIP)', func: "downloadAppZip()" }
         ]
     },
-        {
+            {
+        id: 'gift_license',
+        keywords: ['tặng', 'mua tặng', 'quà tặng', 'tặng bạn', 'tặng nhân viên', 'gift', 'mua hộ', 'cho người khác', 'gửi bạn bè', 'tặng quà', 'thẻ quà tặng'],
+        title: 'Hướng Dẫn Mua Bản Quyền Làm Quà Tặng Cho Người Khác',
+        response: `🎁 <strong>TÍNH NĂNG MUA BẢN QUYỀN LÀM QUÀ TẶNG (GIFT MODE):</strong><br><br>
+1. <strong>Cách thức hoạt động:</strong><br>
+   • Khi mở màn hình thanh toán VietQR, hãy tick chọn: <strong>"🎁 Mua làm quà tặng cho người khác"</strong>.<br>
+   • Bạn có thể nhập <strong>Tên người nhận</strong> và <strong>Lời nhắn chúc mừng</strong>.<br>
+   • Hệ thống sẽ <strong>KHÔNG</strong> kích hoạt vào máy của bạn, mà tạo riêng một <strong>Thẻ Quà Tặng Điện Tử</strong> sang xịn mịn!<br><br>
+2. <strong>Gửi quà cho bạn bè / nhân viên:</strong><br>
+   • Bạn chỉ cần bấm <strong>"Sao Chép Thiệp Quà Tặng"</strong> và gửi qua Zalo, Telegram hoặc Facebook.<br>
+   • Người nhận chỉ cần bấm vào link là được mở khóa bản quyền ngay trên máy tính của họ!`,
+        actions: [
+            { text: '🎁 Mua Gói Pro Tặng Bạn (299k)', func: "openVietQrCheckout('pro'); toggleGiftOrderMode(true);" },
+            { text: '⭐ Mua Gói Ultra Tặng Team (699k)', func: "openVietQrCheckout('ultra'); toggleGiftOrderMode(true);" },
+            { text: '💬 Nhắn Zalo Admin Hỗ Trợ Mua Số Lượng Lớn (0962.876.139)', func: "window.open('https://zalo.me/0962876139', '_blank')" }
+        ]
+    },
+{
         id: 'upgrade_ultra',
         keywords: ['lên ultra', 'nâng lên ultra', 'nâng gói ultra', 'nâng cấp ultra', 'từ pro lên ultra', 'muốn lên ultra', 'đổi gói ultra', 'mua ultra', 'gói 2 máy', 'dùng 2 máy', 'ultra mmo'],
         title: 'Hướng Dẫn Nâng Cấp Lên Gói Ultra MMO Master (Dùng 2 Máy)',
@@ -5403,6 +5610,8 @@ function matchOfflineIntent(text) {
                 if (item.id === 'unbind_device' && (kwLower.includes('tắt') || kwLower.includes('hủy') || kwLower.includes('gỡ') || kwLower.includes('về free') || kwLower.includes('reset'))) {
                     score += 40;
                 } else if (item.id === 'upgrade_ultra' && (kwLower.includes('ultra') || kwLower.includes('nâng') || kwLower.includes('lên ultra') || kwLower.includes('2 máy'))) {
+                    score += 40;
+                } else if (item.id === 'gift_license' && (kwLower.includes('tặng') || kwLower.includes('quà') || kwLower.includes('gift') || kwLower.includes('mua hộ'))) {
                     score += 40;
                 } else {
                     score += kwLower.includes(' ') ? 18 : (6 + kwLower.length);
