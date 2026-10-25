@@ -220,7 +220,7 @@ function initSelfDefendingShield() {
 // ==========================================
 // OTA AUTO-UPDATE SYSTEM (IN-APP CLOUD SYNC)
 // ==========================================
-const CURRENT_APP_VERSION = "2.5.3";
+const CURRENT_APP_VERSION = "2.5.4";
 
 function compareVersions(v1, v2) {
     if (!v1 || !v2) return 0;
@@ -696,8 +696,42 @@ const REVOKED_KEYS = [
     'ZERO-PRO-ADMIN-VIP-2026',
     'ZERO-PRO-DEV-MASTER-9999',
     'ZERO-PRO-VIP-PERMANENT',
-    'ZERO-PRO-8492-HIEU-9F2A'
+    'ZERO-PRO-8492-HIEU-9F2A',
+    'ZERO-ULTRA-8899-VIP-DEV',
+    'ZERO-PRO-DEV-INTERNAL-PASS'
 ];
+
+function isKeyRevoked(k) {
+    if (!k) return false;
+    const clean = String(k).trim().toUpperCase();
+    if (REVOKED_KEYS.includes(clean)) return true;
+    if (clean.includes('AUTO-DEV') || clean.includes('VIP-DEV') || clean.includes('DEV99') || clean.includes('INTERNAL-PASS')) return true;
+    return false;
+}
+window.isKeyRevoked = isKeyRevoked;
+
+function purgeRevokedLicense() {
+    try {
+        localStorage.removeItem('zerostudio_pro_license');
+        localStorage.removeItem('zerostudio_license_sig');
+        localStorage.removeItem('zerostudio_signed_token');
+        localStorage.removeItem('zerostudio_is_founder');
+        localStorage.removeItem('zerostudio_activation_cert');
+        localStorage.removeItem('zerostudio_license_activated_at');
+        localStorage.removeItem('zerostudio_license_expires_at');
+        localStorage.removeItem('zerostudio_test_tier');
+        sessionStorage.removeItem('zerostudio_renewal_dismissed');
+    } catch (_) {}
+    if (typeof getBridgeBaseUrl === 'function') {
+        getBridgeBaseUrl().then(bridge => {
+            fetch(`${bridge}/api/delete-license`, { method: 'POST' }).catch(() => {});
+        }).catch(() => {});
+    }
+    if (typeof updateProHeaderBadge === 'function') {
+        updateProHeaderBadge();
+    }
+}
+window.purgeRevokedLicense = purgeRevokedLicense;
 
 function getLicenseLifecycleInfo() {
     const key = localStorage.getItem('zerostudio_pro_license');
@@ -705,6 +739,10 @@ function getLicenseLifecycleInfo() {
         return { tier: 'free', status: 'free', isFounder: false, daysRemaining: 0, expiresAt: null, formattedExpiry: '' };
     }
     const cleanKey = key.trim().toUpperCase();
+    if (isKeyRevoked(cleanKey)) {
+        purgeRevokedLicense();
+        return { tier: 'free', status: 'free', isFounder: false, daysRemaining: 0, expiresAt: null, formattedExpiry: '' };
+    }
 
     // Check if Founder (Lifetime Early Adopter)
     const isExplicitFounder = cleanKey.includes('FOUNDER') || cleanKey.includes('MASTER') || cleanKey.includes('ADMIN') || localStorage.getItem('zerostudio_is_founder') === 'true';
@@ -774,8 +812,8 @@ function getProActiveStatus() {
     const key = localStorage.getItem('zerostudio_pro_license');
     if (!key) return false;
     const cleanKey = key.trim().toUpperCase();
-    if (REVOKED_KEYS.includes(cleanKey)) {
-        localStorage.removeItem('zerostudio_pro_license');
+    if (isKeyRevoked(cleanKey)) {
+        purgeRevokedLicense();
         return false;
     }
     const isValid = (cleanKey.startsWith('ZERO-PRO-') || cleanKey.startsWith('ZERO-ULTRA-')) && cleanKey.length >= 14;
@@ -813,8 +851,8 @@ function getUltraActiveStatus() {
     const key = localStorage.getItem('zerostudio_pro_license');
     if (!key) return false;
     const cleanKey = key.trim().toUpperCase();
-    if (REVOKED_KEYS.includes(cleanKey)) {
-        localStorage.removeItem('zerostudio_pro_license');
+    if (isKeyRevoked(cleanKey)) {
+        purgeRevokedLicense();
         return false;
     }
 
@@ -3680,7 +3718,7 @@ window.activateLicenseKey = async function() {
         return;
     }
 
-    if (REVOKED_KEYS.includes(key)) {
+    if (isKeyRevoked(key)) {
         failedLicenseAttempts++;
         if (failedLicenseAttempts >= 5) {
             window.triggerPermanentLockdown('Cố tình tấn công Brute-force mã bản quyền thu hồi (5 lần thất bại)');
@@ -3796,7 +3834,7 @@ window.activateLicenseKey = async function() {
 // TRIPLE-LOCK PERMANENT LICENSE SYNC
 // ==========================================
 async function syncLicenseWithDisk(key) {
-    if (!key || (!key.startsWith('ZERO-PRO-') && !key.startsWith('ZERO-ULTRA-')) || REVOKED_KEYS.includes(key.trim().toUpperCase())) return;
+    if (!key || (!key.startsWith('ZERO-PRO-') && !key.startsWith('ZERO-ULTRA-')) || isKeyRevoked(key)) return;
     try {
         const bridgeUrl = await getBridgeBaseUrl();
         await fetch(`${bridgeUrl}/api/save-license`, {
@@ -3817,8 +3855,11 @@ async function loadPermanentDiskLicense() {
 
     // 0. Purge any leaked or revoked key immediately
     const existingKey = localStorage.getItem('zerostudio_pro_license');
-    if (existingKey && REVOKED_KEYS.includes(existingKey.trim().toUpperCase())) {
-        localStorage.removeItem('zerostudio_pro_license');
+    if (existingKey && isKeyRevoked(existingKey)) {
+        purgeRevokedLicense();
+        if (typeof showToast === 'function') {
+            showToast('Bản quyền Ultra không hợp lệ hoặc đã bị vô hiệu hóa do khai thác lỗ hổng. Hệ thống đã đưa tài khoản về gói Miễn Phí!', 'error');
+        }
     }
 
     // 1. Check local bridge on disk first (survives browser cache wipes)
@@ -3832,7 +3873,7 @@ async function loadPermanentDiskLicense() {
         }
         if (res.ok) {
             const data = await res.json();
-            if (data.has_license && data.license_key && !REVOKED_KEYS.includes(data.license_key.trim().toUpperCase())) {
+            if (data.has_license && data.license_key && !isKeyRevoked(data.license_key)) {
                 localStorage.setItem('zerostudio_pro_license', data.license_key);
                 const deviceId = getDeviceFingerprint();
                 localStorage.setItem('zerostudio_license_sig', generateLicenseSignature(data.license_key, deviceId));
@@ -3844,7 +3885,7 @@ async function loadPermanentDiskLicense() {
 
     // 2. Fallback to localStorage
     const localKey = localStorage.getItem('zerostudio_pro_license');
-    if (localKey && (localKey.startsWith('ZERO-PRO-') || localKey.startsWith('ZERO-ULTRA-')) && !REVOKED_KEYS.includes(localKey.trim().toUpperCase())) {
+    if (localKey && (localKey.startsWith('ZERO-PRO-') || localKey.startsWith('ZERO-ULTRA-')) && !isKeyRevoked(localKey)) {
         const deviceId = getDeviceFingerprint();
         if (!localStorage.getItem('zerostudio_license_sig')) {
             localStorage.setItem('zerostudio_license_sig', generateLicenseSignature(localKey, deviceId));
@@ -6218,7 +6259,7 @@ let deferredPwaPrompt = null;
 
 if ('serviceWorker' in navigator && (window.location.protocol.startsWith('http') || window.location.protocol.startsWith('https'))) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=2.5.3').then(reg => { reg.update(); return reg; })
+        navigator.serviceWorker.register('./sw.js?v=2.5.4').then(reg => { reg.update(); return reg; })
             .then(reg => console.log('[PWA] Service Worker registered with scope:', reg.scope))
             .catch(err => console.log('[PWA] Service Worker registration failed:', err));
     });

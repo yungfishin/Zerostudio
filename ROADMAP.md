@@ -18,6 +18,7 @@
 | **v2.5.1** | 2026-10-25 | Xóa bỏ hoàn toàn backdoor thanh toán (`confirmDev` / `AUTO-DEV99`), bảo vệ nghiêm ngặt chỉ cấp key khi SePAY xác nhận có biến động số dư thực tế tại MB Bank. |
 | **v2.5.2** | 2026-10-25 | Bộ đếm 100 suất Founder Neon Gradient thời gian thực: tự động chuyển đổi sang giá tiêu chuẩn khi đạt mốc 100 suất. |
 | **v2.5.3** | 2026-10-25 | **Đồng bộ hóa 100% Đa Ngôn Ngữ (vi, en, zh, ja)** trên toàn bộ giao diện, bảng giá, bộ đếm, form thanh toán và công cụ; sửa triệt để lỗi chữ Trung hiển thị nhầm. |
+| **v2.5.4** | 2026-10-25 | **Thu hồi & Kick vĩnh viễn key khai thác trái phép (`ZERO-ULTRA-8899-VIP-DEV`)**, cơ chế Auto-Purge Revoked Keys; sửa lỗi thẻ Antiban Video và vượt qua 100% 7 bộ kiểm thử Playwright. |
 
 ---
 

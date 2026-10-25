@@ -14,8 +14,18 @@ const REVOKED_KEYS = [
     'ZERO-PRO-ADMIN-VIP-2026',
     'ZERO-PRO-DEV-MASTER-9999',
     'ZERO-PRO-VIP-PERMANENT',
-    'ZERO-PRO-8492-HIEU-9F2A'
+    'ZERO-PRO-8492-HIEU-9F2A',
+    'ZERO-ULTRA-8899-VIP-DEV',
+    'ZERO-PRO-DEV-INTERNAL-PASS'
 ];
+
+function isKeyRevoked(k) {
+    if (!k) return false;
+    const clean = String(k).trim().toUpperCase();
+    if (REVOKED_KEYS.includes(clean)) return true;
+    if (clean.includes('AUTO-DEV') || clean.includes('VIP-DEV') || clean.includes('DEV99') || clean.includes('INTERNAL-PASS')) return true;
+    return false;
+}
 
 exports.handler = async function(event, context) {
     const headers = {
@@ -90,7 +100,7 @@ exports.handler = async function(event, context) {
     }
 
     // 2. Check revoked keys
-    if (REVOKED_KEYS.includes(licenseKey)) {
+    if (isKeyRevoked(licenseKey)) {
         return {
             statusCode: 403,
             headers,

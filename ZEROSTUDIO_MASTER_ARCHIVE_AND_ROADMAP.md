@@ -250,6 +250,7 @@ mindmap
 | **v2.5.1** | 2026-10-25 | Loại bỏ triệt để lỗ hổng thanh toán (Zero Bypass Backdoor), chặn hoàn toàn việc tự cấp mã khi chưa thanh toán MB Bank. |
 | **v2.5.2** | 2026-10-25 | Tích hợp bộ đếm 100 suất Founder Neon Gradient thời gian thực, tự động chuyển đổi sang giá tiêu chuẩn khi chạm mốc 100 suất. |
 | **v2.5.3** | 2026-10-25 | **Đồng bộ hóa 100% Đa Ngôn Ngữ (vi, en, zh, ja)** trên toàn bộ giao diện, bảng giá, bộ đếm, form thanh toán và công cụ; sửa triệt để lỗi chữ Trung hiển thị nhầm. |
+| **v2.5.4** | 2026-10-25 | **Thu hồi & Kick vĩnh viễn key khai thác trái phép (`ZERO-ULTRA-8899-VIP-DEV`)**, cơ chế Auto-Purge Revoked Keys; sửa lỗi thẻ Antiban Video và vượt qua 100% 7 bộ kiểm thử Playwright. |
 
 ---
 

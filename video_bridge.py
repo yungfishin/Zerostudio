@@ -121,15 +121,33 @@ def save_device_registry(registry):
     except Exception as e:
         print(f"[SECURITY] Error writing device registry: {e}")
 
+REVOKED_KEYS = {
+    'ZERO-PRO-ADMIN-VIP-2026',
+    'ZERO-PRO-DEV-MASTER-9999',
+    'ZERO-PRO-VIP-PERMANENT',
+    'ZERO-PRO-8492-HIEU-9F2A',
+    'ZERO-ULTRA-8899-VIP-DEV',
+    'ZERO-PRO-DEV-INTERNAL-PASS'
+}
+
+def is_license_revoked(k):
+    if not k:
+        return False
+    clean = str(k).strip().upper()
+    if clean in REVOKED_KEYS:
+        return True
+    if any(pat in clean for pat in ['AUTO-DEV', 'VIP-DEV', 'DEV99', 'INTERNAL-PASS']):
+        return True
+    return False
+
 def verify_and_bind_device(license_key, device_id, client_ip):
     clean_key = str(license_key).strip().upper()
-    REVOKED = {'ZERO-PRO-ADMIN-VIP-2026', 'ZERO-PRO-DEV-MASTER-9999', 'ZERO-PRO-VIP-PERMANENT', 'ZERO-PRO-8492-HIEU-9F2A'}
-    if clean_key in REVOKED:
+    if is_license_revoked(clean_key):
         return {
             'success': False,
             'revoked': True,
             'error': 'KEY_REVOKED',
-            'message': 'Mã bản quyền này đã bị THU HỒI / VÔ HIỆU HÓA do bị rò rỉ công khai!'
+            'message': 'Mã bản quyền này đã bị THU HỒI / VÔ HIỆU HÓA do khai thác lỗ hổng hoặc bị hủy bỏ!'
         }
 
     # Cryptographic Checksum Integrity Verification (Anti-Forged / Anti-Crack)
@@ -574,8 +592,6 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             license_file = Path(__file__).parent / 'license.key'
             key = None
 
-            REVOKED = {'ZERO-PRO-ADMIN-VIP-2026', 'ZERO-PRO-DEV-MASTER-9999', 'ZERO-PRO-VIP-PERMANENT', 'ZERO-PRO-8492-HIEU-9F2A'}
-
             if user_license_file.exists():
                 try:
                     key = user_license_file.read_text(encoding='utf-8').strip()
@@ -587,7 +603,7 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 except Exception:
                     pass
 
-            if key in REVOKED:
+            if is_license_revoked(key):
                 try:
                     if license_file.exists(): license_file.unlink()
                 except Exception: pass
@@ -1031,12 +1047,15 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             return
 
         if parsed.path == '/api/save-license':
-            REVOKED = {'ZERO-PRO-ADMIN-VIP-2026', 'ZERO-PRO-DEV-MASTER-9999', 'ZERO-PRO-VIP-PERMANENT', 'ZERO-PRO-8492-HIEU-9F2A'}
             try:
                 data = json.loads(post_data.decode('utf-8'))
                 key = data.get('license_key', '').strip()
 
-                if key in REVOKED:
+                if is_license_revoked(key):
+                    user_license_file = Path.home() / '.zerostudio_license'
+                    if user_license_file.exists():
+                        try: user_license_file.unlink()
+                        except Exception: pass
                     self.send_response(403)
                     self._send_cors_headers()
                     self.send_header('Content-Type', 'application/json')
