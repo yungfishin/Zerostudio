@@ -658,6 +658,7 @@ function initAntiDevToolsShield() {
     // 3. Active DevTools Detection (Window Dimension delta)
     let devToolsAlertTimer = null;
     function checkDevToolsOpen() {
+        if (window.self !== window.top) return; // Ignore inside preview iframes (Netlify dashboard, emulators)
         if (window.outerWidth < 500 || window.outerHeight < 400) return;
         const threshold = 160;
         const widthDelta = window.outerWidth - window.innerWidth > threshold;
@@ -699,9 +700,13 @@ const REVOKED_KEYS = [
 ];
 
 function getProActiveStatus() {
-    const testTier = localStorage.getItem('zerostudio_test_tier');
-    if (testTier === 'free') return false;
-    if (testTier === 'pro' || testTier === 'ultra') return true;
+    // 1. Layer 2 & 3: Cryptographic RSA-2048 Signed Token Verification
+    if (window.ZeroDRMCrypto) {
+        const claims = window.ZeroDRMCrypto.getCachedClaims();
+        if (claims && (claims.tier === 'pro' || claims.tier === 'ultra')) {
+            return true;
+        }
+    }
 
     const key = localStorage.getItem('zerostudio_pro_license');
     if (!key) return false;
@@ -729,9 +734,13 @@ function getProActiveStatus() {
 }
 
 function getUltraActiveStatus() {
-    const testTier = localStorage.getItem('zerostudio_test_tier');
-    if (testTier === 'free' || testTier === 'pro') return false;
-    if (testTier === 'ultra') return true;
+    // 1. Layer 2 & 3: Cryptographic RSA-2048 Signed Token Verification
+    if (window.ZeroDRMCrypto) {
+        const claims = window.ZeroDRMCrypto.getCachedClaims();
+        if (claims && claims.tier === 'ultra') {
+            return true;
+        }
+    }
 
     const key = localStorage.getItem('zerostudio_pro_license');
     if (!key) return false;
@@ -811,9 +820,21 @@ document.addEventListener('DOMContentLoaded', () => {
     initUpscaleControls();
     initVideoStudio();
     initCinemaIntro();
-    setTimeout(() => {
+    // Verify stored Cryptographic Token on launch
+    setTimeout(async () => {
+        const storedToken = localStorage.getItem('zerostudio_signed_token');
+        const hwid = typeof getDeviceFingerprint === 'function' ? getDeviceFingerprint() : '';
+        if (storedToken && window.ZeroDRMCrypto) {
+            const vRes = await window.ZeroDRMCrypto.verifyToken(storedToken, hwid);
+            if (!vRes.valid) {
+                console.warn('[DRM] Stored token invalid or tampered:', vRes.reason);
+                localStorage.removeItem('zerostudio_signed_token');
+            } else {
+                updateProHeaderBadge();
+            }
+        }
         if (typeof checkForAppUpdates === 'function') checkForAppUpdates(false);
-    }, 3000);
+    }, 800);
 });
 
 function initTabs() {
@@ -3255,73 +3276,7 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
     showToast("XÁC THỰC THÀNH CÔNG! Đã nhận đủ 299.000đ từ MB Bank. Bản Pro đã kích hoạt vĩnh viễn!", "success");
 }
 
-window.setTestTier = async function(tier) {
-    const bridgeUrl = await getBridgeBaseUrl();
-    const deviceId = getDeviceFingerprint();
-    if (tier === 'free') {
-        localStorage.setItem('zerostudio_test_tier', 'free');
-        localStorage.removeItem('zerostudio_pro_license');
-        localStorage.removeItem('zerostudio_license_sig');
-        try {
-            await fetch(`${bridgeUrl}/api/delete-license`, { method: 'POST' });
-        } catch {}
-        updateProHeaderBadge();
-        closeProModal();
-        showToast('🎯 ĐÃ CHUYỂN SANG CHẾ ĐỘ KHÁCH FREE (0đ) ĐỂ TEST!', 'info');
-        setTimeout(() => window.location.reload(), 400);
-    } else if (tier === 'pro') {
-        localStorage.setItem('zerostudio_test_tier', 'pro');
-        const key = 'ZERO-PRO-DEMO-TESTER-VIP';
-        localStorage.setItem('zerostudio_pro_license', key);
-        localStorage.setItem('zerostudio_license_sig', generateLicenseSignature(key, deviceId));
-        updateProHeaderBadge();
-        closeProModal();
-        showToast('⚡ ĐÃ CHUYỂN SANG GÓI PRO (299k) ĐỂ TEST!', 'success');
-        setTimeout(() => window.location.reload(), 400);
-    } else if (tier === 'ultra') {
-        localStorage.removeItem('zerostudio_test_tier');
-        const key = 'ZERO-PRO-HIEU-MASTER-2026-SECURE';
-        localStorage.setItem('zerostudio_pro_license', key);
-        localStorage.setItem('zerostudio_license_sig', generateLicenseSignature(key, deviceId));
-        try {
-            await fetch(`${bridgeUrl}/api/save-license`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ license_key: key })
-            });
-        } catch {}
-        updateProHeaderBadge();
-        closeProModal();
-        showToast('👑 ĐÃ KHÔI PHỤC TOÀN QUYỀN ULTRA MMO MASTER (ADMIN)!', 'success');
-        setTimeout(() => window.location.reload(), 400);
-    }
-};
-
-window.deactivateProToFree = async function() {
-    await window.setTestTier('free');
-};
-
-// Secret Admin Key combination: Ctrl + Shift + Alt + Z to reveal test tier deck
-window.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.shiftKey && e.altKey && (e.key === 'Z' || e.key === 'z')) {
-        e.preventDefault();
-        const decks = document.querySelectorAll('.admin-test-tier-deck');
-        let isNowVisible = false;
-        decks.forEach(d => {
-            if (d.style.display === 'none' || d.style.getPropertyValue('display') === 'none') {
-                d.style.setProperty('display', 'block', 'important');
-                isNowVisible = true;
-            } else {
-                d.style.setProperty('display', 'none', 'important');
-            }
-        });
-        if (isNowVisible) {
-            showToast('🛠 CHẾ ĐỘ NHÀ PHÁT TRIỂN (ADMIN): Đã mở bảng chuyển đổi Test Tier!', 'info');
-        } else {
-            showToast('🔒 CHẾ ĐỘ NHÀ PHÁT TRIỂN: Đã ẩn bảng Test Tier.', 'info');
-        }
-    }
-});
+// [STRIPPED PRODUCTION] Dev test tier functions removed for production security
 
 window.copyPaymentField = function(text, label) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -3470,14 +3425,7 @@ window.activateLicenseKey = async function() {
         return;
     }
 
-    // Secret Admin Passcode to toggle dev deck
-    if (key === 'ADMIN2026') {
-        const decks = document.querySelectorAll('.admin-test-tier-deck');
-        decks.forEach(d => d.style.setProperty('display', 'block', 'important'));
-        showToast('🛠 ADMIN DEV: Đã mở thanh công cụ chuyển đổi Test Tier!', 'info');
-        input.value = '';
-        return;
-    }
+// [STRIPPED PRODUCTION] Admin debug backdoor removed
 
     // Cryptographic Checksum Integrity Verification (Anti-Crack / Anti-Forged Key)
     const isChecksumValid = await verifyKeyIntegrityChecksumClient(key);
@@ -3541,6 +3489,25 @@ window.activateLicenseKey = async function() {
         const tier = (key.startsWith('ZERO-ULTRA-') || key.includes('MASTER') || key.includes('ADMIN')) ? 'Ultra' : 'Pro';
         localStorage.setItem('zerostudio_pro_license', key);
         localStorage.removeItem('zerostudio_test_tier');
+
+        // Layer 2 & 3: Mint & Save Cryptographic RSA-2048 Token
+        try {
+            const bridgeUrl = await getBridgeBaseUrl();
+            const tokenRes = await fetch(`${bridgeUrl}/api/save-license`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ license_key: key, hardware_id: deviceId })
+            });
+            if (tokenRes.ok) {
+                const tokenData = await tokenRes.json();
+                if (tokenData.token) {
+                    localStorage.setItem('zerostudio_signed_token', tokenData.token);
+                    if (window.ZeroDRMCrypto) {
+                        await window.ZeroDRMCrypto.verifyToken(tokenData.token, deviceId);
+                    }
+                }
+            }
+        } catch (_) {}
 
         // Generate and save hardware-bound signature
         const sig = generateLicenseSignature(key, deviceId);

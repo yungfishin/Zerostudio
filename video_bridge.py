@@ -14,6 +14,60 @@ import time
 import re
 import hashlib
 from datetime import datetime
+import secrets
+import base64
+
+# =========================================================================
+# LAYER 2 & 4: CRYPTOGRAPHIC TOKEN MINTING & ANTI-CRACKING PROCESS SCANNER
+# =========================================================================
+def scan_cracking_tools() -> tuple[bool, str]:
+    if sys.platform != 'win32':
+        return False, ''
+    try:
+        output = subprocess.check_output('tasklist /NH', shell=True, text=True, errors='ignore').lower()
+        BLACKLISTED_PROCESSES = [
+            'x64dbg.exe', 'x32dbg.exe', 'ida.exe', 'ida64.exe', 
+            'cheatengine-x86_64.exe', 'cheatengine-i386.exe',
+            'httpdebuggerui.exe', 'fiddler.exe'
+        ]
+        for proc in BLACKLISTED_PROCESSES:
+            if proc in output:
+                return True, f"Phát hiện công cụ dịch ngược/gỡ lỗi đang chạy: {proc}"
+    except Exception:
+        pass
+    return False, ''
+
+def mint_license_token(key: str, hwid: str) -> str:
+    if not key:
+        return ''
+    try:
+        from cryptography.hazmat.primitives.asymmetric import padding
+        from cryptography.hazmat.primitives import hashes, serialization
+        key_path = Path(__file__).parent / 'assets' / 'keys' / 'drm_private_key.pem'
+        if not key_path.exists():
+            return ''
+        priv_pem = key_path.read_bytes()
+        priv_key = serialization.load_pem_private_key(priv_pem, password=None)
+
+        tier = 'ultra' if 'ULTRA' in key.upper() else 'pro'
+        claims = {
+            'v': 1,
+            'hwid': hwid or 'DEV-DESKTOP-BOUND',
+            'tier': tier,
+            'key': key,
+            'iat': int(time.time()),
+            'exp': int(time.time()) + 315360000,
+            'nonce': secrets.token_hex(8)
+        }
+        claims_bytes = json.dumps(claims, separators=(',', ':')).encode('utf-8')
+        b64_claims = base64.urlsafe_b64encode(claims_bytes).decode('utf-8').rstrip('=')
+        sig = priv_key.sign(claims_bytes, padding.PKCS1v15(), hashes.SHA256())
+        b64_sig = base64.urlsafe_b64encode(sig).decode('utf-8').rstrip('=')
+        return f"ZS-LIC.{b64_claims}.{b64_sig}"
+    except Exception as e:
+        print("[DRM ERROR] Failed to mint token:", e)
+        return ''
+
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 import yt_dlp
@@ -355,6 +409,22 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             except Exception:
                 pass
         
+        # 4. SCAN DESKTOP FOR ACTIVE CRACKING TOOLS & REVERSE-ENGINEERING (LAYER 4)
+        is_tool, tool_reason = scan_cracking_tools()
+        if is_tool:
+            ban_info = save_banned_ip(client_ip, tool_reason)
+            self.send_response(403)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'error': 'CRACKING_TOOL_DETECTED',
+                'message': f'Hệ thống từ chối thực thi: {tool_reason}',
+                'banned_ip': client_ip,
+                'ban_info': ban_info
+            }).encode())
+            return True
+
         detected_attack = scan_malicious_payload(payload_to_scan)
         if detected_attack:
             ban_info = save_banned_ip(client_ip, f"Tấn công Fuzzing / Injection / Path Traversal ({detected_attack})")
@@ -537,10 +607,13 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             is_valid_key = bool(key and (key.startswith('ZERO-PRO-') or key.startswith('ZERO-ULTRA-')))
+            tier = 'ultra' if (key and (key.startswith('ZERO-ULTRA-') or 'MASTER' in key or 'ADMIN' in key)) else ('pro' if is_valid_key else 'free')
+            token = mint_license_token(key, 'DEV-DESKTOP-BOUND') if is_valid_key else ''
             self.wfile.write(json.dumps({
                 'has_license': is_valid_key,
                 'license_key': key if is_valid_key else None,
-                'tier': 'ultra' if (key and (key.startswith('ZERO-ULTRA-') or 'MASTER' in key or 'ADMIN' in key)) else ('pro' if is_valid_key else 'free')
+                'token': token,
+                'tier': tier
             }).encode())
             return
 
@@ -985,11 +1058,18 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                         except Exception:
                             pass
 
+                    token = mint_license_token(key, data.get('hardware_id', 'DEV-DESKTOP-BOUND'))
+                    tier = 'ultra' if 'ULTRA' in key.upper() else 'pro'
                     self.send_response(200)
                     self._send_cors_headers()
                     self.send_header('Content-Type', 'application/json')
                     self.end_headers()
-                    self.wfile.write(json.dumps({'success': True, 'saved': True}).encode())
+                    self.wfile.write(json.dumps({
+                        'success': True,
+                        'saved': True,
+                        'token': token,
+                        'tier': tier
+                    }).encode())
                     return
             except Exception as e:
                 self.send_response(500)

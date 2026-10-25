@@ -40,6 +40,9 @@
     <script src="./libs/pdf-lib.min.js"></script>
     <script src="./libs/pdf.min.js"></script>
     <script src="./libs/tesseract.min.js"></script>
+    <!-- Cryptographic Verification Core (RSA-2048 Hybrid Authentication & Anti-Debug) -->
+    <script src="./assets/keys/drm_public_key.js"></script>
+    <script src="./assets/keys/drm_verifier.js"></script>
     <style>
         :root {
             --bg-void: #050608;
@@ -3870,57 +3873,7 @@
             flex-wrap: wrap;
         }
 
-        /* Admin Test Tier Deck */
-        .admin-test-tier-deck {
-            margin-top: 1.5rem;
-            padding: 12px 16px;
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px dashed rgba(168, 85, 247, 0.45);
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .test-tier-header {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.76rem;
-            font-weight: 700;
-            color: #cbd5e1;
-            letter-spacing: 0.04em;
-        }
-
-        .test-tier-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .test-tier-pill {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 9999px;
-            padding: 6px 14px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: #e2e8f0;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .test-tier-pill:hover {
-            background: rgba(255, 255, 255, 0.14);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: #ffffff;
-            transform: translateY(-1px);
-        }
+        
 
         /* ========================================================
            CYBER SECURITY PERMANENT BAN LOCKDOWN SYSTEM
@@ -7035,27 +6988,7 @@
                 </div>
                 </div>
 
-                <!-- Admin Test Tier Switcher Bar (Hidden by default, unlocked only via Admin hotkey Ctrl+Shift+Alt+Z) -->
-                <div class="admin-test-tier-deck" id="admin-test-tier-deck-1" style="display: none !important;">
-                    <div class="test-tier-header">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px; color: #a855f7;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span>CÔNG CỤ CHUYỂN ĐỔI CHẾ ĐỘ TEST (ADMIN DEV ONLY):</span>
-                    </div>
-                    <div class="test-tier-buttons">
-                        <button class="test-tier-pill" onclick="setTestTier('free')">
-                            <span class="chip-dot" style="background: #94a3b8;"></span>
-                            Xem Giao Diện Free (0đ)
-                        </button>
-                        <button class="test-tier-pill" onclick="setTestTier('pro')">
-                            <span class="chip-dot" style="background: #10b981;"></span>
-                            Xem Giao Diện Pro (299k)
-                        </button>
-                        <button class="test-tier-pill" onclick="setTestTier('ultra')">
-                            <span class="chip-dot" style="background: #f59e0b;"></span>
-                            Khôi Phục Gói Ultra (Admin 699k)
-                        </button>
-                    </div>
-                </div>
+                
             </div>
 
             <!-- SUB-VIEW 2: THANH TOÁN TỰ ĐỘNG VIETQR -->
@@ -7187,27 +7120,7 @@
                     <button class="btn-outline" onclick="closeProModal()">Đóng Cửa Sổ</button>
                 </div>
 
-                <!-- Admin Test Tier Switcher Bar (Hidden by default, unlocked only via Admin hotkey Ctrl+Shift+Alt+Z) -->
-                <div class="admin-test-tier-deck" id="admin-test-tier-deck-1" style="display: none !important;">
-                    <div class="test-tier-header">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px; color: #a855f7;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span>CÔNG CỤ CHUYỂN ĐỔI CHẾ ĐỘ TEST (ADMIN DEV ONLY):</span>
-                    </div>
-                    <div class="test-tier-buttons">
-                        <button class="test-tier-pill" onclick="setTestTier('free')">
-                            <span class="chip-dot" style="background: #94a3b8;"></span>
-                            Xem Giao Diện Free (0đ)
-                        </button>
-                        <button class="test-tier-pill" onclick="setTestTier('pro')">
-                            <span class="chip-dot" style="background: #10b981;"></span>
-                            Xem Giao Diện Pro (299k)
-                        </button>
-                        <button class="test-tier-pill" onclick="setTestTier('ultra')">
-                            <span class="chip-dot" style="background: #f59e0b;"></span>
-                            Khôi Phục Gói Ultra (Admin 699k)
-                        </button>
-                    </div>
-                </div>
+                
                 </div>
             </div>
         </div>

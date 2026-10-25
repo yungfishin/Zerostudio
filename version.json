@@ -1,15 +1,14 @@
 {
-  "version": "2.4.0",
+  "version": "2.5.0",
   "release_date": "2026-10-25",
-  "title": "Bản Nâng Cấp Tứ Trụ Thương Mại: PWA, Affiliate 30%, Open Graph & Webhook Báo Ting Ting",
+  "title": "Bản Nâng Cấp An Ninh Mạng 4 Lớp: RSA-2048 Digital Signature & Anti-DevTools Freeze",
   "changelog": [
-    "Tích hợp PWA (Progressive Web App): Cài đặt 1-click thành App độc lập trên điện thoại & máy tính, chạy mượt cả khi mất mạng",
-    "Hệ thống Tiếp thị liên kết (Affiliate): Chiết khấu 10% cho khách mua qua link, trích 30% hoa hồng trực tiếp cho đối tác",
-    "Bộ thẻ Open Graph & Social Preview Card (1200x630px) phong cách Cyberpunk Obsidian tăng 3-5x tỷ lệ click trên Zalo/Facebook",
-    "Động cơ Webhook Thông Báo Tức Thời (Telegram / Google Sheets): Báo ting ting ngay khi có đơn hàng hoặc đánh giá mới",
-    "Lưu vết đơn hàng tự động vào đĩa cứng qua Video Bridge (/api/orders)",
-    "Bức Tường Đánh Giá Khách Hàng 5 Sao & Phân Trang Load More",
-    "Bảo mật WebAssembly Binary DRM Core v2, Anti-DevTools & Client Fingerprinting nguyên vẹn 100%"
+    "Lớp 1: Triệt tiêu 100% mã nguồn test/admin, xóa bỏ hoàn toàn thanh Test Tier và Passcode cửa sau",
+    "Lớp 1: Tích hợp Bẫy Anti-Debugging Debugger Freeze làm đơ tab trình duyệt nếu cố tình F12 soi mã",
+    "Lớp 2: Máy chủ cấp phát Token bản quyền ký số bằng Khóa Riêng RSA-2048 (Digital Signature)",
+    "Lớp 3: Lõi WebCrypto/WASM nhúng Khóa Công Khai (Public Key) tự động chặn đứng mọi hành vi sửa biến JS",
+    "Lớp 4: Lớp phòng thủ Desktop quét phát hiện công cụ dịch ngược x64dbg/IDA Pro/Cheat Engine",
+    "Tứ Trụ Thương Mại: PWA Cài App 1-Click, Affiliate 30% Hoa Hồng, Open Graph 1200x630 & Webhook Báo Ting Ting"
   ],
   "web_url": "https://zerostu.netlify.app",
   "desktop_zip_url": "https://zerostu.netlify.app/ZeroStudio-Pro-Desktop.zip",
