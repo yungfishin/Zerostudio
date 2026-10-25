@@ -3061,6 +3061,12 @@ let vietqrPollInterval = null;
 let isCheckingPayment = false;
 
 function updateProHeaderBadge() {
+    // 0. Auto-sync dynamic version badge on logo
+    const brandVer = document.querySelector('.brand-version');
+    if (brandVer && typeof CURRENT_APP_VERSION !== 'undefined') {
+        brandVer.textContent = `v${CURRENT_APP_VERSION} OTA WASM`;
+    }
+
     const badgeBtn = document.querySelector('.btn-pro-unlock');
     if (!badgeBtn) return;
 
