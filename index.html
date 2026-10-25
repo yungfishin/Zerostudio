@@ -4781,6 +4781,124 @@
             color: #f1f5f9;
         }
 
+        /* License Renewal Floating Glass Banner */
+        .license-renewal-banner {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99997;
+            background: rgba(15, 23, 42, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 9999px;
+            padding: 8px 16px 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: otaSlideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 92vw;
+            transition: all 0.3s ease;
+        }
+
+        .license-renewal-banner.banner-warning {
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(245, 158, 11, 0.25);
+        }
+
+        .license-renewal-banner.banner-danger {
+            border: 1px solid rgba(239, 68, 68, 0.55);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(239, 68, 68, 0.35);
+        }
+
+        .renewal-badge {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            white-space: nowrap;
+        }
+
+        .banner-warning .renewal-badge {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: #1e1b4b;
+        }
+
+        .banner-danger .renewal-badge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+        }
+
+        .renewal-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #e2e8f0;
+        }
+
+        .banner-warning .renewal-text strong {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+
+        .banner-danger .renewal-text strong {
+            color: #f87171;
+            font-weight: 700;
+        }
+
+        .renewal-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-renewal-action {
+            color: #ffffff;
+            border: none;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .banner-warning .btn-renewal-action {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .banner-danger .btn-renewal-action {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-renewal-action:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-renewal-close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 50%;
+            transition: color 0.2s ease;
+        }
+
+        .btn-renewal-close:hover {
+            color: #ffffff;
+        }
+
         /* Multi-Language Dropdown */
         .lang-dropdown-container {
             position: relative;
@@ -5352,6 +5470,19 @@
         <div class="ota-btn-group">
             <button class="btn-ota-update" onclick="applyOtaUpdate()">🚀 Cập Nhật 1-Click</button>
             <button class="btn-ota-close" onclick="dismissOtaBanner()" title="Đóng">✕</button>
+        </div>
+    </div>
+
+    <!-- 1.6. License Expiration & Renewal Floating Banner -->
+    <div id="license-renewal-banner" class="license-renewal-banner" style="display: none;">
+        <div class="renewal-badge" id="renewal-badge">GIA HẠN</div>
+        <div class="renewal-text">
+            <strong id="renewal-title-text">Bản quyền sắp hết hạn:</strong>
+            <span id="renewal-desc-text">Gói của bạn sẽ hết hạn sau vài ngày. Gia hạn ngay để không gián đoạn công việc!</span>
+        </div>
+        <div class="renewal-btn-group">
+            <button class="btn-renewal-action" id="btn-renewal-action" onclick="openRenewalCheckout()">⚡ Gia Hạn 1-Click (199k)</button>
+            <button class="btn-renewal-close" onclick="dismissRenewalBanner()" title="Đóng thông báo">✕</button>
         </div>
     </div>
 
@@ -6657,11 +6788,11 @@
                     <div class="step-icon-wrap" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2)); border-color: rgba(16, 185, 129, 0.35); color: #34d399;">
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
-                    <div class="step-title">Xuất File 4K & Bản Quyền Vĩnh Viễn</div>
-                    <div class="step-desc">Tải ngay video sạch không dính watermark hoặc file PDF siêu nét chuẩn nộp Dịch Vụ Công. Bản quyền Pro kích hoạt trực tiếp trên máy tính của bạn kèm hỗ trợ cập nhật thuật toán.</div>
+                    <div class="step-title">Xuất File 4K & Dùng Vĩnh Viễn</div>
+                    <div class="step-desc">Tải ngay video sạch không dính watermark hoặc file PDF siêu nét chuẩn nộp Dịch Vụ Công. Bản Pro ghi nhớ vĩnh viễn trên ổ cứng máy tính của bạn.</div>
                     <div class="step-metric-badge" style="color: #34d399; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 12px; height: 12px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        Bản Quyền Vĩnh Viễn Trên Máy
+                        Bảo Hành Trọn Đời
                     </div>
                 </div>
             </div>
@@ -6986,7 +7117,7 @@
                             <div style="font-weight: 800; color: #f59e0b; font-size: 0.95rem; letter-spacing: 0.02em;">YÊU CẦU ĐĂNG KÝ GÓI PRO</div>
                             <div style="color: #cbd5e1; font-size: 0.84rem; margin-top: 0.25rem; line-height: 1.4;">
                                 Bạn vừa chọn: <strong id="pro-trigger-feature-name" style="color: #e879f9; text-shadow: 0 0 10px rgba(232, 121, 249, 0.4);">...</strong>.<br>
-                                Vui lòng đăng ký kích hoạt gói <strong>ZeroStudio Pro (299.000đ - Bản quyền vĩnh viễn kèm 1 năm cập nhật OTA)</strong> để sử dụng tính năng này!
+                                Vui lòng đăng ký kích hoạt gói <strong>ZeroStudio Pro (299.000đ trọn đời)</strong> để sử dụng dịch vụ này!
                             </div>
                         </div>
                     </div>
@@ -7008,35 +7139,12 @@
                     </div>
                 </div>
 
-                <!-- Early Founder Privilege Banner (Transparency & FOMO) -->
-                <div class="founder-fomo-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.12)); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; text-align: left; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="font-size: 1.8rem; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));">🎁</span>
-                            <div>
-                                <div style="font-weight: 800; color: #fbbf24; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.03em; display: flex; align-items: center; gap: 8px;">
-                                    ĐẶC QUYỀN MỞ BÁN EARLY FOUNDER (GIỚI HẠN 100 SUẤT)
-                                </div>
-                                <div style="font-size: 0.83rem; color: #cbd5e1; margin-top: 3px; line-height: 1.4;">
-                                    Sở hữu vĩnh viễn phần mềm trên máy + Tặng kèm <strong style="color: #6ee7b7;">365 ngày cập nhật thuật toán OTA liên tục</strong>.<br>
-                                    <span style="color: #94a3b8; font-size: 0.78rem;">Sau 100 suất đầu tiên, hệ thống sẽ chuyển sang biểu phí thuê bao 299.000đ/năm.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
-                            <div style="background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(245, 158, 11, 0.5); border-radius: 10px; padding: 6px 12px; font-size: 0.8rem; color: #fef08a; font-weight: 700; white-space: nowrap;">
-                                🔥 Đã đăng ký: <span style="color: #f87171; font-weight: 900; font-size: 0.9rem;">63 / 100</span> suất
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Bento Pricing Comparison (3 Tiers: Free - Pro - Ultra) -->
                 <div class="pro-pricing-grid">
                     <!-- 1. Free Plan -->
                     <div class="pricing-card card-free">
                         <div class="pricing-badge">WEB FREE</div>
-                        <div class="pricing-price">0đ <span>/ Miễn phí</span></div>
+                        <div class="pricing-price">0đ <span>/ Vĩnh viễn</span></div>
                         <p class="pricing-desc">Phù hợp nhu cầu cá nhân xử lý tài liệu và video nhẹ hàng ngày.</p>
                         <ul class="pricing-features">
                             <li><svg class="check-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Gộp, tách PDF cơ bản</li>
@@ -7052,16 +7160,14 @@
                     <div class="pricing-card card-pro">
                         <div class="pro-corner-ribbon">VĂN PHÒNG & CREATOR</div>
                         <div class="pricing-badge pro-badge">DESKTOP PRO</div>
-                        <div class="pricing-price pro-price">299.000đ <span class="old-price">599.000đ</span> <span>/ Bản Quyền Vĩnh Viễn</span></div>
-                        <div style="font-size: 0.78rem; color: #c084fc; font-weight: 600; margin: -0.5rem 0 0.85rem 0; text-align: left;">🎁 Kèm 365 ngày cập nhật thuật toán OTA</div>
-                        <p class="pricing-desc">Dành cho Cá nhân, Kế toán & Creator cần tốc độ và tiện ích chuyên nghiệp.</p>
+                        <div class="pricing-price pro-price">299.000đ <span class="old-price">599.000đ</span> <span>/ Trọn đời</span></div>
+                        <p class="pricing-desc">Dành cho Cá nhân, Sinh viên & Văn phòng cần tốc độ và tiện ích.</p>
                         <ul class="pricing-features">
                             <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Tải video đơn lẻ không watermark không giới hạn</li>
-                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Nén PDF 3 Preset:</strong> Giảm tới 88% dung lượng chuẩn nộp thuế & hải quan</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Nén PDF 3 Preset:</strong> Giảm 88% dung lượng chuẩn in ấn & thuế</li>
                             <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Bóc tách phụ đề & dịch SRT:</strong> Trích xuất text đa ngôn ngữ</li>
-                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Nâng cấp 4K & Xóa Logo góc:</strong> Khử watermark cứng bằng AI Canvas</li>
-                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Bản quyền sở hữu vĩnh viễn trên 1 thiết bị</strong> (Đổi máy 1 click)</li>
-                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Miễn phí 1 năm (365 ngày)</strong> nhận cập nhật thuật toán OTA</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Nâng cấp 4K & Xóa Logo góc:</strong> Khử watermark cứng</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Bản quyền vĩnh viễn trên 1 thiết bị</li>
                         </ul>
                         <div class="pro-action-btns" style="margin-top: auto;">
                             <button class="btn-glow-action" style="width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899);" onclick="openVietQrCheckout('pro')">
@@ -7073,40 +7179,23 @@
 
                     <!-- 3. Ultra MMO Master Plan -->
                     <div class="pricing-card card-ultra">
-                        <div class="ultra-corner-ribbon" data-i18n="ultra_tier_badge">MMO & STUDIO CONTENT • KHUYÊN DÙNG</div>
+                        <div class="ultra-corner-ribbon" data-i18n="ultra_tier_badge">VUA LÁCH BẢN QUYỀN • KHUYÊN DÙNG</div>
                         <div class="pricing-badge ultra-badge">ULTRA MMO MASTER</div>
-                        <div class="pricing-price ultra-price">699.000đ <span class="old-price">1.490.000đ</span> <span>/ Bản Quyền Vĩnh Viễn</span></div>
-                        <div style="font-size: 0.78rem; color: #fbbf24; font-weight: 600; margin: -0.5rem 0 0.85rem 0; text-align: left;">👑 Kèm 365 ngày cập nhật thuật toán ưu tiên</div>
+                        <div class="pricing-price ultra-price">699.000đ <span class="old-price">1.490.000đ</span> <span>/ Trọn đời</span></div>
                         <p class="pricing-desc">Dành riêng cho Dân Reup MMO, Kênh Triệu View & Studio Content hàng loạt.</p>
                         <ul class="pricing-features">
                             <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Bàn Làm Việc Hàng Loạt:</strong> Treo máy chạy 500 file, chuông báo xong</li>
                             <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>AI Auto-Crop 9:16 Dual-Layer:</strong> Biến 16:9 sang 9:16 nền mờ caustics</li>
-                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Audio Pitch & Speed Randomizer:</strong> Đổi vi tần số (Pitch ±2.4%, EQ 8.5kHz) tối ưu tỷ lệ an toàn, vượt qua kiểm duyệt âm thanh tự động</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Audio Pitch & Speed Randomizer:</strong> Đổi vi tần số né quét âm thanh 100%</li>
                             <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Super Crawler:</strong> Cào cả kênh YouTube Shorts / Reels / TikTok có bộ lọc view</li>
                             <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Xóa Sub Chữ & Logo Cũ:</strong> Khử phụ đề tiếng Trung 1 click</li>
-                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Bản quyền 2 Thiết Bị đồng thời (PC + Laptop)</strong></li>
-                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Miễn phí 1 năm (365 ngày)</strong> nhận cập nhật thuật toán thích ứng ưu tiên</li>
+                            <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Bản quyền 2 Thiết Bị vĩnh viễn (PC + Laptop)</strong></li>
                         </ul>
                         <div class="pro-action-btns" style="margin-top: auto;">
                             <button class="btn-glow-action" style="width: 100%; background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);" onclick="openVietQrCheckout('ultra')">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                 <span data-i18n="btn_choose_ultra">Đăng Ký Gói Ultra (699k)</span>
                             </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Transparent Policy & Technical Disclaimer Deck -->
-                <div class="pricing-disclaimer-deck" style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: rgba(15, 23, 42, 0.65); border: 1px dashed rgba(148, 163, 184, 0.25); border-radius: 12px; font-size: 0.8rem; color: #94a3b8; text-align: left; line-height: 1.55;">
-                    <div style="display: flex; align-items: flex-start; gap: 10px;">
-                        <span style="font-size: 1.15rem; color: #38bdf8; flex-shrink: 0; margin-top: -2px;">ℹ️</span>
-                        <div>
-                            <strong style="color: #cbd5e1; font-size: 0.84rem;">Chính sách bản quyền & Cam kết kỹ thuật minh bạch:</strong>
-                            <ul style="margin: 0.35rem 0 0 1rem; padding: 0; list-style-type: disc;">
-                                <li><strong>Bản quyền phần mềm (Perpetual Core):</strong> Bạn sở hữu vĩnh viễn phiên bản ZeroStudio trên máy tính, chạy 100% Offline độc lập mà không bao giờ bị khóa tính năng.</li>
-                                <li><strong>Cập nhật thuật toán (Platform Adaptive Updates):</strong> Gói Founder bao gồm miễn phí 365 ngày nhận các bản vá và tối ưu thuật toán nền tảng (TikTok, Douyin, YouTube) tự động qua OTA. Sau 1 năm, phần mềm vẫn hoạt động bình thường, hoặc gia hạn gói thuật toán nếu muốn tiếp tục nhận cập nhật mới.</li>
-                                <li><strong>Miễn trừ trách nhiệm:</strong> ZeroStudio là bộ công cụ tối ưu năng suất làm việc. Người dùng chịu trách nhiệm về nội dung sử dụng và tuân thủ bản quyền của nền tảng sở tại.</li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -7119,9 +7208,6 @@
                         <button id="btn-activate-license" class="btn-glow-action" onclick="activateLicenseKey()" data-i18n="license_activate_btn">Kích Hoạt Ngay</button>
                     </div>
                 </div>
-                </div>
-
-                
             </div>
 
             <!-- SUB-VIEW 2: THANH TOÁN TỰ ĐỘNG VIETQR -->
@@ -7222,7 +7308,7 @@
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <h2 id="pro-success-title" style="font-size: 1.75rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem;">THANH TOÁN THÀNH CÔNG!</h2>
-                <p id="pro-success-desc" style="color: #94a3b8; font-size: 0.9rem; max-width: 500px; margin: 0 auto 1.5rem;">Cảm ơn bạn đã nâng cấp ZeroStudio Desktop Pro. Bản quyền sở hữu vĩnh viễn kèm 365 ngày cập nhật thuật toán tự động đã được kích hoạt thành công trên thiết bị này!</p>
+                <p id="pro-success-desc" style="color: #94a3b8; font-size: 0.9rem; max-width: 500px; margin: 0 auto 1.5rem;">Cảm ơn bạn đã nâng cấp ZeroStudio Desktop Pro. Khóa bản quyền vĩnh viễn đã được tạo và tự động kích hoạt trên thiết bị này!</p>
 
                 <div class="license-display-card">
                     <div class="license-display-tag">MÃ BẢN QUYỀN PRO CỦA BẠN</div>
@@ -7251,9 +7337,6 @@
                         Hủy Liên Kết Máy Này (Để Đổi Sang Máy Mới)
                     </button>
                     <button class="btn-outline" onclick="closeProModal()">Đóng Cửa Sổ</button>
-                </div>
-
-                
                 </div>
             </div>
         </div>
