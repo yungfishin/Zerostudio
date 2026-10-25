@@ -456,7 +456,7 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             self._send_cors_headers()
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps({'status': 'ok', 'service': 'ZeroStudio Video Bridge & Cyber Defense', 'version': '2.1'}).encode())
+            self.wfile.write(json.dumps({'status': 'ok', 'service': 'ZeroStudio Video Bridge & Cyber Defense', 'version': '2.5.0'}).encode())
             return
 
         # ----------------------------------------------------
@@ -464,10 +464,10 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
         # ----------------------------------------------------
         if parsed.path == '/api/check-update':
             local_ver_file = Path(__file__).parent / 'version.json'
-            local_ver = "2.1.0"
+            local_ver = "2.5.0"
             if local_ver_file.exists():
                 try:
-                    local_ver = json.loads(local_ver_file.read_text(encoding='utf-8')).get('version', '2.1.0')
+                    local_ver = json.loads(local_ver_file.read_text(encoding='utf-8')).get('version', '2.5.0')
                 except Exception:
                     pass
 

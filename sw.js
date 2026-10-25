@@ -1,5 +1,5 @@
 // ZeroStudio Service Worker (PWA Offline Shell Engine)
-const CACHE_NAME = 'zerostudio-cache-v2.4.0';
+const CACHE_NAME = 'zerostudio-cache-v2.5.0';
 const STATIC_ASSETS = [
     './',
     './index.html',
