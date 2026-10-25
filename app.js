@@ -220,7 +220,7 @@ function initSelfDefendingShield() {
 // ==========================================
 // OTA AUTO-UPDATE SYSTEM (IN-APP CLOUD SYNC)
 // ==========================================
-const CURRENT_APP_VERSION = "2.5.2";
+const CURRENT_APP_VERSION = "2.5.3";
 
 function compareVersions(v1, v2) {
     if (!v1 || !v2) return 0;
@@ -3126,6 +3126,9 @@ function renderFounderSlotState() {
     const isSoldOut = (slots >= 100);
     const slotsRemaining = Math.max(0, 100 - slots);
 
+    const lang = window.currentAppLanguage || (typeof getAppLanguage === 'function' ? getAppLanguage() : 'vi');
+    const dict = (window.TRANSLATIONS && window.TRANSLATIONS[lang]) ? window.TRANSLATIONS[lang] : (window.TRANSLATIONS ? window.TRANSLATIONS['vi'] : {});
+
     const tracker = document.getElementById('founder-slot-tracker');
     const statusLabel = document.getElementById('tracker-status-label');
     const pill = document.getElementById('tracker-counter-pill');
@@ -3150,55 +3153,62 @@ function renderFounderSlotState() {
     if (!isSoldOut) {
         // STATE 1: FOUNDER ACTIVE (slots < 100)
         if (tracker) tracker.classList.remove('tracker-sold-out');
-        if (statusLabel) statusLabel.textContent = "ƯU ĐÃI FOUNDER EDITION • GIỚI HẠN 100 SUẤT ĐẦU";
-        if (pill) pill.innerHTML = `Chỉ còn <strong>${slotsRemaining}</strong> / 100 suất`;
-        if (subtext) subtext.innerHTML = `🔥 Đã đăng ký <strong>${slots}/100</strong> suất ưu đãi. Khi đủ 100 suất, hệ thống sẽ tự động chuyển về giá niêm yết chính thức.`;
+        if (statusLabel) statusLabel.textContent = dict.tracker_status_founder || "ƯU ĐÃI FOUNDER EDITION • GIỚI HẠN 100 SUẤT ĐẦU";
+        if (pill) {
+            const prefix = dict.tracker_slots_prefix || "Chỉ còn";
+            const suffix = dict.tracker_slots_suffix || "suất";
+            pill.innerHTML = `${prefix} <strong>${slotsRemaining}</strong> / 100 ${suffix}`;
+        }
+        if (subtext) {
+            const tmpl = dict.tracker_explain_founder || "🔥 Đã đăng ký {slots}/100 suất ưu đãi. Khi đủ 100 suất, hệ thống sẽ tự động chuyển về giá niêm yết chính thức.";
+            subtext.innerHTML = tmpl.replace('{slots}', `<strong>${slots}</strong>`);
+        }
 
         // Pro Card
         if (proRibbon) {
-            proRibbon.textContent = "FOUNDER EDITION • 100 SUẤT";
+            proRibbon.textContent = dict.pro_tier_badge || "FOUNDER EDITION • 100 SUẤT";
             proRibbon.style.background = "linear-gradient(135deg, #a855f7, #ec4899)";
         }
-        if (proPriceVal) proPriceVal.textContent = "299.000đ";
-        if (proOldPrice) { proOldPrice.textContent = "599.000đ"; proOldPrice.style.display = "inline"; }
-        if (proPricePeriod) proPricePeriod.textContent = "/ Năm đầu";
-        if (proBtnText) proBtnText.textContent = "Đăng Ký Gói Pro (299k)";
+        if (proPriceVal) proPriceVal.textContent = dict.pro_tier_price || "299.000đ";
+        if (proOldPrice) { proOldPrice.textContent = dict.pro_tier_old_price || "599.000đ"; proOldPrice.style.display = "inline"; }
+        if (proPricePeriod) proPricePeriod.textContent = dict.pro_tier_period || "/ Năm đầu";
+        if (proBtnText) proBtnText.textContent = dict.btn_choose_pro || "Đăng Ký Gói Pro (299k)";
 
         // Ultra Card
         if (ultraRibbon) {
-            ultraRibbon.textContent = "FOUNDER EDITION • CAO CẤP NHẤT";
+            ultraRibbon.textContent = dict.ultra_tier_badge || "FOUNDER EDITION • CAO CẤP NHẤT";
             ultraRibbon.style.background = "linear-gradient(135deg, #f59e0b, #ef4444)";
         }
-        if (ultraPriceVal) ultraPriceVal.textContent = "699.000đ";
-        if (ultraOldPrice) { ultraOldPrice.textContent = "1.490.000đ"; ultraOldPrice.style.display = "inline"; }
-        if (ultraPricePeriod) ultraPricePeriod.textContent = "/ Năm đầu";
-        if (ultraBtnText) ultraBtnText.textContent = "Đăng Ký Gói Ultra (699k)";
+        if (ultraPriceVal) ultraPriceVal.textContent = dict.ultra_tier_price || "699.000đ";
+        if (ultraOldPrice) { ultraOldPrice.textContent = dict.ultra_tier_old_price || "1.490.000đ"; ultraOldPrice.style.display = "inline"; }
+        if (ultraPricePeriod) ultraPricePeriod.textContent = dict.ultra_tier_period || "/ Năm đầu";
+        if (ultraBtnText) ultraBtnText.textContent = dict.btn_choose_ultra || "Đăng Ký Gói Ultra (699k)";
     } else {
         // STATE 2: POST-FOUNDER STANDARD (slots >= 100)
         if (tracker) tracker.classList.add('tracker-sold-out');
-        if (statusLabel) statusLabel.textContent = "🔒 ĐÃ ĐỦ 100 SUẤT FOUNDER • ĐANG ÁP DỤNG GIÁ NIÊM YẾT CHÍNH THỨC";
-        if (pill) pill.innerHTML = `Đã hết 100/100 suất`;
-        if (subtext) subtext.innerHTML = `⚠️ Chương trình ưu đãi 100 suất Founder Edition đã kết thúc. Hiện đang áp dụng mức giá niêm yết chính thức trên toàn hệ thống.`;
+        if (statusLabel) statusLabel.textContent = dict.tracker_status_soldout || "🔒 ĐÃ ĐỦ 100 SUẤT FOUNDER • ĐANG ÁP DỤNG GIÁ NIÊM YẾT CHÍNH THỨC";
+        if (pill) pill.innerHTML = dict.tracker_slots_full || "Đã hết 100/100 suất";
+        if (subtext) subtext.innerHTML = dict.tracker_explain_soldout || "⚠️ Chương trình ưu đãi 100 suất Founder Edition đã kết thúc. Hiện đang áp dụng mức giá niêm yết chính thức trên toàn hệ thống.";
 
-        // Pro Card -> Standard 599.000đ / Năm
+        // Pro Card -> Standard
         if (proRibbon) {
-            proRibbon.textContent = "BẢN QUYỀN CHÍNH THỨC";
+            proRibbon.textContent = dict.pro_tier_badge_std || "BẢN QUYỀN CHÍNH THỨC";
             proRibbon.style.background = "linear-gradient(135deg, #3b82f6, #1d4ed8)";
         }
-        if (proPriceVal) proPriceVal.textContent = "599.000đ";
+        if (proPriceVal) proPriceVal.textContent = dict.pro_tier_price_std || "599.000đ";
         if (proOldPrice) proOldPrice.style.display = "none";
-        if (proPricePeriod) proPricePeriod.textContent = "/ Năm";
-        if (proBtnText) proBtnText.textContent = "Đăng Ký Gói Pro (599k)";
+        if (proPricePeriod) proPricePeriod.textContent = dict.pro_tier_period_std || "/ Năm";
+        if (proBtnText) proBtnText.textContent = dict.btn_choose_pro_std || "Đăng Ký Gói Pro (599k)";
 
-        // Ultra Card -> Standard 1.490.000đ / Năm
+        // Ultra Card -> Standard
         if (ultraRibbon) {
-            ultraRibbon.textContent = "CHIẾN HẠM MMO CHÍNH THỨC";
+            ultraRibbon.textContent = dict.ultra_tier_badge_std || "CHIẾN HẠM MMO CHÍNH THỨC";
             ultraRibbon.style.background = "linear-gradient(135deg, #d97706, #b45309)";
         }
-        if (ultraPriceVal) ultraPriceVal.textContent = "1.490.000đ";
+        if (ultraPriceVal) ultraPriceVal.textContent = dict.ultra_tier_price_std || "1.490.000đ";
         if (ultraOldPrice) ultraOldPrice.style.display = "none";
-        if (ultraPricePeriod) ultraPricePeriod.textContent = "/ Năm";
-        if (ultraBtnText) ultraBtnText.textContent = "Đăng Ký Gói Ultra (1.490k)";
+        if (ultraPricePeriod) ultraPricePeriod.textContent = dict.ultra_tier_period_std || "/ Năm";
+        if (ultraBtnText) ultraBtnText.textContent = dict.btn_choose_ultra_std || "Đăng Ký Gói Ultra (1.490k)";
     }
 }
 window.getFounderSlotsClaimed = getFounderSlotsClaimed;
@@ -6208,7 +6218,7 @@ let deferredPwaPrompt = null;
 
 if ('serviceWorker' in navigator && (window.location.protocol.startsWith('http') || window.location.protocol.startsWith('https'))) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=2.5.2').then(reg => { reg.update(); return reg; })
+        navigator.serviceWorker.register('./sw.js?v=2.5.3').then(reg => { reg.update(); return reg; })
             .then(reg => console.log('[PWA] Service Worker registered with scope:', reg.scope))
             .catch(err => console.log('[PWA] Service Worker registration failed:', err));
     });

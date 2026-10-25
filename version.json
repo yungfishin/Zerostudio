@@ -1,13 +1,11 @@
 {
-  "version": "2.5.2",
+  "version": "2.5.3",
   "release_date": "2026-10-25",
-  "title": "Bản Nâng Cấp V2.5.2: Bộ Đếm Động 100 Suất Founder, Khắc Phục Lỗi Font Tiếng Trung & Tự Động Chuyển Trạng Thái Khi Đủ Suất",
+  "title": "Bản Nâng Cấp V2.5.3: Đồng Bộ Đa Ngôn Ngữ 100% (Tiếng Việt, English, 中文, 日本語) Toàn Hệ Thống",
   "changelog": [
-    "Tính năng: Tích hợp Bộ Đếm Động (Live Slot Tracker) cho 100 suất Founder Edition kèm thanh tiến trình trực quan",
-    "Tính năng: Cơ chế State Transition tự động chuyển sang Bảng Giá & Bản Quyền Chính Thức khi đủ 100 suất",
-    "Giao diện: Khắc phục triệt để nhầm lẫn ngôn ngữ chữ Hán trên góc ribbon, hiển thị chuẩn tiếng Việt FOUNDER EDITION",
-    "Giao diện: Tinh chỉnh bố cục giá / Năm đầu không bị rớt dòng chữ 'đầu', chuẩn tỷ lệ vàng UI",
-    "Bảo mật: Xác thực MB Bank đa tầng không backdoor, bảo toàn 100% cơ chế chống bẻ khóa RSA-2048/WASM"
+    "Đa ngôn ngữ: Đồng bộ hóa 100% giao diện (Bảng giá, Bộ đếm, Cam kết, Cổng thanh toán, Dropzone, OCR, Chatbot) theo 4 ngôn ngữ",
+    "Giao diện: Bộ đếm 100 suất Founder tự động hiển thị mượt mà theo đúng ngôn ngữ được người dùng lựa chọn",
+    "Bảo mật: Xác thực tài khoản MB Bank ngân hàng tuyệt đối không backdoor, mã hóa RSA-2048/WASM toàn vẹn"
   ],
   "web_url": "https://zerostu.netlify.app",
   "desktop_zip_url": "https://zerostu.netlify.app/ZeroStudio-Pro-Desktop.zip",
