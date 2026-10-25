@@ -1,0 +1,26 @@
+{
+  "name": "ZeroStudio Pro - Video MMO & Xử Lý PDF",
+  "short_name": "ZeroStudio",
+  "description": "Siêu công cụ xử lý video MMO và PDF 100% Zero-Knowledge bảo mật trên RAM",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0e1a",
+  "theme_color": "#0a0e1a",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity", "video", "multimedia"]
+}

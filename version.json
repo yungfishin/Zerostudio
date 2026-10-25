@@ -1,16 +1,15 @@
 {
-  "version": "2.3.0",
+  "version": "2.4.0",
   "release_date": "2026-10-25",
-  "title": "Bản Nâng Cấp Bức Tường Đánh Giá Khách Hàng 5 Sao & Đa Ngôn Ngữ",
+  "title": "Bản Nâng Cấp Tứ Trụ Thương Mại: PWA, Affiliate 30%, Open Graph & Webhook Báo Ting Ting",
   "changelog": [
-    "Bức Tường Đánh Giá & Phản Hồi Khách Hàng 5 Sao Trực Tuyến (Social Proof Wall)",
-    "Hộp thoại gửi đánh giá tương tác (1-5 sao, chọn vai trò, pháo hoa Confetti vàng)",
-    "Bộ lọc đánh giá thông minh: Tất Cả, 5 Sao, Dân Video MMO, Dân Văn Phòng, Đánh Giá Của Tôi",
-    "Phân trang tự động 'Xem Thêm Đánh Giá' hỗ trợ 1,000+ phản hồi siêu tốc không giật lag",
-    "Tự động lưu phản hồi khách vào đĩa cứng qua Video Bridge (/api/feedback)",
-    "Hỗ trợ Đa Ngôn Ngữ (i18n): Tiếng Việt 🇻🇳, English 🇺🇸, 中文 🇨🇳, 日本語 🇯🇵",
-    "Lõi bảo mật WebAssembly Binary DRM Core v2 (.wasm)",
-    "Động cơ Tự Động Cập Nhật OTA 1-Click (In-App Auto Updater)"
+    "Tích hợp PWA (Progressive Web App): Cài đặt 1-click thành App độc lập trên điện thoại & máy tính, chạy mượt cả khi mất mạng",
+    "Hệ thống Tiếp thị liên kết (Affiliate): Chiết khấu 10% cho khách mua qua link, trích 30% hoa hồng trực tiếp cho đối tác",
+    "Bộ thẻ Open Graph & Social Preview Card (1200x630px) phong cách Cyberpunk Obsidian tăng 3-5x tỷ lệ click trên Zalo/Facebook",
+    "Động cơ Webhook Thông Báo Tức Thời (Telegram / Google Sheets): Báo ting ting ngay khi có đơn hàng hoặc đánh giá mới",
+    "Lưu vết đơn hàng tự động vào đĩa cứng qua Video Bridge (/api/orders)",
+    "Bức Tường Đánh Giá Khách Hàng 5 Sao & Phân Trang Load More",
+    "Bảo mật WebAssembly Binary DRM Core v2, Anti-DevTools & Client Fingerprinting nguyên vẹn 100%"
   ],
   "web_url": "https://zerostu.netlify.app",
   "desktop_zip_url": "https://zerostu.netlify.app/ZeroStudio-Pro-Desktop.zip",

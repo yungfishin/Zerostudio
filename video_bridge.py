@@ -479,6 +479,24 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             return
 
         # ----------------------------------------------------
+        # ORDERS & PAYMENT INTENTS API
+        # ----------------------------------------------------
+        if parsed.path == '/api/orders':
+            orders_file = Path.home() / '.zerostudio_orders.json'
+            orders = []
+            if orders_file.exists():
+                try:
+                    orders = json.loads(orders_file.read_text(encoding='utf-8'))
+                except Exception:
+                    orders = []
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'success': True, 'orders': orders}).encode('utf-8'))
+            return
+
+        # ----------------------------------------------------
         # PERMANENT LOCAL DISK LICENSE STORAGE
         # ----------------------------------------------------
         if parsed.path == '/api/license':
@@ -887,6 +905,56 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps({'success': True, 'entry': new_entry}).encode('utf-8'))
+            return
+
+        # ----------------------------------------------------
+        # ORDER PAYMENT CONFIRMATION INTENT SUBMISSION
+        # ----------------------------------------------------
+        if parsed.path == '/api/orders':
+            orders_file = Path.home() / '.zerostudio_orders.json'
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+            except Exception:
+                data = {}
+
+            tier = data.get('tier', 'pro')
+            amount = data.get('amount', 299000)
+            memo = data.get('memo', 'ZERO PRO')
+            ref = data.get('ref', '')
+            order_code = data.get('order_code', '')
+
+            new_order = {
+                'id': f"ord_{int(time.time() * 1000)}",
+                'order_code': order_code,
+                'tier': tier,
+                'amount': amount,
+                'memo': memo,
+                'ref': ref,
+                'status': 'pending_confirmation',
+                'created_at': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                'client_ip': client_ip
+            }
+
+            orders = []
+            if orders_file.exists():
+                try:
+                    orders = json.loads(orders_file.read_text(encoding='utf-8'))
+                except Exception:
+                    orders = []
+
+            orders.insert(0, new_order)
+            orders = orders[:500]
+
+            try:
+                orders_file.write_text(json.dumps(orders, ensure_ascii=False, indent=2), encoding='utf-8')
+            except Exception:
+                pass
+
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'success': True, 'order': new_order}).encode('utf-8'))
             return
 
         if parsed.path == '/api/save-license':
