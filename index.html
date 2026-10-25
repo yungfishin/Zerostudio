@@ -5407,6 +5407,132 @@
             min-height: 20px;
             margin-bottom: 1.25rem;
         }
+    
+        /* FOUNDER 100-SLOT LIVE TRACKER & COUNTDOWN ENGINE */
+        .founder-slot-tracker {
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.75), rgba(15, 23, 42, 0.85));
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 16px;
+            padding: 1.1rem 1.35rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), 0 0 24px rgba(139, 92, 246, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .founder-slot-tracker.tracker-sold-out {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.9));
+            border-color: rgba(148, 163, 184, 0.35);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        .tracker-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tracker-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .tracker-pulse-beacon {
+            width: 9px;
+            height: 9px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #10b981;
+            animation: beaconPulse 2s infinite;
+        }
+
+        @keyframes beaconPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(1.35); }
+        }
+
+        .tracker-sold-out .tracker-pulse-beacon {
+            background: #f59e0b;
+            box-shadow: 0 0 12px #f59e0b;
+            animation: none;
+        }
+
+        .tracker-status-label {
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: #f1f5f9;
+            text-transform: uppercase;
+        }
+
+        .tracker-counter-pill {
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: rgba(236, 72, 153, 0.2);
+            border: 1px solid rgba(236, 72, 153, 0.45);
+            color: #f472b6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            letter-spacing: 0.02em;
+        }
+
+        .tracker-sold-out .tracker-counter-pill {
+            background: rgba(148, 163, 184, 0.15);
+            border-color: rgba(148, 163, 184, 0.3);
+            color: #cbd5e1;
+        }
+
+        .tracker-progress-track {
+            width: 100%;
+            height: 9px;
+            background: rgba(255, 255, 255, 0.09);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 0.65rem;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .tracker-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899, #f59e0b);
+            border-radius: 9999px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 16px rgba(236, 72, 153, 0.6);
+        }
+
+        .tracker-sold-out .tracker-progress-fill {
+            background: linear-gradient(90deg, #64748b, #94a3b8);
+            box-shadow: none;
+        }
+
+        .tracker-bottom-row {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        /* Pricing Price wrap fix */
+        .pricing-price {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .pricing-price span.price-period,
+        .pricing-price span.old-price {
+            white-space: nowrap !important;
+        }
+
     </style>
 </head>
 <body>
@@ -6061,7 +6187,7 @@
                     </div>
 
                     <div class="channel-videos-grid" id="channel-videos-grid">
-                        <!-- Populated dynamically by app.js -->
+                        <!-- Populated dynamically by app.js?v=2.5.2 -->
                     </div>
                 </div>
             </div>
@@ -6976,7 +7102,7 @@
 
             <!-- Reviews Cards Grid -->
             <div class="reviews-grid" id="reviews-cards-grid">
-                <!-- Dynamically rendered via app.js -->
+                <!-- Dynamically rendered via app.js?v=2.5.2 -->
             </div>
 
             <!-- Load More Pagination Deck -->
@@ -7140,6 +7266,29 @@
                 </div>
 
                 <!-- Bento Pricing Comparison (3 Tiers: Free - Pro - Ultra) -->
+                                <!-- DYNAMIC 100-SLOT FOUNDER TRACKER & COUNTDOWN -->
+                <div id="founder-slot-tracker" class="founder-slot-tracker">
+                    <div class="tracker-top-row">
+                        <div class="tracker-status-badge">
+                            <span class="tracker-pulse-beacon"></span>
+                            <span id="tracker-status-label" class="tracker-status-label">ƯU ĐÃI FOUNDER EDITION • GIỚI HẠN 100 SUẤT ĐẦU</span>
+                        </div>
+                        <div id="tracker-counter-pill" class="tracker-counter-pill">
+                            <span id="tracker-slots-remaining-text">Chỉ còn <strong>12</strong> / 100 suất</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tracker-progress-track">
+                        <div id="tracker-progress-fill" class="tracker-progress-fill" style="width: 88%;"></div>
+                    </div>
+
+                    <div class="tracker-bottom-row">
+                        <span id="tracker-explain-text" class="tracker-explain-text">
+                            🔥 Đã đăng ký <strong>88/100</strong> suất ưu đãi. Khi đủ 100 suất, hệ thống tự động khóa cổng ưu đãi và chuyển về giá niêm yết chính thức.
+                        </span>
+                    </div>
+                </div>
+
                 <div class="pro-pricing-grid">
                     <!-- 1. Free Plan -->
                     <div class="pricing-card card-free">
@@ -7160,7 +7309,11 @@
                     <div class="pricing-card card-pro">
                         <div class="pro-corner-ribbon" data-i18n="pro_tier_badge">FOUNDER EDITION • 100 SUẤT</div>
                         <div class="pricing-badge pro-badge">DESKTOP PRO</div>
-                        <div class="pricing-price pro-price">299.000đ <span class="old-price">599.000đ</span> <span>/ Năm đầu</span></div>
+                        <div class="pricing-price pro-price">
+                            <span class="current-price" id="pro-current-price">299.000đ</span>
+                            <span class="old-price" id="pro-old-price">599.000đ</span>
+                            <span class="price-period" id="pro-price-period" style="white-space: nowrap; font-size: 0.82rem; font-weight: 500; color: var(--text-muted);">/ Năm đầu</span>
+                        </div>
                         <p class="pricing-desc">Sử dụng vĩnh viễn v2.5 trên 1 thiết bị + 365 ngày cập nhật OTA (Gia hạn 199k/năm).</p>
                         <ul class="pricing-features">
                             <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Tải video đơn lẻ không watermark không giới hạn</li>
@@ -7172,7 +7325,7 @@
                         <div class="pro-action-btns" style="margin-top: auto;">
                             <button class="btn-glow-action" style="width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899);" onclick="openVietQrCheckout('pro')">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                                <span data-i18n="btn_choose_pro">Đăng Ký Gói Pro (299k)</span>
+                                <span id="btn-pro-text" data-i18n="btn_choose_pro">Đăng Ký Gói Pro (299k)</span>
                             </button>
                         </div>
                     </div>
@@ -7181,7 +7334,11 @@
                     <div class="pricing-card card-ultra">
                         <div class="ultra-corner-ribbon" data-i18n="ultra_tier_badge">FOUNDER EDITION • CAO CẤP NHẤT</div>
                         <div class="pricing-badge ultra-badge">ULTRA MMO MASTER</div>
-                        <div class="pricing-price ultra-price">699.000đ <span class="old-price">1.490.000đ</span> <span>/ Năm đầu</span></div>
+                        <div class="pricing-price ultra-price">
+                            <span class="current-price" id="ultra-current-price">699.000đ</span>
+                            <span class="old-price" id="ultra-old-price">1.490.000đ</span>
+                            <span class="price-period" id="ultra-price-period" style="white-space: nowrap; font-size: 0.82rem; font-weight: 500; color: var(--text-muted);">/ Năm đầu</span>
+                        </div>
                         <p class="pricing-desc">Dành riêng cho Dân Reup MMO & Studio Content cần kháng quét liên tục (Gia hạn 499k/năm).</p>
                         <ul class="pricing-features">
                             <li><svg class="check-svg glow" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> <strong>Bàn Làm Việc Hàng Loạt:</strong> Treo máy chạy 500 file, chuông báo xong</li>
@@ -7194,7 +7351,7 @@
                         <div class="pro-action-btns" style="margin-top: auto;">
                             <button class="btn-glow-action" style="width: 100%; background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);" onclick="openVietQrCheckout('ultra')">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                <span data-i18n="btn_choose_ultra">Đăng Ký Gói Ultra (699k)</span>
+                                <span id="btn-ultra-text" data-i18n="btn_choose_ultra">Đăng Ký Gói Ultra (699k)</span>
                             </button>
                         </div>
                     </div>
@@ -7627,7 +7784,7 @@
         </div>
     </div>
 
-    <script src="./libs/i18n.js?v=2.5.1"></script>
-    <script src="./app.js?v=2.5.1"></script>
+    <script src="./libs/i18n.js?v=2.5.2"></script>
+    <script src="./app.js?v=2.5.2"></script>
 </body>
 </html>

@@ -1,12 +1,13 @@
 {
-  "version": "2.5.1",
+  "version": "2.5.2",
   "release_date": "2026-10-25",
-  "title": "Bản Nâng Cấp An Ninh V2.5.1: Khắc Phục Lỗ Hổng Đối Soát Ngân Hàng & Minh Bạch Bản Quyền Founder 100 Suất",
+  "title": "Bản Nâng Cấp V2.5.2: Bộ Đếm Động 100 Suất Founder, Khắc Phục Lỗi Font Tiếng Trung & Tự Động Chuyển Trạng Thái Khi Đủ Suất",
   "changelog": [
-    "Bảo mật: Loại bỏ triệt để 100% cửa sổ cấp key thử nghiệm client-side, chỉ kích hoạt khi MB Bank ghi nhận tiền thật",
-    "Bảo mật: Triệt tiêu mã backdoor DEV-INTERNAL-PASS, khóa chặt đối soát SePAY Webhook",
-    "Minh bạch: Cập nhật chính sách Founder Edition 100 suất đầu tiên, 365 ngày cập nhật OTA và bảng giá gia hạn",
-    "Hệ thống: Tối ưu Cache-Busting Service Worker v2.5.1, xóa bỏ triệt để tình trạng cache giao diện cũ"
+    "Tính năng: Tích hợp Bộ Đếm Động (Live Slot Tracker) cho 100 suất Founder Edition kèm thanh tiến trình trực quan",
+    "Tính năng: Cơ chế State Transition tự động chuyển sang Bảng Giá & Bản Quyền Chính Thức khi đủ 100 suất",
+    "Giao diện: Khắc phục triệt để nhầm lẫn ngôn ngữ chữ Hán trên góc ribbon, hiển thị chuẩn tiếng Việt FOUNDER EDITION",
+    "Giao diện: Tinh chỉnh bố cục giá / Năm đầu không bị rớt dòng chữ 'đầu', chuẩn tỷ lệ vàng UI",
+    "Bảo mật: Xác thực MB Bank đa tầng không backdoor, bảo toàn 100% cơ chế chống bẻ khóa RSA-2048/WASM"
   ],
   "web_url": "https://zerostu.netlify.app",
   "desktop_zip_url": "https://zerostu.netlify.app/ZeroStudio-Pro-Desktop.zip",

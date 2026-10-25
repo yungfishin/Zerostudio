@@ -71,8 +71,8 @@ const TRANSLATIONS = {
         // Modals & Pricing
         pro_modal_title: "NÂNG CẤP BẢN QUYỀN ZEROSTUDIO",
         pro_modal_sub: "Mở khóa toàn bộ tính năng VIP: Video 4K, Nén PDF, Cào Kênh Hàng Loạt & AI Tách Nền OCR",
-        pro_tier_badge: "创世者版 • 限量100席",
-        ultra_tier_badge: "创世者版 • 尊贵旗舰",
+        pro_tier_badge: "FOUNDER EDITION • 100 SUẤT ĐẦU",
+        ultra_tier_badge: "FOUNDER EDITION • CAO CẤP NHẤT",
         pro_tier_title: "Gói Founder Desktop Pro (299k/Năm đầu)",
         ultra_tier_title: "Gói Founder MMO Master Ultra (699k/Năm đầu)",
         btn_choose_pro: "Đăng Ký Gói Pro (299k)",
@@ -253,8 +253,8 @@ const TRANSLATIONS = {
         // Modals & Pricing
         pro_modal_title: "升级ZEROSTUDIO专属授权",
         pro_modal_sub: "解锁全部高级功能：4K视频重制、无损压缩、批量抓取及AI识别",
-        pro_tier_badge: "最受欢迎",
-        ultra_tier_badge: "MMO二创专家首选",
+        pro_tier_badge: "创世者版 • 限量100席",
+        ultra_tier_badge: "创世者版 • 尊贵旗舰",
         pro_tier_title: "专业版终身授权",
         ultra_tier_title: "超级旗舰版终身授权",
         btn_choose_pro: "选择专业版 (299k VND / ~88元)",

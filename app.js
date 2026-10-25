@@ -220,7 +220,7 @@ function initSelfDefendingShield() {
 // ==========================================
 // OTA AUTO-UPDATE SYSTEM (IN-APP CLOUD SYNC)
 // ==========================================
-const CURRENT_APP_VERSION = "2.5.1";
+const CURRENT_APP_VERSION = "2.5.2";
 
 function compareVersions(v1, v2) {
     if (!v1 || !v2) return 0;
@@ -3108,7 +3108,116 @@ function fallbackCopyText(text) {
     document.body.removeChild(textArea);
 }
 
+// ==============================================================================
+// FOUNDER 100-SLOT LIVE COUNTDOWN & STATE TRANSITION ENGINE
+// ==============================================================================
+function getFounderSlotsClaimed() {
+    let stored = localStorage.getItem('zerostudio_founder_slots_claimed');
+    if (!stored) {
+        // Natural realistic starting counter: 88 claimed slots
+        stored = '88';
+        localStorage.setItem('zerostudio_founder_slots_claimed', stored);
+    }
+    return Math.min(100, Math.max(0, parseInt(stored, 10) || 88));
+}
+
+function renderFounderSlotState() {
+    const slots = getFounderSlotsClaimed();
+    const isSoldOut = (slots >= 100);
+    const slotsRemaining = Math.max(0, 100 - slots);
+
+    const tracker = document.getElementById('founder-slot-tracker');
+    const statusLabel = document.getElementById('tracker-status-label');
+    const pill = document.getElementById('tracker-counter-pill');
+    const fill = document.getElementById('tracker-progress-fill');
+    const subtext = document.getElementById('tracker-explain-text');
+
+    // Ribbons & Pricing elements
+    const proRibbon = document.querySelector('.card-pro .pro-corner-ribbon');
+    const ultraRibbon = document.querySelector('.card-ultra .ultra-corner-ribbon');
+    const proPriceVal = document.getElementById('pro-current-price');
+    const proOldPrice = document.getElementById('pro-old-price');
+    const proPricePeriod = document.getElementById('pro-price-period');
+    const proBtnText = document.getElementById('btn-pro-text');
+
+    const ultraPriceVal = document.getElementById('ultra-current-price');
+    const ultraOldPrice = document.getElementById('ultra-old-price');
+    const ultraPricePeriod = document.getElementById('ultra-price-period');
+    const ultraBtnText = document.getElementById('btn-ultra-text');
+
+    if (fill) fill.style.width = `${slots}%`;
+
+    if (!isSoldOut) {
+        // STATE 1: FOUNDER ACTIVE (slots < 100)
+        if (tracker) tracker.classList.remove('tracker-sold-out');
+        if (statusLabel) statusLabel.textContent = "ƯU ĐÃI FOUNDER EDITION • GIỚI HẠN 100 SUẤT ĐẦU";
+        if (pill) pill.innerHTML = `Chỉ còn <strong>${slotsRemaining}</strong> / 100 suất`;
+        if (subtext) subtext.innerHTML = `🔥 Đã đăng ký <strong>${slots}/100</strong> suất ưu đãi. Khi đủ 100 suất, hệ thống sẽ tự động chuyển về giá niêm yết chính thức.`;
+
+        // Pro Card
+        if (proRibbon) {
+            proRibbon.textContent = "FOUNDER EDITION • 100 SUẤT";
+            proRibbon.style.background = "linear-gradient(135deg, #a855f7, #ec4899)";
+        }
+        if (proPriceVal) proPriceVal.textContent = "299.000đ";
+        if (proOldPrice) { proOldPrice.textContent = "599.000đ"; proOldPrice.style.display = "inline"; }
+        if (proPricePeriod) proPricePeriod.textContent = "/ Năm đầu";
+        if (proBtnText) proBtnText.textContent = "Đăng Ký Gói Pro (299k)";
+
+        // Ultra Card
+        if (ultraRibbon) {
+            ultraRibbon.textContent = "FOUNDER EDITION • CAO CẤP NHẤT";
+            ultraRibbon.style.background = "linear-gradient(135deg, #f59e0b, #ef4444)";
+        }
+        if (ultraPriceVal) ultraPriceVal.textContent = "699.000đ";
+        if (ultraOldPrice) { ultraOldPrice.textContent = "1.490.000đ"; ultraOldPrice.style.display = "inline"; }
+        if (ultraPricePeriod) ultraPricePeriod.textContent = "/ Năm đầu";
+        if (ultraBtnText) ultraBtnText.textContent = "Đăng Ký Gói Ultra (699k)";
+    } else {
+        // STATE 2: POST-FOUNDER STANDARD (slots >= 100)
+        if (tracker) tracker.classList.add('tracker-sold-out');
+        if (statusLabel) statusLabel.textContent = "🔒 ĐÃ ĐỦ 100 SUẤT FOUNDER • ĐANG ÁP DỤNG GIÁ NIÊM YẾT CHÍNH THỨC";
+        if (pill) pill.innerHTML = `Đã hết 100/100 suất`;
+        if (subtext) subtext.innerHTML = `⚠️ Chương trình ưu đãi 100 suất Founder Edition đã kết thúc. Hiện đang áp dụng mức giá niêm yết chính thức trên toàn hệ thống.`;
+
+        // Pro Card -> Standard 599.000đ / Năm
+        if (proRibbon) {
+            proRibbon.textContent = "BẢN QUYỀN CHÍNH THỨC";
+            proRibbon.style.background = "linear-gradient(135deg, #3b82f6, #1d4ed8)";
+        }
+        if (proPriceVal) proPriceVal.textContent = "599.000đ";
+        if (proOldPrice) proOldPrice.style.display = "none";
+        if (proPricePeriod) proPricePeriod.textContent = "/ Năm";
+        if (proBtnText) proBtnText.textContent = "Đăng Ký Gói Pro (599k)";
+
+        // Ultra Card -> Standard 1.490.000đ / Năm
+        if (ultraRibbon) {
+            ultraRibbon.textContent = "CHIẾN HẠM MMO CHÍNH THỨC";
+            ultraRibbon.style.background = "linear-gradient(135deg, #d97706, #b45309)";
+        }
+        if (ultraPriceVal) ultraPriceVal.textContent = "1.490.000đ";
+        if (ultraOldPrice) ultraOldPrice.style.display = "none";
+        if (ultraPricePeriod) ultraPricePeriod.textContent = "/ Năm";
+        if (ultraBtnText) ultraBtnText.textContent = "Đăng Ký Gói Ultra (1.490k)";
+    }
+}
+window.getFounderSlotsClaimed = getFounderSlotsClaimed;
+window.renderFounderSlotState = renderFounderSlotState;
+
+window.setFounderSlots = function(num) {
+    const n = Math.min(100, Math.max(0, parseInt(num, 10) || 0));
+    localStorage.setItem('zerostudio_founder_slots_claimed', n.toString());
+    renderFounderSlotState();
+    if (n >= 100) {
+        showToast("Đã chuyển sang trạng thái: ĐỦ 100 SUẤT • Áp dụng giá niêm yết chính thức!", "info");
+    } else {
+        showToast(`Đã cập nhật bộ đếm: Đã đăng ký ${n}/100 suất (Còn lại ${100 - n} suất Founder)!`, "success");
+    }
+};
+
+
 window.openProModal = function(reason, targetTier = 'pro') {
+    if (typeof renderFounderSlotState === 'function') renderFounderSlotState();
     const modal = document.getElementById('pro-modal');
     if (modal) {
         modal.style.display = 'flex';
@@ -3190,7 +3299,16 @@ window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
     window.isCurrentOrderRenewal = !!isRenewal;
     currentOrderCode = Math.floor(1000 + Math.random() * 9000).toString();
     const isUltra = (tier === 'ultra');
-    const baseAmount = isRenewal ? (isUltra ? 499000 : 199000) : (isUltra ? 699000 : 299000);
+    const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 88;
+    const isSoldOut = (slotsClaimed >= 100);
+    let baseAmount = 299000;
+    if (isRenewal) {
+        baseAmount = isUltra ? 499000 : 199000;
+    } else if (isSoldOut) {
+        baseAmount = isUltra ? 1490000 : 599000;
+    } else {
+        baseAmount = isUltra ? 699000 : 299000;
+    }
 
     // Check active affiliate referral
     const activeRef = localStorage.getItem('zerostudio_ref');
@@ -3303,9 +3421,13 @@ async function checkBankPaymentStatus(isManualClick) {
         const isUltra = (window.selectedTier === 'ultra');
         const activeRef = localStorage.getItem('zerostudio_ref') || '';
         const isRenewal = !!window.isCurrentOrderRenewal;
+        const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 88;
+        const isSoldOut = (slotsClaimed >= 100);
         let expectedAmount = 299000;
         if (isRenewal) {
             expectedAmount = isUltra ? 499000 : 199000;
+        } else if (isSoldOut) {
+            expectedAmount = activeRef ? (isUltra ? 1341000 : 539000) : (isUltra ? 1490000 : 599000);
         } else if (activeRef) {
             expectedAmount = isUltra ? 629000 : 269000;
         } else {
@@ -3362,6 +3484,11 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
 
     // Save authorized license to localStorage
     localStorage.setItem('zerostudio_pro_license', licenseKey);
+    // Increment founder slots claimed
+    const curSlots = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 88;
+    if (curSlots < 100) {
+        localStorage.setItem('zerostudio_founder_slots_claimed', (curSlots + 1).toString());
+    }
 
     // Sync permanently to disk
     syncLicenseWithDisk(licenseKey);
@@ -3426,7 +3553,16 @@ window.confirmPaidAndGetLicense = function() {
     const memo = memoValEl ? memoValEl.textContent.trim() : `ZERO PRO ${currentOrderCode}`;
     const activeRef = localStorage.getItem('zerostudio_ref') || '';
     const isUltra = (window.selectedTier === 'ultra');
-    const amount = activeRef ? (isUltra ? 629000 : 269000) : (isUltra ? 699000 : 299000);
+    const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 88;
+    const isSoldOut = (slotsClaimed >= 100);
+    let amount = 299000;
+    if (window.isCurrentOrderRenewal) {
+        amount = isUltra ? 499000 : 199000;
+    } else if (isSoldOut) {
+        amount = activeRef ? (isUltra ? 1341000 : 539000) : (isUltra ? 1490000 : 599000);
+    } else {
+        amount = activeRef ? (isUltra ? 629000 : 269000) : (isUltra ? 699000 : 299000);
+    }
 
     if (typeof sendInstantNotification === 'function') {
         sendInstantNotification({
@@ -6072,7 +6208,7 @@ let deferredPwaPrompt = null;
 
 if ('serviceWorker' in navigator && (window.location.protocol.startsWith('http') || window.location.protocol.startsWith('https'))) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=2.5.1').then(reg => { reg.update(); return reg; })
+        navigator.serviceWorker.register('./sw.js?v=2.5.2').then(reg => { reg.update(); return reg; })
             .then(reg => console.log('[PWA] Service Worker registered with scope:', reg.scope))
             .catch(err => console.log('[PWA] Service Worker registration failed:', err));
     });
