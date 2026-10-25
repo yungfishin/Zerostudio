@@ -3273,7 +3273,7 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
     if (successView) successView.style.display = 'block';
 
     updateProHeaderBadge();
-    showToast("XÁC THỰC THÀNH CÔNG! Đã nhận đủ 299.000đ từ MB Bank. Bản Pro đã kích hoạt vĩnh viễn!", "success");
+    showToast("XÁC THỰC THÀNH CÔNG! Đã xác nhận giao dịch MB Bank. Bản quyền đã kích hoạt thành công!", "success");
 }
 
 // [STRIPPED PRODUCTION] Dev test tier functions removed for production security
@@ -4667,18 +4667,20 @@ const ZEROAI_KB = [
         id: 'pricing_compare',
         keywords: ['giá', 'bao nhiêu', 'mua', 'gói', 'bản quyền', 'pro', 'ultra', 'chi phí', 'so sánh', 'vĩnh viễn', 'thiết bị', 'key'],
         title: 'Bảng Giá & So Sánh Quyền Lợi Pro vs Ultra',
-        response: `💎 <strong>BẢNG GIÁ BẢN QUYỀN SỞ HỮU VĨNH VIỄN ZEROSTUDIO:</strong><br><br>
-• <strong>Bản Miễn Phí (Free):</strong> Trải nghiệm các tính năng cơ bản, giới hạn 3 lượt tải video/ngày.<br><br>
-• <strong>GÓI PRO (299.000đ - Trọn đời):</strong><br>
-  - Sử dụng trên <strong>1 thiết bị cố định</strong>.<br>
-  - Nén PDF không giới hạn dung lượng.<br>
-  - Tải & lách video MMO không giới hạn số lượng.<br>
-  - Xóa watermark, đổi pitch âm thanh chống gậy bản quyền.<br><br>
-• <strong>GÓI ULTRA MMO MASTER (699.000đ - Trọn đời):</strong><br>
-  - Kích hoạt <strong>2 thiết bị độc lập</strong> (Ví dụ: 1 PC làm việc + 1 Laptop cá nhân).<br>
+        response: `💎 <strong>BẢNG GIÁ ĐẶC QUYỀN EARLY FOUNDER (GIỚI HẠN 100 SUẤT):</strong><br><br>
+• <strong>Bản Miễn Phí (Free):</strong> Trải nghiệm tính năng cơ bản, giới hạn 3 lượt tải video/ngày.<br><br>
+• <strong>GÓI PRO (299.000đ - Bản quyền vĩnh viễn):</strong><br>
+  - Sở hữu trọn đời trên <strong>1 thiết bị</strong> (hỗ trợ đổi máy 1 click).<br>
+  - Nén PDF 3 preset chuẩn nộp thuế & hải quan không giới hạn dung lượng.<br>
+  - Tải & lách video đơn lẻ không giới hạn số lượng.<br>
+  - Xóa logo, nâng cấp 4K, đổi vi tần số âm thanh.<br>
+  - <strong>Tặng kèm 365 ngày cập nhật thuật toán OTA miễn phí</strong>.<br><br>
+• <strong>GÓI ULTRA MMO MASTER (699.000đ - Bản quyền vĩnh viễn):</strong><br>
+  - Kích hoạt đồng thời <strong>2 thiết bị độc lập</strong> (1 PC làm việc + 1 Laptop cá nhân).<br>
   - Trọn bộ <strong>AI Office Studio</strong>: Tách nền ảnh thẻ vi mô & Quét OCR tiếng Việt xuất Word.<br>
-  - <strong>Bàn làm việc hàng loạt (Batch Workspace)</strong>: Xử lý đồng thời 500 video / tài liệu.<br>
-  - Tự động cào kênh YouTube Shorts / TikTok theo hashtag.`,
+  - <strong>Bàn làm việc hàng loạt (Batch Workspace)</strong>: Xử lý cùng lúc 500 video / tài liệu.<br>
+  - Tự động cào cả kênh TikTok / Reels / Shorts có lọc view.<br>
+  - <strong>Tặng kèm 365 ngày cập nhật thuật toán thích ứng ưu tiên</strong>.,
         actions: [
             { text: '💳 Nâng Cấp Pro 299.000đ (1 Thiết Bị)', func: "openVietQrCheckout('pro')" },
             { text: '👑 Nâng Cấp Ultra 699.000đ (2 Thiết Bị)', func: "openVietQrCheckout('ultra')" },
