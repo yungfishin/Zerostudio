@@ -114,6 +114,18 @@ mindmap
   - Khởi động cửa sổ ứng dụng Native Frameless (không thanh URL, kích thước 1360x900).
 - **`ZeroStudio-Pro-Desktop.zip` (1.99 MB):** Trọn gói mã nguồn offline, giải nén là chạy portable ngay lập tức.
 
+### 6. Module 6: Hệ Thống Đa Ngôn Ngữ Toàn Cầu (i18n Multi-Language Engine)
+- **Tập tin kiến trúc:** `libs/i18n.js` tích hợp 4 bộ từ điển hoàn chỉnh:
+  - 🇻🇳 **Tiếng Việt (`vi`):** Ngôn ngữ bản địa mặc định, tối ưu hóa cho cộng đồng văn phòng và creator MMO Việt Nam.
+  - 🇺🇸 **English (`en`):** Chuẩn hóa quốc tế cho người dùng toàn cầu, traffic US/EU và thị trường POD/E-commerce quốc tế.
+  - 🇨🇳 **中文 - 简体 (`zh`):** Dành riêng cho giới làm Dropshipping, Taobao/1688, cào clip Douyin/Kuaishou và MMO Trung - Việt.
+  - 🇯🇵 **日本語 (`ja`):** Dành cho editor Nhật Bản, anime/manga creators và thị trường sáng tạo nội dung châu Á.
+- **Tính năng nổi bật:**
+  - **Menu Dropdown Glassmorphism:** Hiển thị quốc kỳ, tên ngôn ngữ và dấu tích trạng thái đang chọn.
+  - **Đồng bộ thời gian thực với ZeroAI Specialist:** Khi đổi ngôn ngữ, chatbot tự động chuyển câu chào, danh sách nút bấm nhanh và gợi ý sang tiếng tương ứng.
+  - **Lưu trữ bền vững (localStorage Persistence):** Ghi nhớ vĩnh viễn ngôn ngữ khách đã chọn, tự động khôi phục trong các phiên mở tiếp theo mà không cần chọn lại.
+  - **Tương thích hoàn hảo với OTA:** Được đồng bộ tự động qua cơ chế In-App Auto-Update.
+
 ---
 
 ## III. HỆ THỐNG AN NINH MẠNG & CHỐNG CRACK ĐA TẦNG

@@ -682,7 +682,8 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 'index.html',
                 'app.js',
                 'version.json',
-                'libs/zerostudio_drm.wasm'
+                'libs/zerostudio_drm.wasm',
+                'libs/i18n.js'
             ]
             updated = []
             errors = []
@@ -888,7 +889,8 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 'index.html',
                 'app.js',
                 'version.json',
-                'libs/zerostudio_drm.wasm'
+                'libs/zerostudio_drm.wasm',
+                'libs/i18n.js'
             ]
             updated = []
             errors = []

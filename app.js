@@ -2937,10 +2937,14 @@ function updateProHeaderBadge() {
     const badgeBtn = document.querySelector('.btn-pro-unlock');
     if (!badgeBtn) return;
 
+    const lang = window.currentAppLanguage || (typeof getAppLanguage === 'function' ? getAppLanguage() : 'vi');
+    const dict = (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[lang]) ? TRANSLATIONS[lang] : {};
+
     if (!window.isProActive()) {
+        const text = dict.pro_unlock_btn || 'Nâng Cấp Pro (299k)';
         badgeBtn.innerHTML = `
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #cbd5e1; width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            <span style="color: #cbd5e1; font-weight: 700;">Nâng Cấp Pro (299k)</span>
+            <span data-i18n="pro_unlock_btn" style="color: #cbd5e1; font-weight: 700;">${text}</span>
         `;
         badgeBtn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
         badgeBtn.style.background = 'rgba(255, 255, 255, 0.05)';
@@ -2949,17 +2953,19 @@ function updateProHeaderBadge() {
     }
 
     if (window.isUltraActive()) {
+        const text = dict.pro_active_ultra || 'Ultra MMO Master';
         badgeBtn.innerHTML = `
             <svg fill="currentColor" viewBox="0 0 24 24" style="color: #f59e0b; width: 15px; height: 15px;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
-            <span style="color: #f59e0b; font-weight: 800;">Ultra MMO Master</span>
+            <span data-i18n="pro_active_ultra" style="color: #f59e0b; font-weight: 800;">${text}</span>
         `;
         badgeBtn.style.borderColor = 'rgba(245, 158, 11, 0.5)';
         badgeBtn.style.background = 'rgba(245, 158, 11, 0.14)';
         badgeBtn.style.boxShadow = '0 0 16px rgba(245, 158, 11, 0.35)';
     } else {
+        const text = dict.pro_active_pro || 'Bản Pro Vĩnh Viễn';
         badgeBtn.innerHTML = `
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #34d399; width: 15px; height: 15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-            <span style="color: #34d399; font-weight: 700;">Bản Pro Vĩnh Viễn</span>
+            <span data-i18n="pro_active_pro" style="color: #34d399; font-weight: 700;">${text}</span>
         `;
         badgeBtn.style.borderColor = 'rgba(52, 211, 153, 0.5)';
         badgeBtn.style.background = 'rgba(52, 211, 153, 0.12)';
@@ -4750,32 +4756,95 @@ Tương thích hoàn hảo: <strong>Windows 10 & Windows 11 (64-bit)</strong>.`,
     }
 ];
 
+// Multilingual Welcome Messages for ZeroAI
+const ZEROAI_WELCOME_DICT = {
+    vi: {
+        text: `Xin chào! Tôi là <strong>ZeroAI Specialist</strong> – Trợ lý chuyên gia 24/7 của bạn tại ZeroStudio.<br><br>` +
+              `Tôi có thể hỗ trợ bạn ngay lập tức:<br>` +
+              `• <strong>Lách bản quyền video MMO</strong> (Auto-crop 9:16, xáo âm thanh, xóa sub/logo).<br>` +
+              `• <strong>AI Background Remover</strong> (Tách nền ảnh thẻ CCCD, Visa sắc nét).<br>` +
+              `• <strong>AI Vietnamese OCR</strong> (Quét chữ tiếng Việt trích xuất sang Word .doc).<br>` +
+              `• <strong>So sánh & Hướng dẫn kích hoạt</strong> gói Pro (299k) và Ultra (699k).<br><br>` +
+              `Hãy chọn gợi ý nhanh bên trên hoặc nhập câu hỏi của bạn nhé!`,
+        actions: [
+            { text: '⚡ Hướng Dẫn Lách Bản Quyền Video MMO', func: "handleZeroAIQuickPrompt('Lách bản quyền video MMO thế nào?')" },
+            { text: '✂ Tách Nền & Quét Chữ OCR Sang Word', func: "switchStudioTab('ai-office')" },
+            { text: '💎 So Sánh Gói Pro 299k vs Ultra 699k', func: "handleZeroAIQuickPrompt('So sánh gói Pro và gói Ultra MMO')" }
+        ]
+    },
+    en: {
+        text: `Hello! I am <strong>ZeroAI Specialist</strong> – Your 24/7 dedicated AI assistant at ZeroStudio.<br><br>` +
+              `I can assist you immediately with:<br>` +
+              `• <strong>MMO Video Fair-Use Remaster</strong> (Auto-crop 9:16, audio pitch, logo/sub removal).<br>` +
+              `• <strong>AI Background Remover</strong> (Instant cutout for Passport, Visa, ID photos).<br>` +
+              `• <strong>AI Document OCR</strong> (Extract text directly to editable Word .doc).<br>` +
+              `• <strong>Compare & Activate</strong> Pro ($12) and Ultra ($28) licenses.<br><br>` +
+              `Pick a quick action above or type your question below!`,
+        actions: [
+            { text: '⚡ Video Remaster Guide', func: "handleZeroAIQuickPrompt('How to remaster video for MMO?')" },
+            { text: '✂ BG Remover & OCR to Word', func: "switchStudioTab('ai-office')" },
+            { text: '💎 Compare Pro vs Ultra Plans', func: "handleZeroAIQuickPrompt('Compare Pro and Ultra plan')" }
+        ]
+    },
+    zh: {
+        text: `您好！我是 <strong>ZeroAI 专属智能助理</strong> – 您在 ZeroStudio 的 24 小时贴身专家。<br><br>` +
+              `我可以立即协助您：<br>` +
+              `• <strong>短视频去水印与防重</strong>（9:16自动切边、音频变调、去字幕台标）。<br>` +
+              `• <strong>AI 证件照抠图</strong>（身份证、护照、签证背景一键替换）。<br>` +
+              `• <strong>AI 文字识别 OCR</strong>（提取文档直接导出 Word .doc）。<br>` +
+              `• <strong>授权对比与激活指南</strong>（专业版 299k 与 旗舰版 699k）。<br><br>` +
+              `点击上方快捷标签或直接输入您的问题！`,
+        actions: [
+            { text: '⚡ 视频二次创作防重指南', func: "handleZeroAIQuickPrompt('如何进行短视频去重二次创作？')" },
+            { text: '✂ AI抠图与文字识别导出Word', func: "switchStudioTab('ai-office')" },
+            { text: '💎 专业版与旗舰版权益对比', func: "handleZeroAIQuickPrompt('对比专业版与旗舰版')" }
+        ]
+    },
+    ja: {
+        text: `こんにちは！<strong>ZeroAI専属アシスタント</strong>です。ZeroStudioの機能を24時間いつでもサポートします。<br><br>` +
+              `以下の操作をすぐにお手伝いできます：<br>` +
+              `• <strong>MMO動画リマスター & 透かし除去</strong>（9:16自動クロップ、音声ピッチ調整、字幕消去）。<br>` +
+              `• <strong>AI証明写真背景透過</strong>（パスポート、マイナンバー、ビザ用高精度切り抜き）。<br>` +
+              `• <strong>AI高精度OCR</strong>（文字認識してWord .docに直接エクスポート）。<br>` +
+              `• <strong>Pro・Ultraプランの比較と認証案内</strong>。<br><br>` +
+              `上のクイックボタンまたはメッセージを入力してください！`,
+        actions: [
+            { text: '⚡ 動画リマスターガイド', func: "handleZeroAIQuickPrompt('動画リマスターの手順を教えて')" },
+            { text: '✂ 背景透過 & OCR Word出力', func: "switchStudioTab('ai-office')" },
+            { text: '💎 Pro版とUltra版の違い', func: "handleZeroAIQuickPrompt('Pro版とUltra版の違いを比較')" }
+        ]
+    }
+};
+
 // Initialize ZeroAI Assistant
-window.initZeroAI = function() {
+window.initZeroAI = function(targetLang) {
     const trigger = document.getElementById('zeroai-widget-trigger');
     const msgList = document.getElementById('zeroai-msg-list');
     if (!trigger || !msgList) return;
 
     updateZeroAIModelBadge();
 
+    const lang = targetLang || window.currentAppLanguage || (typeof getAppLanguage === 'function' ? getAppLanguage() : 'vi');
+    const welcome = ZEROAI_WELCOME_DICT[lang] || ZEROAI_WELCOME_DICT['vi'];
+
     // Render initial welcome message if empty
     if (msgList.children.length === 0) {
-        renderBotMessage(
-            `Xin chào! Tôi là <strong>ZeroAI Specialist</strong> – Trợ lý chuyên gia 24/7 của bạn tại ZeroStudio.<br><br>` +
-            `Tôi có thể hỗ trợ bạn ngay lập tức:<br>` +
-            `• <strong>Lách bản quyền video MMO</strong> (Auto-crop 9:16, xáo âm thanh, xóa sub/logo).<br>` +
-            `• <strong>AI Background Remover</strong> (Tách nền ảnh thẻ CCCD, Visa sắc nét).<br>` +
-            `• <strong>AI Vietnamese OCR</strong> (Quét chữ tiếng Việt trích xuất sang Word .doc).<br>` +
-            `• <strong>So sánh & Hướng dẫn kích hoạt</strong> gói Pro (299k) và Ultra (699k).<br><br>` +
-            `Hãy chọn gợi ý nhanh bên trên hoặc nhập câu hỏi của bạn nhé!`,
-            [
-                { text: '⚡ Hướng Dẫn Lách Bản Quyền Video MMO', func: "handleZeroAIQuickPrompt('Lách bản quyền video MMO thế nào?')" },
-                { text: '✂ Tách Nền & Quét Chữ OCR Sang Word', func: "switchStudioTab('ai-office')" },
-                { text: '💎 So Sánh Gói Pro 299k vs Ultra 699k', func: "handleZeroAIQuickPrompt('So sánh gói Pro và gói Ultra MMO')" }
-            ]
-        );
+        renderBotMessage(welcome.text, welcome.actions);
     }
 };
+
+// Listen for dynamic language changes
+window.addEventListener('zerostudio:lang_changed', (e) => {
+    const lang = (e && e.detail && e.detail.lang) || 'vi';
+    const msgList = document.getElementById('zeroai-msg-list');
+    if (msgList && msgList.children.length <= 1) {
+        msgList.innerHTML = '';
+        window.initZeroAI(lang);
+    }
+    if (typeof updateProHeaderBadge === 'function') {
+        updateProHeaderBadge();
+    }
+});
 
 window.updateZeroAIModelBadge = function() {
     const badge = document.getElementById('zeroai-active-mode-tag');

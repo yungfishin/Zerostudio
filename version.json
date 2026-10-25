@@ -1,13 +1,14 @@
 {
-  "version": "2.1.0",
+  "version": "2.2.0",
   "release_date": "2026-10-25",
-  "title": "Bản Nâng Cấp Enterprise Cyber Defense & OTA Auto-Update",
+  "title": "Bản Nâng Cấp Toàn Cầu Đa Ngôn Ngữ & Trợ Lý ZeroAI Đa Quốc Gia",
   "changelog": [
-    "Lõi bản quyền WebAssembly Binary DRM Core (.wasm)",
+    "Hỗ trợ Đa Ngôn Ngữ (i18n): Tiếng Việt 🇻🇳, English 🇺🇸, 中文 (简体) 🇨🇳, 日本語 🇯🇵",
+    "Tự động đồng bộ ngôn ngữ cho Trợ lý ZeroAI Chuyên gia 24/7",
+    "Giao diện Dropdown Glassmorphism chuyển đổi ngôn ngữ tức thì",
+    "Lưu trạng thái ngôn ngữ bền vững (localStorage persistence)",
+    "Lõi bảo mật WebAssembly Binary DRM Core v2 (.wasm)",
     "Hệ thống Tự Vệ Chống Sửa Mã & Tự Hủy Bộ Nhớ (Tamper-Destruct)",
-    "Bẫy Phản Công Ngầm Honeypot & Báo Động Pháp Y An Ninh",
-    "Khóa Tên Miền Chống Trộm Bản Quyền (Anti-Cloning Domain Lock)",
-    "Thanh so sánh Before & After Battle Split Slider 60fps",
     "Động cơ Tự Động Cập Nhật OTA 1-Click (In-App Auto Updater)"
   ],
   "web_url": "https://zerostu.netlify.app",

@@ -4736,6 +4736,116 @@
         .btn-ota-close:hover {
             color: #f1f5f9;
         }
+
+        /* Multi-Language Dropdown */
+        .lang-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .lang-toggle-btn {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #f1f5f9;
+            padding: 5px 11px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-toggle-btn:hover {
+            border-color: rgba(56, 189, 248, 0.45);
+            background: rgba(30, 41, 59, 0.85);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .lang-flag {
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .lang-label {
+            letter-spacing: 0.05em;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .lang-caret {
+            width: 12px;
+            height: 12px;
+            color: #94a3b8;
+            transition: transform 0.2s ease;
+        }
+
+        .lang-menu-popover {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 99999;
+            background: rgba(15, 23, 42, 0.96);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(56, 189, 248, 0.15);
+            border-radius: 14px;
+            padding: 6px;
+            min-width: 160px;
+            display: none;
+            flex-direction: column;
+            gap: 3px;
+            animation: langFadeIn 0.2s ease;
+        }
+
+        .lang-menu-popover.open {
+            display: flex;
+        }
+
+        @keyframes langFadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lang-item {
+            padding: 8px 12px;
+            border-radius: 9px;
+            font-size: 13px;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .lang-item:hover {
+            background: rgba(56, 189, 248, 0.12);
+            color: #ffffff;
+        }
+
+        .lang-item.active {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .lang-item .lang-check {
+            margin-left: auto;
+            font-size: 12px;
+            opacity: 0;
+            color: #38bdf8;
+        }
+
+        .lang-item.active .lang-check {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -4817,12 +4927,45 @@
         </a>
 
         <div class="header-right-deck">
+            <!-- Multi-Language Dropdown Selector -->
+            <div class="lang-dropdown-container" id="lang-dropdown-wrap">
+                <button class="lang-toggle-btn" onclick="toggleLangDropdown(event)" title="Đổi ngôn ngữ / Switch Language">
+                    <span class="lang-flag" id="current-lang-flag">🇻🇳</span>
+                    <span class="lang-label" id="current-lang-code">VI</span>
+                    <svg class="lang-caret" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                <div class="lang-menu-popover" id="lang-menu-popover">
+                    <div class="lang-item active" data-lang="vi" onclick="setAppLanguage('vi')">
+                        <span class="lang-emoji">🇻🇳</span>
+                        <span class="lang-name">Tiếng Việt</span>
+                        <span class="lang-check">✓</span>
+                    </div>
+                    <div class="lang-item" data-lang="en" onclick="setAppLanguage('en')">
+                        <span class="lang-emoji">🇺🇸</span>
+                        <span class="lang-name">English</span>
+                        <span class="lang-check">✓</span>
+                    </div>
+                    <div class="lang-item" data-lang="zh" onclick="setAppLanguage('zh')">
+                        <span class="lang-emoji">🇨🇳</span>
+                        <span class="lang-name">中文 (简体)</span>
+                        <span class="lang-check">✓</span>
+                    </div>
+                    <div class="lang-item" data-lang="ja" onclick="setAppLanguage('ja')">
+                        <span class="lang-emoji">🇯🇵</span>
+                        <span class="lang-name">日本語</span>
+                        <span class="lang-check">✓</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Desktop App .EXE Download Button -->
             <a href="./ZeroStudio-Setup.exe" class="btn-outline" style="text-decoration: none; padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; border-color: rgba(56, 189, 248, 0.4); color: #38bdf8; background: rgba(56, 189, 248, 0.08);" download="ZeroStudio-Setup.exe" title="Tải Bản Cài Đặt ZeroStudio cho Windows 64-bit">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
-                <span>Tải Desktop (.EXE)</span>
+                <span data-i18n="download_desktop_btn">Tải Desktop (.EXE)</span>
             </a>
 
             <!-- Pro Upgrade CTA Button -->
@@ -4830,78 +4973,78 @@
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                <span>Bản Desktop Pro</span>
+                <span data-i18n="pro_unlock_btn">Bản Desktop Pro</span>
                 <span class="pro-sparkle-pill">PRO</span>
             </button>
 
             <!-- Live Zero-Knowledge Badge -->
             <div class="zk-badge" onclick="runLeakAudit()" title="Bấm để kiểm toán luồng mạng (Network Audit)">
                 <div class="zk-led"></div>
-                <span class="zk-text">Zero-Knowledge • 100% Offline</span>
+                <span class="zk-text" data-i18n="zk_badge_text">Zero-Knowledge • 100% Offline</span>
             </div>
         </div>
     </header>
 
     <!-- 3. Hero Area -->
     <section class="hero-bento">
-        <div class="meta-pill">
+        <div class="meta-pill" data-i18n="hero_badge">
             <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
             Bảo Mật RAM Cục Bộ • WebGPU & 4K Studio
         </div>
-        <h1>Studio PDF, Ảnh & Video 4K</h1>
-        <p>Toàn bộ tài liệu, ảnh và video được xử lý an toàn với kiến trúc Zero-Knowledge. Tải video không logo & nâng cấp 4K siêu nét.</p>
+        <h1 data-i18n="hero_title">Siêu Ứng Dụng Xử Lý PDF & AI Video MMO</h1>
+        <p data-i18n="hero_sub">Toàn bộ tài liệu, ảnh và video được xử lý an toàn với kiến trúc Zero-Knowledge. Tải video không logo & nâng cấp 4K siêu nét.</p>
 
-        <!-- Webflow Bento Segmented Tabs (5 Tabs) -->
+        <!-- Webflow Bento Segmented Tabs (8 Tabs) -->
         <div class="bento-nav-wrap">
             <button class="bento-nav-btn active" data-tab="merge">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
                 </svg>
-                Gộp PDF
+                <span data-i18n="tab_merge">Gộp PDF</span>
             </button>
             <button class="bento-nav-btn" data-tab="split">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z" />
                 </svg>
-                Tách & Cắt Trang
+                <span data-i18n="tab_split">Tách & Cắt Trang</span>
             </button>
             <button class="bento-nav-btn" data-tab="images">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                Ảnh Sang PDF
+                <span data-i18n="tab_img2pdf">Ảnh Sang PDF</span>
             </button>
             <button class="bento-nav-btn" data-tab="compress">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
-                Nén PDF Thông Minh <span class="badge-pro-mini">PRO</span>
+                <span data-i18n="tab_compress">Nén PDF Thông Minh</span> <span class="badge-pro-mini">PRO</span>
             </button>
             <button class="bento-nav-btn btn-sparkle" data-tab="upscale">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
-                ✨ Phóng To Ảnh 4K
+                <span data-i18n="tab_upscale">✨ Phóng To Ảnh 4K</span>
             </button>
             <button class="bento-nav-btn btn-video-glow" data-tab="video">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
-                🎬 Video Không Logo & 4K
+                <span data-i18n="tab_video">🎬 Video Không Logo & 4K</span>
             </button>
             <button class="bento-nav-btn btn-ultra-glow" data-tab="batch">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
-                Bàn Làm Việc Hàng Loạt <span class="badge-ultra-mini">ULTRA</span>
+                <span data-i18n="tab_batch">Bàn Làm Việc Hàng Loạt</span> <span class="badge-ultra-mini">ULTRA</span>
             </button>
             <button class="bento-nav-btn btn-sparkle" data-tab="ai-office">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                AI Tách Nền & OCR <span class="badge-ultra-mini">ULTRA</span>
+                <span data-i18n="tab_bg_ocr">AI Tách Nền & OCR</span> <span class="badge-ultra-mini">ULTRA</span>
             </button>
         </div>
     </section>
@@ -6015,12 +6158,12 @@
         <!-- ======================================================== -->
         <section class="how-it-works-section" id="how-it-works">
             <div class="section-headline-group">
-                <div class="section-tagline-pill">
+                <div class="section-tagline-pill" data-i18n="battle_badge">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                     BATTLE TEST • TRƯỚC VÀ SAU LÁCH THUẬT TOÁN AI
                 </div>
-                <h2>So Sánh Trực Quan: Video Gốc vs Sau Khi Qua ZeroStudio</h2>
-                <p>Kéo thanh trượt qua lại để xem sự khác biệt thực chiến: Từ video dính chữ Tàu, dính bản quyền 0 view biến thành video 9:16 sắc nét tràn viền, sạch logo và sẵn sàng cắn đề xuất triệu view!</p>
+                <h2 data-i18n="battle_title">So Sánh Trực Quan: Video Gốc vs Sau Khi Qua ZeroStudio</h2>
+                <p data-i18n="battle_sub">Kéo thanh trượt qua lại để xem sự khác biệt thực chiến: Từ video dính chữ Tàu, dính bản quyền 0 view biến thành video 9:16 sắc nét tràn viền, sạch logo và sẵn sàng cắn đề xuất triệu view!</p>
             </div>
 
             <!-- 3-Step Visual Blueprint Cards -->
@@ -6103,7 +6246,7 @@
                         <div class="split-hud-badge before-hud">
                             <div class="hud-status-chip red">
                                 <span class="chip-blink-dot red"></span>
-                                TRƯỚC XỬ LÝ (VIDEO GỐC)
+                                <span data-i18n="hud_before_title">TRƯỚC XỬ LÝ (VIDEO GỐC)</span>
                             </div>
                             <div class="hud-details-box red">
                                 <div class="hud-metric-row"><span>⛔ Viền Đen:</span> <strong>Dải 16:9 ngang thô</strong></div>
@@ -6130,7 +6273,7 @@
                         <div class="split-hud-badge after-hud">
                             <div class="hud-status-chip green">
                                 <span class="chip-blink-dot green"></span>
-                                SAU ZEROSTUDIO (1-CLICK)
+                                <span data-i18n="hud_after_title">SAU ZEROSTUDIO (1-CLICK)</span>
                             </div>
                             <div class="hud-details-box green">
                                 <div class="hud-metric-row"><span>✅ Tỷ Lệ:</span> <strong>9:16 Auto-Crop Tràn Viền</strong></div>
@@ -6160,11 +6303,11 @@
                     <!-- Quick Preset Buttons -->
                     <div class="split-presets-group">
                         <span class="presets-label">Góc nhìn:</span>
-                        <button class="preset-btn active" onclick="setBattleSplit(50, this)">50 / 50 Cân Đối</button>
-                        <button class="preset-btn" onclick="setBattleSplit(10, this)">100% Video Gốc</button>
-                        <button class="preset-btn" onclick="setBattleSplit(90, this)">100% ZeroStudio</button>
+                        <button class="preset-btn active" onclick="setBattleSplit(50, this)" data-i18n="btn_split_50">50 / 50 Cân Đối</button>
+                        <button class="preset-btn" onclick="setBattleSplit(10, this)" data-i18n="btn_split_before">100% Video Gốc</button>
+                        <button class="preset-btn" onclick="setBattleSplit(90, this)" data-i18n="btn_split_after">100% ZeroStudio</button>
                         <button class="preset-btn radar-btn" id="btn-toggle-radar" onclick="toggleRadarAutoScan()">
-                            <span class="radar-dot"></span> Quét Tự Động Radar
+                            <span class="radar-dot"></span> <span data-i18n="btn_split_radar">Quét Tự Động Radar</span>
                         </button>
                     </div>
 
@@ -6292,14 +6435,14 @@
                         <div class="pro-action-btns" style="margin-top: auto;">
                             <button class="btn-glow-action" style="width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899);" onclick="openVietQrCheckout('pro')">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                                Đăng Ký Gói Pro (299k)
+                                <span data-i18n="btn_choose_pro">Đăng Ký Gói Pro (299k)</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- 3. Ultra MMO Master Plan -->
                     <div class="pricing-card card-ultra">
-                        <div class="ultra-corner-ribbon">VUA LÁCH BẢN QUYỀN • KHUYÊN DÙNG</div>
+                        <div class="ultra-corner-ribbon" data-i18n="ultra_tier_badge">VUA LÁCH BẢN QUYỀN • KHUYÊN DÙNG</div>
                         <div class="pricing-badge ultra-badge">ULTRA MMO MASTER</div>
                         <div class="pricing-price ultra-price">699.000đ <span class="old-price">1.490.000đ</span> <span>/ Trọn đời</span></div>
                         <p class="pricing-desc">Dành riêng cho Dân Reup MMO, Kênh Triệu View & Studio Content hàng loạt.</p>
@@ -6314,7 +6457,7 @@
                         <div class="pro-action-btns" style="margin-top: auto;">
                             <button class="btn-glow-action" style="width: 100%; background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);" onclick="openVietQrCheckout('ultra')">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                Đăng Ký Gói Ultra (699k)
+                                <span data-i18n="btn_choose_ultra">Đăng Ký Gói Ultra (699k)</span>
                             </button>
                         </div>
                     </div>
@@ -6322,11 +6465,12 @@
 
                 <!-- License Key Activation Input -->
                 <div class="license-activate-deck">
-                    <div class="license-label">Đã có mã kích hoạt Pro hoặc Ultra?</div>
+                    <div class="license-label" data-i18n="license_have_key">Đã có mã kích hoạt Pro hoặc Ultra?</div>
                     <div class="license-input-wrap">
-                        <input type="text" id="license-key-input" placeholder="Nhập khóa bản quyền: ZERO-PRO-... hoặc ZERO-ULTRA-..." />
-                        <button id="btn-activate-license" class="btn-glow-action" onclick="activateLicenseKey()">Kích Hoạt Ngay</button>
+                        <input type="text" id="license-key-input" placeholder="Nhập khóa bản quyền: ZERO-PRO-... hoặc ZERO-ULTRA-..." data-i18n-ph="license_input_ph" />
+                        <button id="btn-activate-license" class="btn-glow-action" onclick="activateLicenseKey()" data-i18n="license_activate_btn">Kích Hoạt Ngay</button>
                     </div>
+                </div>
                 </div>
 
                 <!-- Admin Test Tier Switcher Bar (Hidden by default, unlocked only via Admin hotkey Ctrl+Shift+Alt+Z) -->
@@ -6602,8 +6746,8 @@
             <span class="zeroai-online-dot"></span>
         </div>
         <div class="zeroai-trigger-label">
-            <span class="zeroai-trigger-title">Trợ Lý AI 24/7</span>
-            <span class="zeroai-trigger-tag">Tư Vấn Tức Thì</span>
+            <span class="zeroai-trigger-title" data-i18n="zeroai_trigger_title">Trợ Lý AI 24/7</span>
+            <span class="zeroai-trigger-tag" data-i18n="zeroai_trigger_tag">Tư Vấn Tức Thì</span>
         </div>
         <div class="zeroai-unread-badge" id="zeroai-unread-badge">1</div>
     </div>
@@ -6624,7 +6768,7 @@
                         ZeroAI Specialist
                         <span class="zeroai-model-tag" id="zeroai-active-mode-tag">Offline 0đ</span>
                     </div>
-                    <div class="zeroai-header-status">Trợ lý Chuyên gia Bản quyền & AI Studio</div>
+                    <div class="zeroai-header-status" data-i18n="zeroai_subtitle">Trợ lý Chuyên gia Bản quyền & AI Studio</div>
                 </div>
             </div>
             <div class="zeroai-header-actions">
@@ -6649,12 +6793,12 @@
 
         <!-- Quick Suggestion Deck -->
         <div class="zeroai-quick-deck" id="zeroai-quick-deck">
-            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Lách bản quyền video MMO thế nào?')">⚡ Lách bản quyền MMO</button>
-            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Hướng dẫn tách nền ảnh thẻ 3x4 4x6')">✂ Tách nền ảnh thẻ</button>
-            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Cách quét chữ OCR tiếng Việt xuất Word')">📝 Quét OCR sang Word</button>
-            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('So sánh gói Pro và gói Ultra MMO')">💎 So sánh Pro & Ultra</button>
-            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Cách thanh toán quét mã VietQR')">💳 Nạp VietQR MB Bank</button>
-            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Cách sửa lỗi mất kết nối Video Bridge')">🔧 Sửa lỗi Video Bridge</button>
+            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Lách bản quyền video MMO thế nào?')" data-i18n="zeroai_quick_mmo">⚡ Lách bản quyền MMO</button>
+            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Hướng dẫn tách nền ảnh thẻ 3x4 4x6')" data-i18n="zeroai_quick_bg">✂ Tách nền ảnh thẻ</button>
+            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Cách quét chữ OCR tiếng Việt xuất Word')" data-i18n="zeroai_quick_ocr">📝 Quét OCR sang Word</button>
+            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('So sánh gói Pro và gói Ultra MMO')" data-i18n="zeroai_quick_pricing">💎 So sánh Pro & Ultra</button>
+            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Cách thanh toán quét mã VietQR')" data-i18n="zeroai_quick_vietqr">💳 Nạp VietQR MB Bank</button>
+            <button class="zeroai-chip" onclick="handleZeroAIQuickPrompt('Cách sửa lỗi mất kết nối Video Bridge')" data-i18n="zeroai_quick_bridge">🔧 Sửa lỗi Video Bridge</button>
         </div>
 
         <!-- Chat Message Container -->
@@ -6662,14 +6806,14 @@
 
         <!-- Input Bar -->
         <form class="zeroai-input-bar" id="zeroai-chat-form" onsubmit="submitZeroAIChat(event)">
-            <input type="text" id="zeroai-chat-input" class="zeroai-input-field" placeholder="Hỏi về lách MMO, tách nền, OCR, giá gói..." autocomplete="off">
+            <input type="text" id="zeroai-chat-input" class="zeroai-input-field" placeholder="Hỏi về lách MMO, tách nền, OCR, giá gói..." autocomplete="off" data-i18n-ph="zeroai_input_ph">
             <button type="submit" class="zeroai-send-btn" id="zeroai-send-btn" title="Gửi tin nhắn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="17" height="17">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                 </svg>
             </button>
         </form>
-        <div class="zeroai-footer-note">
+        <div class="zeroai-footer-note" data-i18n="zeroai_footer_note">
             ⚡ Động cơ AI Trợ Lý Cục Bộ • 0đ Chi Phí • Phản Hồi Tức Thì
         </div>
     </div>
@@ -6708,6 +6852,7 @@
         </div>
     </div>
 
+    <script src="./libs/i18n.js"></script>
     <script src="./app.js"></script>
 </body>
 </html>
