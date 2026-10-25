@@ -161,6 +161,7 @@
         assertTierAccess,
         getActiveTier,
         setVerifiedClaims,
+        getCachedClaims: () => _verifiedClaimsCache,
         getPublicSpki: () => window.ZEROSTUDIO_PUBLIC_KEY_SPKI
     });
 

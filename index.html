@@ -20,7 +20,7 @@
     <meta property="og:url" content="https://zerostu.netlify.app/">
     <meta property="og:title" content="ZeroStudio Pro • Siêu Bộ Công Cụ Video MMO & Xử Lý PDF 100% Offline">
     <meta property="og:description" content="Xử lý 100% tại RAM máy tính, 0 Byte gửi ra ngoài. Tải video Douyin/TikTok 1080p không logo, đổi pitch âm thanh lách bản quyền, nén PDF giảm 88% chuẩn in ấn.">
-    <meta property="og:image" content="https://zerostu.netlify.app/assets/images/zerostudio-og-preview.png">
+    <meta property="og:image" content="https://zerostu.netlify.app/assets/images/zerostudio-og-preview.png?v=2.5.0">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="ZeroStudio Pro">
@@ -30,7 +30,7 @@
     <meta name="twitter:url" content="https://zerostu.netlify.app/">
     <meta name="twitter:title" content="ZeroStudio Pro • Video MMO & Xử Lý PDF 100% Offline">
     <meta name="twitter:description" content="Xử lý 100% tại RAM máy tính, 0 Byte gửi ra ngoài. An toàn bảo mật tuyệt đối.">
-    <meta name="twitter:image" content="https://zerostu.netlify.app/assets/images/zerostudio-og-preview.png">
+    <meta name="twitter:image" content="https://zerostu.netlify.app/assets/images/zerostudio-og-preview.png?v=2.5.0">
     <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,6 +82,12 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        html {
+            overflow-x: hidden;
+            max-width: 100vw;
+            width: 100%;
+        }
+
         body {
             background-color: var(--bg-void);
             color: var(--text-heading);
@@ -89,6 +95,8 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            max-width: 100vw;
+            width: 100%;
             position: relative;
         }
 
@@ -2616,6 +2624,63 @@
             gap: 0.75rem;
         }
 
+        @media (max-width: 768px) {
+            header {
+                padding: 0.65rem 0.85rem !important;
+                max-width: 100vw !important;
+            }
+            .brand-link {
+                gap: 0.35rem !important;
+                min-width: 0 !important;
+            }
+            .brand-title {
+                font-size: 1rem !important;
+            }
+            .brand-version {
+                display: none !important;
+            }
+            .header-right-deck {
+                gap: 0.35rem !important;
+                flex-wrap: nowrap !important;
+                justify-content: flex-end !important;
+            }
+            a[download="ZeroStudio-Setup.exe"] {
+                display: none !important;
+            }
+            #btn-pwa-install {
+                padding: 5px 8px !important;
+            }
+            #btn-pwa-install span {
+                display: none !important;
+            }
+            #btn-affiliate-nav {
+                padding: 5px 8px !important;
+            }
+            #btn-affiliate-nav span {
+                display: none !important;
+            }
+            .zk-badge {
+                padding: 6px 8px !important;
+            }
+            .zk-badge .zk-text {
+                display: none !important;
+            }
+            .btn-pro-unlock {
+                padding: 0.35rem 0.6rem !important;
+                font-size: 0.75rem !important;
+                gap: 0.25rem !important;
+            }
+            .btn-pro-unlock span:not(.pro-sparkle-pill) {
+                display: none !important;
+            }
+            .lang-toggle-btn {
+                padding: 4px 6px !important;
+            }
+            .lang-label, .lang-caret {
+                display: none !important;
+            }
+        }
+
         .btn-pro-unlock {
             background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15));
             border: 1px solid rgba(168, 85, 247, 0.4);
@@ -4979,8 +5044,34 @@
 
         .reviews-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .reviews-wall-section {
+                padding: 3rem 1rem !important;
+            }
+            .reviews-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+            .review-card {
+                padding: 1.2rem !important;
+                min-width: 0 !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .reviews-wall-header h2 {
+                font-size: 1.6rem !important;
+            }
+            .rating-hero-card {
+                padding: 1.5rem !important;
+            }
+            .review-verified-badge {
+                font-size: 0.65rem !important;
+                padding: 2px 6px !important;
+            }
         }
 
         .review-card {
@@ -5274,7 +5365,7 @@
             </div>
             <div class="brand-title">
                 ZeroStudio
-                <span class="brand-version" onclick="checkForAppUpdates(true)" style="cursor: pointer;" title="Bấm để kiểm tra bản cập nhật mới nhất từ Cloud">v2.1 OTA WASM</span>
+                <span class="brand-version" onclick="checkForAppUpdates(true)" style="cursor: pointer;" title="Bấm để kiểm tra bản cập nhật mới nhất từ Cloud">v2.5.0 OTA WASM</span>
             </div>
         </a>
 
