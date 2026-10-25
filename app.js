@@ -220,7 +220,7 @@ function initSelfDefendingShield() {
 // ==========================================
 // OTA AUTO-UPDATE SYSTEM (IN-APP CLOUD SYNC)
 // ==========================================
-const CURRENT_APP_VERSION = "2.5.4";
+const CURRENT_APP_VERSION = "2.5.5";
 
 function compareVersions(v1, v2) {
     if (!v1 || !v2) return 0;
@@ -6259,7 +6259,7 @@ let deferredPwaPrompt = null;
 
 if ('serviceWorker' in navigator && (window.location.protocol.startsWith('http') || window.location.protocol.startsWith('https'))) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=2.5.4').then(reg => { reg.update(); return reg; })
+        navigator.serviceWorker.register('./sw.js?v=2.5.5').then(reg => { reg.update(); return reg; })
             .then(reg => console.log('[PWA] Service Worker registered with scope:', reg.scope))
             .catch(err => console.log('[PWA] Service Worker registration failed:', err));
     });
@@ -6360,7 +6360,7 @@ window.generateAffiliateLink = function() {
     if (output) output.value = link;
 
     if (typeof launchGoldConfetti === 'function') launchGoldConfetti();
-    showToast(`🎉 Đã tạo link giới thiệu: ${code}! Nhận 30% hoa hồng mỗi đơn.`, 'success');
+    showToast(`🎉 Đã tạo link giới thiệu: ${code}! Nhận 30% - 35% hoa hồng khi khách thanh toán thành công.`, 'success');
 
     if (typeof sendInstantNotification === 'function') {
         sendInstantNotification({

@@ -7102,7 +7102,7 @@
 
             <!-- Reviews Cards Grid -->
             <div class="reviews-grid" id="reviews-cards-grid">
-                <!-- Dynamically rendered via app.js?v=2.5.4"reviews-load-more-wrap" style="text-align: center; margin-top: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <!-- Dynamically rendered via app.js?v=2.5.5"reviews-load-more-wrap" style="text-align: center; margin-top: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 8px;">
                 <button id="btn-load-more-reviews" class="btn-outline" onclick="loadMoreReviews()" style="border-radius: 999px; padding: 10px 28px; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; background: rgba(245, 158, 11, 0.08); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15);">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     <span id="load-more-btn-text" data-i18n="btn_load_more_reviews">Xem Thêm Đánh Giá Khác</span>
@@ -7440,7 +7440,7 @@
                             <span id="checkout-status-label">Hệ thống đang quét giao dịch tự động...</span>
                         </div>
 
-                        <button class="btn-glow-action" style="width: 100%; margin-top: 0.5rem; background: linear-gradient(135deg, #10b981, #06b6d4);" onclick="confirmPaidAndGetLicense()">
+                        <button id="btn-confirm-payment" class="btn-glow-action" style="width: 100%; margin-top: 0.5rem; background: linear-gradient(135deg, #10b981, #06b6d4);" onclick="confirmPaidAndGetLicense()">
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                             <span data-i18n="checkout_btn_confirm_paid">Tôi Đã Chuyển Khoản • Nhận Key Ngay</span>
                         </button>
@@ -7508,43 +7508,73 @@
         </div>
     </div>
 
-    <!-- MODAL: ZEROSTUDIO AFFILIATE PARTNER PROGRAM (30% COMMISSION) -->
+    <!-- MODAL: ZEROSTUDIO AFFILIATE PARTNER PROGRAM (30% - 35% CPA COMMISSION) -->
     <div class="laser-modal" id="affiliate-modal" style="display: none;">
-        <div class="pro-hud-card" style="max-width: 650px;">
+        <div class="pro-hud-card" style="max-width: 680px;">
             <button class="modal-close-btn" onclick="closeAffiliateModal()">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
 
-            <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 16px; background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(236, 72, 153, 0.5); display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 0 25px rgba(236, 72, 153, 0.3);">
+            <div style="text-align: center; margin-bottom: 1.15rem;">
+                <div style="width: 52px; height: 52px; margin: 0 auto 10px; border-radius: 16px; background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(236, 72, 153, 0.5); display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 0 25px rgba(236, 72, 153, 0.3);">
                     🎁
                 </div>
-                <h2 style="font-size: 1.55rem; font-weight: 800; color: #fff; letter-spacing: -0.02em;" data-i18n="aff_modal_title">CHƯƠNG TRÌNH ĐỐI TÁC ZEROSTUDIO</h2>
-                <p style="color: #94a3b8; font-size: 0.88rem; margin-top: 6px;" data-i18n="aff_modal_sub">Lan tỏa siêu công cụ Video & PDF — Nhận 30% hoa hồng trực tiếp qua Ngân Hàng / Zalo</p>
+                <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: -0.02em;" data-i18n="aff_modal_title">CHƯƠNG TRÌNH ĐỐI TÁC ZEROSTUDIO</h2>
+                <p style="color: #94a3b8; font-size: 0.88rem; margin-top: 4px;" data-i18n="aff_modal_sub">Lan tỏa siêu công cụ Video & PDF — Nhận 30% - 35% hoa hồng trực tiếp qua Ngân Hàng / Zalo</p>
+            </div>
+
+            <!-- CPA Real Payment Guarantee Pill -->
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 10px 14px; margin-bottom: 1.15rem; display: flex; align-items: flex-start; gap: 10px; text-align: left;">
+                <span style="font-size: 1.25rem; line-height: 1.2;">🔒</span>
+                <div style="font-size: 0.8rem; color: #a7f3d0; line-height: 1.45;" data-i18n="aff_rule_cpa">
+                    <strong>Cơ chế CPA thanh toán thực:</strong> Hoa hồng được kích hoạt và cộng dồn ngay khi người được giới thiệu thanh toán thành công gói Pro/Ultra qua VietQR MB Bank. Tuyệt đối không tính lượt đăng ký ảo, đảm bảo quỹ hoa hồng tiền tươi 100%.
+                </div>
             </div>
 
             <!-- Commission Rate Bento Cards -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem;">
-                <div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 14px; padding: 14px; text-align: center;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.15rem;">
+                <div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 14px; padding: 14px; text-align: center; position: relative;">
                     <div style="font-size: 0.75rem; color: #c084fc; font-weight: 700; text-transform: uppercase;">Gói Desktop Pro</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #e879f9; margin: 4px 0;">90.000đ</div>
-                    <div style="font-size: 0.78rem; color: #94a3b8;">Hoa hồng 30% / đơn (Giá 299k)</div>
+                    <div style="font-size: 1.55rem; font-weight: 800; color: #e879f9; margin: 4px 0;">80.000đ</div>
+                    <div style="font-size: 0.78rem; color: #94a3b8;" data-i18n="aff_tier_pro_desc">Hoa hồng 30% (Khách giảm 10% còn 269k)</div>
                 </div>
-                <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 14px; text-align: center;">
+                <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 14px; text-align: center; position: relative; box-shadow: 0 0 20px rgba(245, 158, 11, 0.08);">
+                    <div style="position: absolute; top: -9px; right: 12px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 999px; letter-spacing: 0.5px;">THƯỞNG CAO NHẤT</div>
                     <div style="font-size: 0.75rem; color: #fbbf24; font-weight: 700; text-transform: uppercase;">Gói Ultra MMO Master</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #f59e0b; margin: 4px 0;">210.000đ</div>
-                    <div style="font-size: 0.78rem; color: #94a3b8;">Hoa hồng 30% / đơn (Giá 699k)</div>
+                    <div style="font-size: 1.55rem; font-weight: 800; color: #f59e0b; margin: 4px 0;">220.000đ</div>
+                    <div style="font-size: 0.78rem; color: #94a3b8;" data-i18n="aff_tier_ultra_desc">Hoa hồng 35% (Khách giảm 10% còn 629k)</div>
+                </div>
+            </div>
+
+            <!-- Gamification Partner Ladder -->
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 10px 14px; margin-bottom: 1.15rem;">
+                <div style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;" data-i18n="aff_ladder_title">
+                    🏆 THANG CẤP BẬC ĐỐI TÁC (TÍCH LŨY ĐƠN HÀNG THÀNH CÔNG)
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <div style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 8px; text-align: center; border: 1px solid rgba(205, 127, 50, 0.3);">
+                        <div style="font-size: 0.78rem; font-weight: 700; color: #d97706;">🥉 Tân Thủ</div>
+                        <div style="font-size: 0.72rem; color: #cbd5e1; margin-top: 2px;">1 – 10 đơn (25-30%)</div>
+                    </div>
+                    <div style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 8px; text-align: center; border: 1px solid rgba(148, 163, 184, 0.4);">
+                        <div style="font-size: 0.78rem; font-weight: 700; color: #e2e8f0;">🥈 Chuyên Nghiệp</div>
+                        <div style="font-size: 0.72rem; color: #cbd5e1; margin-top: 2px;">11 – 50 đơn (30-35%)</div>
+                    </div>
+                    <div style="background: rgba(245, 158, 11, 0.1); border-radius: 10px; padding: 8px; text-align: center; border: 1px solid rgba(245, 158, 11, 0.5);">
+                        <div style="font-size: 0.78rem; font-weight: 800; color: #fbbf24;">🥇 Master Đại Lý</div>
+                        <div style="font-size: 0.72rem; color: #fde68a; margin-top: 2px;">> 50 đơn (+1TR Thưởng)</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Custom Link Generator Box -->
-            <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 18px; margin-bottom: 1.25rem;">
+            <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 14px 16px; margin-bottom: 1.15rem;">
                 <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #cbd5e1; margin-bottom: 8px;">
                     1. Nhập biệt danh / tên của bạn để tạo mã riêng:
                 </label>
-                <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
                     <input type="text" id="aff-nickname-input" placeholder="VD: TOPMMO, HIEU99, KETOAN..." style="flex: 1; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(236, 72, 153, 0.4); border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase;" />
                     <button class="btn-glow-action" onclick="generateAffiliateLink()" style="border-radius: 10px; padding: 10px 18px; font-size: 0.85rem; background: linear-gradient(135deg, #ec4899, #a855f7); flex-shrink: 0;">
                         Tạo Link
@@ -7552,7 +7582,7 @@
                 </div>
 
                 <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #cbd5e1; margin-bottom: 8px;">
-                    2. Link giới thiệu độc quyền (Người mua được giảm 10%):
+                    2. Link giới thiệu độc quyền (Người mua được giảm 10% trên VietQR):
                 </label>
                 <div style="display: flex; gap: 8px; align-items: center; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 6px 10px;">
                     <input type="text" id="aff-link-output" readonly value="https://zerostu.netlify.app/?ref=PARTNER" style="flex: 1; background: transparent; border: none; color: #38bdf8; font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; outline: none;" />
@@ -7564,11 +7594,11 @@
 
             <!-- How payout works & Hotline register -->
             <div style="padding: 12px 16px; border-radius: 12px; background: rgba(0, 104, 255, 0.08); border: 1px solid rgba(0, 104, 255, 0.25); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.4; text-align: left;">
-                    💳 <strong>Đối soát & Nhận hoa hồng:</strong><br>
-                    Khách mua ghi kèm mã REF của bạn, tiền hoa hồng sẽ được Admin chuyển khoản ngay trong ngày qua STK của bạn.
+                <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.4; text-align: left;" data-i18n="aff_payout_note">
+                    💳 <strong>Đối soát & Nhận hoa hồng tự động:</strong><br>
+                    Khách quét mã thanh toán nổ tiền vào MB Bank, hệ thống tự động ghi nhận mã REF. Rút tiền nhanh trong 24h qua STK Zalo.
                 </div>
-                <a href="https://zalo.me/0962876139" target="_blank" rel="noopener noreferrer" style="padding: 0.45rem 0.85rem; font-size: 0.8rem; background: #0068ff; color: #fff; font-weight: 700; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0, 104, 255, 0.35);">
+                <a href="https://zalo.me/0962876139" target="_blank" rel="noopener noreferrer" style="padding: 0.5rem 0.95rem; font-size: 0.82rem; background: #0068ff; color: #fff; font-weight: 700; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0, 104, 255, 0.35);" data-i18n="aff_register_btn">
                     Đăng Ký STK Qua Zalo
                 </a>
             </div>
@@ -7780,7 +7810,7 @@
         </div>
     </div>
 
-    <script src="./libs/i18n.js?v=2.5.4"></script>
-    <script src="./app.js?v=2.5.4"></script>
+    <script src="./libs/i18n.js?v=2.5.5"></script>
+    <script src="./app.js?v=2.5.5"></script>
 </body>
 </html>

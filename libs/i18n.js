@@ -68,7 +68,16 @@ const TRANSLATIONS = {
 
         // Affiliate Modal
         aff_modal_title: "CHƯƠNG TRÌNH ĐỐI TÁC ZEROSTUDIO",
-        aff_modal_sub: "Lan tỏa siêu công cụ Video & PDF — Nhận 30% hoa hồng trực tiếp qua Ngân Hàng / Zalo",
+        aff_modal_sub: "Lan tỏa siêu công cụ Video & PDF — Nhận 30% - 35% hoa hồng trực tiếp qua Ngân Hàng / Zalo",
+        aff_rule_cpa: "<strong>Cơ chế CPA thanh toán thực:</strong> Hoa hồng được kích hoạt và cộng dồn ngay khi người được giới thiệu thanh toán thành công gói Pro/Ultra qua VietQR MB Bank. Tuyệt đối không tính lượt đăng ký ảo, đảm bảo quỹ hoa hồng tiền tươi 100%.",
+        aff_tier_pro_desc: "Hoa hồng 30% (Khách giảm 10% còn 269k)",
+        aff_tier_ultra_desc: "Hoa hồng 35% (Khách giảm 10% còn 629k)",
+        aff_ladder_title: "🏆 THANG CẤP BẬC ĐỐI TÁC (TÍCH LŨY ĐƠN HÀNG THÀNH CÔNG)",
+        aff_ladder_bronze: "🥉 Tân Thủ: 1 – 10 đơn (25-30%)",
+        aff_ladder_silver: "🥈 Chuyên Nghiệp: 11 – 50 đơn (30-35%)",
+        aff_ladder_gold: "🥇 Master Đại Lý: > 50 đơn (+1TR Thưởng)",
+        aff_payout_note: "Khách quét mã thanh toán nổ tiền vào MB Bank, hệ thống tự động ghi nhận mã REF. Rút tiền nhanh trong 24h qua STK Zalo.",
+        aff_register_btn: "Đăng Ký STK Qua Zalo",
 
         // Modals & Pricing Header
         pro_modal_title: "ZeroStudio Desktop Pro",
@@ -270,7 +279,16 @@ const TRANSLATIONS = {
 
         // Affiliate Modal
         aff_modal_title: "ZEROSTUDIO PARTNER PROGRAM",
-        aff_modal_sub: "Share premium Video & PDF tool — Earn 30% instant commission via Bank / Zalo",
+        aff_modal_sub: "Share premium Video & PDF tool — Earn 30% - 35% direct commission via Bank / Zalo",
+        aff_rule_cpa: "<strong>Real-Payment CPA Model:</strong> Commission is recorded instantly when the referred customer completes VietQR MB Bank payment. Zero fake accounts counted, 100% verified cash payout.",
+        aff_tier_pro_desc: "30% Commission (Referred user gets 10% off at 269k)",
+        aff_tier_ultra_desc: "35% Commission (Referred user gets 10% off at 629k)",
+        aff_ladder_title: "🏆 PARTNER TIER LADDER (ACCUMULATED PAID ORDERS)",
+        aff_ladder_bronze: "🥉 Bronze: 1 – 10 orders (25-30%)",
+        aff_ladder_silver: "🥈 Silver: 11 – 50 orders (30-35%)",
+        aff_ladder_gold: "🥇 Gold Master: > 50 orders (+1M VND Bonus)",
+        aff_payout_note: "When client completes bank payment, REF code is automatically linked. Fast payout within 24h via Bank / Zalo.",
+        aff_register_btn: "Register Payout via Zalo",
 
         // Modals & Pricing Header
         pro_modal_title: "ZeroStudio Desktop Pro",
@@ -471,8 +489,17 @@ const TRANSLATIONS = {
         btn_load_more_reviews: "加载更多评价",
 
         // Affiliate Modal
-        aff_modal_title: "ZEROSTUDIO合伙人推广计划",
-        aff_modal_sub: "推广终极视频与PDF处理工具 — 获得30%高额实时佣金",
+        aff_modal_title: "ZEROSTUDIO分销合伙人计划",
+        aff_modal_sub: "推广短视频与PDF神器 — 享受30% - 35%直接佣金分成",
+        aff_rule_cpa: "<strong>真实付款CPA机制：</strong>被邀请人通过VietQR银行完成付费后，佣金即刻自动入账。杜绝虚假账号与刷单，保证100%实收真金白银。",
+        aff_tier_pro_desc: "30% 佣金（客户立减10%仅需26.9万盾）",
+        aff_tier_ultra_desc: "35% 佣金（客户立减10%仅需62.9万盾）",
+        aff_ladder_title: "🏆 合伙人等级阶梯（累计成功付款单数）",
+        aff_ladder_bronze: "🥉 新晋合伙人: 1 – 10 单 (25-30%)",
+        aff_ladder_silver: "🥈 进阶精英: 11 – 50 单 (30-35%)",
+        aff_ladder_gold: "🥇 顶级大师: > 50 单 (立奖100万盾)",
+        aff_payout_note: "客户完成银行转账后系统自动绑定REF推广码。24小时内通过银行或Zalo快速结算。",
+        aff_register_btn: "通过Zalo登记银行卡号",
 
         // Modals & Pricing Header
         pro_modal_title: "ZeroStudio Desktop Pro 专业版",
@@ -674,7 +701,16 @@ const TRANSLATIONS = {
 
         // Affiliate Modal
         aff_modal_title: "ZEROSTUDIO パートナープログラム",
-        aff_modal_sub: "高機能動画・PDFツールを紹介して30%の報酬を獲得",
+        aff_modal_sub: "高機能動画・PDFツールを紹介して30%〜35%の報酬を獲得",
+        aff_rule_cpa: "<strong>実売上CPA方式：</strong>紹介された顧客がVietQR銀行振込で決済を完了した時点で即座に報酬が確定します。不正・ダミーアカウントは100%除外。",
+        aff_tier_pro_desc: "30% 報酬（紹介された顧客は10%割引）",
+        aff_tier_ultra_desc: "35% 報酬（紹介された顧客は10%割引）",
+        aff_ladder_title: "🏆 パートナーランク制度（成約件数に応じた昇格）",
+        aff_ladder_bronze: "🥉 ブロンズ: 1〜10件 (25-30%)",
+        aff_ladder_silver: "🥈 シルバー: 11〜50件 (30-35%)",
+        aff_ladder_gold: "🥇 ゴールドマスター: 50件超 (ボーナス100万VND)",
+        aff_payout_note: "銀行振込が確認され次第REFコードが自動確定。24時間以内に銀行口座・Zaloへ迅速送金。",
+        aff_register_btn: "Zaloで振込先口座を登録",
 
         // Modals & Pricing Header
         pro_modal_title: "ZeroStudio Desktop Pro",
