@@ -3269,51 +3269,165 @@ window.unbindCurrentDevice = async function() {
 };
 
 // ----------------------------------------------------
-// SHOWCASE THEATER VIDEO CONTROLS
+// BEFORE & AFTER BATTLE COMPARISON SLIDER CONTROLLER
 // ----------------------------------------------------
-window.toggleShowcaseVideo = function() {
-    const video = document.getElementById('showcase-demo-video');
-    const overlay = document.getElementById('theater-play-overlay');
-    if (!video) return;
-    if (video.paused) {
-        video.play().then(() => {
-            if (overlay) overlay.style.display = 'none';
-        }).catch(() => {
-            video.muted = true;
-            video.play();
-            if (overlay) overlay.style.display = 'none';
-        });
-    } else {
-        video.pause();
-        if (overlay) overlay.style.display = 'flex';
+let battleCurrentSplit = 50;
+let isBattleDragging = false;
+let isRadarScanning = false;
+let radarScanAnimId = null;
+let radarDirection = 1;
+
+window.setBattleSplit = function(percent, btnEl) {
+    battleCurrentSplit = Math.max(0, Math.min(100, percent));
+    applyBattleSplit(battleCurrentSplit);
+
+    // Stop auto-scan if active
+    if (isRadarScanning && btnEl && !btnEl.classList.contains('radar-btn')) {
+        window.toggleRadarAutoScan(false);
+    }
+
+    if (btnEl) {
+        const group = btnEl.closest('.split-presets-group');
+        if (group) {
+            group.querySelectorAll('.preset-btn').forEach(b => {
+                if (!b.classList.contains('radar-btn')) b.classList.remove('active');
+            });
+            btnEl.classList.add('active');
+        }
     }
 };
 
-window.toggleShowcaseMute = function() {
-    const video = document.getElementById('showcase-demo-video');
-    if (!video) return;
-    video.muted = !video.muted;
-    showToast(video.muted ? 'Đã tắt âm thanh video demo' : 'Đã bật âm thanh video demo', 'info');
+function applyBattleSplit(pct) {
+    const afterLayer = document.getElementById('battle-after-layer');
+    const divider = document.getElementById('battle-split-divider');
+    if (afterLayer) {
+        afterLayer.style.clipPath = `polygon(0 0, ${pct}% 0, ${pct}% 100%, 0 100%)`;
+    }
+    if (divider) {
+        divider.style.left = `${pct}%`;
+    }
+}
+
+window.toggleRadarAutoScan = function(forceState) {
+    const radarBtn = document.getElementById('btn-toggle-radar');
+    if (typeof forceState === 'boolean') {
+        isRadarScanning = forceState;
+    } else {
+        isRadarScanning = !isRadarScanning;
+    }
+
+    if (radarBtn) {
+        if (isRadarScanning) radarBtn.classList.add('active');
+        else radarBtn.classList.remove('active');
+    }
+
+    if (isRadarScanning) {
+        showToast('🎯 Đã kích hoạt chế độ Radar Quét Tự Động!', 'info');
+        runRadarScanLoop();
+    } else {
+        if (radarScanAnimId) {
+            cancelAnimationFrame(radarScanAnimId);
+            radarScanAnimId = null;
+        }
+    }
 };
+
+function runRadarScanLoop() {
+    if (!isRadarScanning) return;
+    battleCurrentSplit += 0.35 * radarDirection;
+    if (battleCurrentSplit >= 88) {
+        battleCurrentSplit = 88;
+        radarDirection = -1;
+    } else if (battleCurrentSplit <= 12) {
+        battleCurrentSplit = 12;
+        radarDirection = 1;
+    }
+    applyBattleSplit(battleCurrentSplit);
+    radarScanAnimId = requestAnimationFrame(runRadarScanLoop);
+}
+
+function initBattleSplitSlider() {
+    const container = document.getElementById('battle-split-container');
+    const handle = document.getElementById('battle-split-handle');
+    if (!container || !handle) return;
+
+    applyBattleSplit(battleCurrentSplit);
+
+    function handleDrag(clientX) {
+        const rect = container.getBoundingClientRect();
+        const offsetX = clientX - rect.left;
+        let pct = (offsetX / rect.width) * 100;
+        pct = Math.max(0, Math.min(100, pct));
+        battleCurrentSplit = pct;
+        applyBattleSplit(pct);
+
+        if (isRadarScanning) {
+            window.toggleRadarAutoScan(false);
+        }
+    }
+
+    // Mouse drag events
+    container.addEventListener('mousedown', (e) => {
+        isBattleDragging = true;
+        handleDrag(e.clientX);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isBattleDragging) return;
+        handleDrag(e.clientX);
+    });
+
+    window.addEventListener('mouseup', () => {
+        isBattleDragging = false;
+    });
+
+    // Touch events for Mobile
+    container.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches[0]) {
+            isBattleDragging = true;
+            handleDrag(e.touches[0].clientX);
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isBattleDragging) return;
+        if (e.touches && e.touches[0]) {
+            handleDrag(e.touches[0].clientX);
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+        isBattleDragging = false;
+    });
+
+    // Sync before and after video playback
+    const vidBefore = document.getElementById('battle-before-video');
+    const vidAfter = document.getElementById('battle-after-video');
+    if (vidBefore && vidAfter) {
+        vidBefore.play().catch(() => {});
+        vidAfter.play().catch(() => {});
+
+        // Keep them in sync
+        vidBefore.addEventListener('timeupdate', () => {
+            if (Math.abs(vidBefore.currentTime - vidAfter.currentTime) > 0.15) {
+                vidAfter.currentTime = vidBefore.currentTime;
+            }
+        });
+    }
+}
 
 // Initialize Antiban dropzone & Permanent License Sync on load
 document.addEventListener('DOMContentLoaded', () => {
     setupAntibanDropzone();
     loadPermanentDiskLicense();
     initBatchWorkspace();
-
-    const showcaseVid = document.getElementById('showcase-demo-video');
-    if (showcaseVid) {
-        showcaseVid.addEventListener('ended', () => {
-            const overlay = document.getElementById('theater-play-overlay');
-            if (overlay) overlay.style.display = 'flex';
-        });
-    }
+    initBattleSplitSlider();
 });
 setTimeout(() => {
     setupAntibanDropzone();
     loadPermanentDiskLicense();
     initBatchWorkspace();
+    initBattleSplitSlider();
 }, 500);
 
 // ====================================================
