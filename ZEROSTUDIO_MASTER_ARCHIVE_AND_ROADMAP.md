@@ -150,6 +150,15 @@ mindmap
 - Mở khóa khẩn cấp Admin: Sử dụng Salted SHA-256 Hash không lộ mật khẩu.
   Mã Hash an toàn: e8dc2bb4a14081e6322e980478256fbc038f99b30b9f01ab7cc5030b946f462e.
 - Công cụ giải cứu nội bộ: Giai_Cuu_Admin.bat.
+                                      │
+                                      ▼
+                      LỚP 6: TOÀN VẸN MÃ BẢN QUYỀN (HMAC-SHA256 ANTI-FORGERY)
+- Mỗi Key hợp lệ bắt buộc mang 4 ký tự Checksum bí mật: PREFIX-PAYLOAD-[SHA256[:4]].
+- Khóa bí mật máy chủ: ZEROSTUDIO_MASTER_INTEGRITY_SALT_2026_@HIEU.
+- Tự chế key hoặc đoán mò sai checksum sẽ bị từ chối và tính vào số lần vi phạm khóa máy.
+- Xóa bỏ 100% Dev Fallback tự cấp key miễn phí trong code.
+- Khóa chặt Video Bridge bằng Origin Whitelist (Chống CSRF / Drive-by attack từ web lạ).
+- Ẩn hoàn toàn bảng Admin Test Tier sau tổ hợp phím bí mật Ctrl + Shift + Alt + Z.
 ========================================================================================
 ```
 
