@@ -8,6 +8,7 @@ import sys
 import os
 import json
 import urllib.parse
+import urllib.request
 import subprocess
 import time
 import re
@@ -385,7 +386,56 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             self._send_cors_headers()
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps({'status': 'ok', 'service': 'ZeroStudio Video Bridge & Cyber Defense', 'version': '2.0'}).encode())
+            self.wfile.write(json.dumps({'status': 'ok', 'service': 'ZeroStudio Video Bridge & Cyber Defense', 'version': '2.1'}).encode())
+            return
+
+        # ----------------------------------------------------
+        # OTA AUTO-UPDATE CHECKER
+        # ----------------------------------------------------
+        if parsed.path == '/api/check-update':
+            local_ver_file = Path(__file__).parent / 'version.json'
+            local_ver = "2.1.0"
+            if local_ver_file.exists():
+                try:
+                    local_ver = json.loads(local_ver_file.read_text(encoding='utf-8')).get('version', '2.1.0')
+                except Exception:
+                    pass
+
+            cloud_data = None
+            try:
+                req = urllib.request.Request(
+                    'https://zerostu.netlify.app/version.json',
+                    headers={'User-Agent': 'ZeroStudio-OTA/2.0'}
+                )
+                with urllib.request.urlopen(req, timeout=3) as resp:
+                    if resp.status == 200:
+                        cloud_data = json.loads(resp.read().decode('utf-8'))
+            except Exception:
+                pass
+
+            update_available = False
+            remote_ver = local_ver
+            if cloud_data and 'version' in cloud_data:
+                remote_ver = cloud_data['version']
+                try:
+                    p_loc = [int(x) for x in local_ver.split('.')]
+                    p_rem = [int(x) for x in remote_ver.split('.')]
+                    update_available = p_rem > p_loc
+                except Exception:
+                    update_available = (remote_ver != local_ver)
+
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'success': True,
+                'current_version': local_ver,
+                'latest_version': remote_ver,
+                'update_available': update_available,
+                'title': cloud_data.get('title', '') if cloud_data else '',
+                'changelog': cloud_data.get('changelog', []) if cloud_data else []
+            }).encode('utf-8'))
             return
 
         if parsed.path == '/api/my-ip':
@@ -623,6 +673,53 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({'success': True, 'deleted': True}).encode())
             return
 
+        # ----------------------------------------------------
+        # APPLY OTA AUTO-UPDATE (SYNC LATEST ASSETS FROM CLOUD)
+        # ----------------------------------------------------
+        if parsed.path == '/api/apply-ota-update':
+            base_url = "https://zerostu.netlify.app"
+            files_to_sync = [
+                'index.html',
+                'app.js',
+                'version.json',
+                'libs/zerostudio_drm.wasm'
+            ]
+            updated = []
+            errors = []
+            root_dir = Path(__file__).parent
+
+            for rel_file in files_to_sync:
+                target_path = root_dir / rel_file
+                cloud_file_url = f"{base_url}/{rel_file}"
+                try:
+                    req = urllib.request.Request(cloud_file_url, headers={'User-Agent': 'ZeroStudio-OTA/2.0'})
+                    with urllib.request.urlopen(req, timeout=8) as resp:
+                        if resp.status == 200:
+                            content = resp.read()
+                            target_path.parent.mkdir(parents=True, exist_ok=True)
+                            if target_path.exists():
+                                try:
+                                    (root_dir / f"{rel_file}.bak").write_bytes(target_path.read_bytes())
+                                except Exception:
+                                    pass
+                            target_path.write_bytes(content)
+                            updated.append(rel_file)
+                except Exception as e:
+                    errors.append(f"{rel_file}: {str(e)}")
+
+            success = len(updated) > 0
+            self.send_response(200 if success else 500)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'success': success,
+                'updated_files': updated,
+                'errors': errors,
+                'message': f"Đã cập nhật thành công {len(updated)} file từ Cloud! Vui lòng tải lại trang." if success else "Không thể tải gói cập nhật từ Cloud."
+            }).encode('utf-8'))
+            return
+
         self.send_response(404)
         self.end_headers()
 
@@ -780,6 +877,53 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps({'success': True, 'deleted': True}).encode())
+            return
+
+        # ----------------------------------------------------
+        # APPLY OTA AUTO-UPDATE (SYNC LATEST ASSETS FROM CLOUD)
+        # ----------------------------------------------------
+        if parsed.path == '/api/apply-ota-update':
+            base_url = "https://zerostu.netlify.app"
+            files_to_sync = [
+                'index.html',
+                'app.js',
+                'version.json',
+                'libs/zerostudio_drm.wasm'
+            ]
+            updated = []
+            errors = []
+            root_dir = Path(__file__).parent
+
+            for rel_file in files_to_sync:
+                target_path = root_dir / rel_file
+                cloud_file_url = f"{base_url}/{rel_file}"
+                try:
+                    req = urllib.request.Request(cloud_file_url, headers={'User-Agent': 'ZeroStudio-OTA/2.0'})
+                    with urllib.request.urlopen(req, timeout=8) as resp:
+                        if resp.status == 200:
+                            content = resp.read()
+                            target_path.parent.mkdir(parents=True, exist_ok=True)
+                            if target_path.exists():
+                                try:
+                                    (root_dir / f"{rel_file}.bak").write_bytes(target_path.read_bytes())
+                                except Exception:
+                                    pass
+                            target_path.write_bytes(content)
+                            updated.append(rel_file)
+                except Exception as e:
+                    errors.append(f"{rel_file}: {str(e)}")
+
+            success = len(updated) > 0
+            self.send_response(200 if success else 500)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'success': success,
+                'updated_files': updated,
+                'errors': errors,
+                'message': f"Đã cập nhật thành công {len(updated)} file từ Cloud! Vui lòng tải lại trang." if success else "Không thể tải gói cập nhật từ Cloud."
+            }).encode('utf-8'))
             return
 
         if parsed.path == '/api/batch-mmo':

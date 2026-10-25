@@ -218,6 +218,140 @@ function initSelfDefendingShield() {
 }
 
 // ==========================================
+// OTA AUTO-UPDATE SYSTEM (IN-APP CLOUD SYNC)
+// ==========================================
+const CURRENT_APP_VERSION = "2.1.0";
+
+function compareVersions(v1, v2) {
+    if (!v1 || !v2) return 0;
+    const p1 = v1.split('.').map(n => parseInt(n) || 0);
+    const p2 = v2.split('.').map(n => parseInt(n) || 0);
+    for (let i = 0; i < Math.max(p1.length, p2.length); i++) {
+        const a = p1[i] || 0;
+        const b = p2[i] || 0;
+        if (a > b) return 1;
+        if (a < b) return -1;
+    }
+    return 0;
+}
+
+window.dismissOtaBanner = function() {
+    const banner = document.getElementById('ota-update-banner');
+    if (banner) {
+        banner.style.opacity = '0';
+        banner.style.transform = 'translate(-50%, -15px)';
+        setTimeout(() => { banner.style.display = 'none'; }, 300);
+    }
+    try { sessionStorage.setItem('zerostudio_ota_dismissed', '1'); } catch {}
+};
+
+window.checkForAppUpdates = async function(manual = false) {
+    try {
+        if (!manual && sessionStorage.getItem('zerostudio_ota_dismissed')) {
+            return false;
+        }
+
+        let updateData = null;
+
+        // Priority 1: Check via local Python bridge
+        try {
+            const bridge = await getBridgeBaseUrl();
+            const bridgeRes = await fetch(`${bridge}/api/check-update`, { signal: AbortSignal.timeout(1500) });
+            if (bridgeRes.ok) {
+                const bData = await bridgeRes.json();
+                if (bData && bData.success) {
+                    updateData = {
+                        version: bData.latest_version,
+                        title: bData.title,
+                        changelog: bData.changelog,
+                        update_available: bData.update_available
+                    };
+                }
+            }
+        } catch (_) {}
+
+        // Priority 2: Direct Cloud check from Netlify
+        if (!updateData) {
+            try {
+                const res = await fetch(`https://zerostu.netlify.app/version.json?t=${Date.now()}`, { signal: AbortSignal.timeout(2500) });
+                if (res.ok) {
+                    const cData = await res.json();
+                    if (cData && cData.version) {
+                        updateData = {
+                            version: cData.version,
+                            title: cData.title || 'Bản nâng cấp tính năng mới',
+                            changelog: cData.changelog || [],
+                            update_available: compareVersions(cData.version, CURRENT_APP_VERSION) > 0
+                        };
+                    }
+                }
+            } catch (_) {}
+        }
+
+        if (updateData && updateData.update_available) {
+            const banner = document.getElementById('ota-update-banner');
+            const verTag = document.getElementById('ota-version-tag');
+            const titleEl = document.getElementById('ota-title-text');
+            if (verTag) verTag.textContent = `ZeroStudio v${updateData.version}`;
+            if (titleEl) titleEl.textContent = updateData.title || 'Đã có bản cập nhật mới';
+            if (banner) {
+                banner.style.display = 'flex';
+                banner.style.opacity = '1';
+                banner.style.transform = 'translate(-50%, 0)';
+            }
+            if (typeof showToast === 'function') {
+                showToast(`🚀 Đã có bản cập nhật mới v${updateData.version}! Bấm nút "Cập Nhật" trên banner để nâng cấp.`, 'info');
+            }
+            return true;
+        } else if (manual) {
+            if (typeof showToast === 'function') {
+                showToast(`✅ Bạn đang sử dụng phiên bản mới nhất (v${CURRENT_APP_VERSION})!`, 'success');
+            }
+        }
+    } catch (e) {
+        if (manual && typeof showToast === 'function') {
+            showToast('Không thể kết nối máy chủ cập nhật lúc này.', 'warning');
+        }
+    }
+    return false;
+};
+
+window.applyOtaUpdate = async function() {
+    const btn = document.querySelector('.btn-ota-update');
+    if (btn) {
+        btn.innerHTML = '<span>⏳</span> Đang nạp bản mới...';
+        btn.disabled = true;
+    }
+
+    try {
+        const bridge = await getBridgeBaseUrl();
+        const res = await fetch(`${bridge}/api/apply-ota-update`, {
+            method: 'POST',
+            signal: AbortSignal.timeout(15000)
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.success) {
+                if (typeof showToast === 'function') {
+                    showToast('🎉 CẬP NHẬT THÀNH CÔNG! Đang nạp lại trang...', 'success');
+                }
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
+                return;
+            }
+        }
+    } catch (_) {}
+
+    if (typeof showToast === 'function') {
+        showToast('🚀 Đang tải lại ứng dụng để nạp dữ liệu mới nhất từ Cloud...', 'info');
+    }
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
+};
+
+// ==========================================
 // ZEROSTUDIO CYBER DEFENSE & PERMANENT IP BAN SYSTEM
 // ==========================================
 let ACTIVE_BRIDGE_URL = 'http://127.0.0.1:8900';
@@ -677,6 +811,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initUpscaleControls();
     initVideoStudio();
     initCinemaIntro();
+    setTimeout(() => {
+        if (typeof checkForAppUpdates === 'function') checkForAppUpdates(false);
+    }, 3000);
 });
 
 function initTabs() {

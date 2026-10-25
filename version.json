@@ -1,0 +1,16 @@
+{
+  "version": "2.1.0",
+  "release_date": "2026-10-25",
+  "title": "Bản Nâng Cấp Enterprise Cyber Defense & OTA Auto-Update",
+  "changelog": [
+    "Lõi bản quyền WebAssembly Binary DRM Core (.wasm)",
+    "Hệ thống Tự Vệ Chống Sửa Mã & Tự Hủy Bộ Nhớ (Tamper-Destruct)",
+    "Bẫy Phản Công Ngầm Honeypot & Báo Động Pháp Y An Ninh",
+    "Khóa Tên Miền Chống Trộm Bản Quyền (Anti-Cloning Domain Lock)",
+    "Thanh so sánh Before & After Battle Split Slider 60fps",
+    "Động cơ Tự Động Cập Nhật OTA 1-Click (In-App Auto Updater)"
+  ],
+  "web_url": "https://zerostu.netlify.app",
+  "desktop_zip_url": "https://zerostu.netlify.app/ZeroStudio-Pro-Desktop.zip",
+  "min_bridge_version": "2.0"
+}
