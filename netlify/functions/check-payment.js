@@ -69,7 +69,7 @@ exports.handler = async function(event, context) {
                 paid: false,
                 config_needed: true,
                 orderCode: cleanDigits,
-                message: "Chưa cấu hình SEPAY_API_TOKEN trên Netlify. Vui lòng cấu hình biến môi trường để kích hoạt đối soát MB Bank tự động."
+                message: "Cổng đối soát ngân hàng đang hoàn tất kết nối. Quý khách vui lòng chuyển khoản đúng nội dung và nhắn tin Admin Zalo 0962.876.139 kèm biên lai để duyệt key ngay!"
             })
         };
     }
@@ -89,13 +89,13 @@ exports.handler = async function(event, context) {
             const targetPattern2 = `ZERO${cleanDigits}`.toUpperCase();
             const hasOrderCode = content.includes(targetPattern1) || content.includes(targetPattern2) || content.includes(cleanDigits);
 
-            return amountIn >= 299000 && hasOrderCode;
+            return amountIn >= 190000 && hasOrderCode;
         });
 
         if (matched) {
             // Transaction found in MB Bank! Generate cryptographically signed License Key
             const amountIn = parseFloat(matched.amount_in || matched.transferAmount || 0);
-            const isUltra = (amountIn >= 599000);
+            const isUltra = (amountIn >= 490000);
             const tierPrefix = isUltra ? 'ZERO-ULTRA' : 'ZERO-PRO';
             const randHex = Math.random().toString(36).substring(2, 6).toUpperCase();
             const payload = `${tierPrefix}-${cleanDigits}-HIEU-${randHex}`;

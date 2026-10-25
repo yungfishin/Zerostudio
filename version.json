@@ -1,14 +1,12 @@
 {
-  "version": "2.5.0",
+  "version": "2.5.1",
   "release_date": "2026-10-25",
-  "title": "Bản Nâng Cấp An Ninh Mạng 4 Lớp: RSA-2048 Digital Signature & Anti-DevTools Freeze",
+  "title": "Bản Nâng Cấp An Ninh V2.5.1: Khắc Phục Lỗ Hổng Đối Soát Ngân Hàng & Minh Bạch Bản Quyền Founder 100 Suất",
   "changelog": [
-    "Lớp 1: Triệt tiêu 100% mã nguồn test/admin, xóa bỏ hoàn toàn thanh Test Tier và Passcode cửa sau",
-    "Lớp 1: Tích hợp Bẫy Anti-Debugging Debugger Freeze làm đơ tab trình duyệt nếu cố tình F12 soi mã",
-    "Lớp 2: Máy chủ cấp phát Token bản quyền ký số bằng Khóa Riêng RSA-2048 (Digital Signature)",
-    "Lớp 3: Lõi WebCrypto/WASM nhúng Khóa Công Khai (Public Key) tự động chặn đứng mọi hành vi sửa biến JS",
-    "Lớp 4: Lớp phòng thủ Desktop quét phát hiện công cụ dịch ngược x64dbg/IDA Pro/Cheat Engine",
-    "Tứ Trụ Thương Mại: PWA Cài App 1-Click, Affiliate 30% Hoa Hồng, Open Graph 1200x630 & Webhook Báo Ting Ting"
+    "Bảo mật: Loại bỏ triệt để 100% cửa sổ cấp key thử nghiệm client-side, chỉ kích hoạt khi MB Bank ghi nhận tiền thật",
+    "Bảo mật: Triệt tiêu mã backdoor DEV-INTERNAL-PASS, khóa chặt đối soát SePAY Webhook",
+    "Minh bạch: Cập nhật chính sách Founder Edition 100 suất đầu tiên, 365 ngày cập nhật OTA và bảng giá gia hạn",
+    "Hệ thống: Tối ưu Cache-Busting Service Worker v2.5.1, xóa bỏ triệt để tình trạng cache giao diện cũ"
   ],
   "web_url": "https://zerostu.netlify.app",
   "desktop_zip_url": "https://zerostu.netlify.app/ZeroStudio-Pro-Desktop.zip",

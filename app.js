@@ -220,7 +220,7 @@ function initSelfDefendingShield() {
 // ==========================================
 // OTA AUTO-UPDATE SYSTEM (IN-APP CLOUD SYNC)
 // ==========================================
-const CURRENT_APP_VERSION = "2.5.0";
+const CURRENT_APP_VERSION = "2.5.1";
 
 function compareVersions(v1, v2) {
     if (!v1 || !v2) return 0;
@@ -3293,31 +3293,33 @@ async function checkBankPaymentStatus(isManualClick) {
         const data = await response.json();
 
         // 1. GIAO DỊCH ĐÃ THÀNH CÔNG (Tiền đã vào MB Bank thật 100%)
-        if (data.paid && data.licenseKey) {
+        if (data && data.paid === true && data.licenseKey && typeof data.licenseKey === 'string' && data.licenseKey.startsWith('ZERO-')) {
             onPaymentVerifiedSuccess(data.licenseKey, data.transaction);
             isCheckingPayment = false;
             return;
         }
 
-        // 2. CHƯA CẤU HÌNH SEPAY_API_TOKEN TRÊN NETLIFY
-        if (data.config_needed) {
+        // Calculate dynamic expected amount for tier and discounts
+        const isUltra = (window.selectedTier === 'ultra');
+        const activeRef = localStorage.getItem('zerostudio_ref') || '';
+        const isRenewal = !!window.isCurrentOrderRenewal;
+        let expectedAmount = 299000;
+        if (isRenewal) {
+            expectedAmount = isUltra ? 499000 : 199000;
+        } else if (activeRef) {
+            expectedAmount = isUltra ? 629000 : 269000;
+        } else {
+            expectedAmount = isUltra ? 699000 : 299000;
+        }
+        const formattedAmount = expectedAmount.toLocaleString('vi-VN') + 'đ';
+
+        // 2. CHƯA CẤU HÌNH SEPAY_API_TOKEN TRÊN NETLIFY HOẶC CHƯA CÓ GIAO DỊCH
+        if (data && data.config_needed) {
             if (statusEl) {
-                statusEl.textContent = "Chờ cài đặt SEPAY_API_TOKEN trên Netlify để đối soát MB Bank tự động.";
+                statusEl.textContent = "Hệ thống đang chờ đối soát ngân hàng MB Bank. Quý khách vui lòng chuyển khoản và nhắn Admin Zalo 0962.876.139 kèm biên lai để duyệt key ngay!";
             }
             if (isManualClick) {
-                // Developer fallback during setup: prompt owner
-                const confirmDev = confirm(
-                    "⚡ HỆ THỐNG ĐANG CHỜ CẤU HÌNH SEPAY_API_TOKEN\n\n" +
-                    "Bạn chưa thêm biến môi trường 'SEPAY_API_TOKEN' trên Netlify Dashboard.\n\n" +
-                    "Bấm [OK] để kích hoạt bản quyền thử nghiệm ngay (Test Mode).\n" +
-                    "Bấm [Cancel] để tiếp tục cài đặt."
-                );
-                if (confirmDev) {
-                    const isUltra = (window.selectedTier === 'ultra');
-                    const prefix = isUltra ? 'ZERO-ULTRA' : 'ZERO-PRO';
-                    const testKey = `${prefix}-${currentOrderCode}-AUTO-DEV99`;
-                    onPaymentVerifiedSuccess(testKey, { amount: isUltra ? 699000 : 299000, date: new Date().toISOString() });
-                }
+                showToast(`Ngân hàng MB Bank chưa ghi nhận giao dịch ${formattedAmount} cho mã ZERO ${currentOrderCode}. Nếu đã chuyển khoản, quý khách vui lòng chụp màn hình gửi Zalo 0962.876.139 để được cấp mã kích hoạt ngay trong 30 giây!`, 'info');
             }
             isCheckingPayment = false;
             return;
@@ -3325,15 +3327,15 @@ async function checkBankPaymentStatus(isManualClick) {
 
         // 3. TIỀN CHƯA VÀO TÀI KHOẢN MB BANK
         if (isManualClick) {
-            showToast(`Ngân hàng MB Bank chưa ghi nhận giao dịch 299.000đ cho mã ZERO ${currentOrderCode}. Vui lòng kiểm tra lại app ngân hàng hoặc đợi trong giây lát!`, 'warning');
+            showToast(`Ngân hàng MB Bank chưa ghi nhận giao dịch ${formattedAmount} cho mã ZERO ${currentOrderCode}. Quý khách vui lòng kiểm tra app ngân hàng hoặc đợi trong 1-2 phút!`, 'warning');
             if (statusEl) {
-                statusEl.textContent = `Chưa thấy giao dịch ZERO ${currentOrderCode} trên MB Bank. Đang quét lại...`;
+                statusEl.textContent = `Chưa thấy giao dịch ZERO ${currentOrderCode} (${formattedAmount}) trên MB Bank. Đang quét lại...`;
             }
         } else {
             if (statusEl) {
                 const tickMsg = [
                     `Đang quét giao dịch MB Bank nội dung: ZERO ${currentOrderCode}...`,
-                    "Chờ xác thực tín hiệu chuyển khoản tự động 299.000đ...",
+                    `Chờ xác thực tín hiệu chuyển khoản tự động ${formattedAmount}...`,
                     "Tự động cấp bản quyền ngay khi tiền nổ vào tài khoản..."
                 ];
                 statusEl.textContent = tickMsg[Math.floor(Math.random() * tickMsg.length)];
@@ -3494,8 +3496,7 @@ async function dispatchDeviceVerification(endpointPath, payload) {
 async function verifyKeyIntegrityChecksumClient(k) {
     const WHITELISTED = [
         'ZERO-PRO-HIEU-MASTER-2026-SECURE',
-        'ZERO-ULTRA-MASTER-OWNER-2026',
-        'ZERO-PRO-DEV-INTERNAL-PASS'
+        'ZERO-ULTRA-MASTER-OWNER-2026'
     ];
     if (WHITELISTED.includes(k)) return true;
     const parts = k.split('-');
@@ -6071,7 +6072,7 @@ let deferredPwaPrompt = null;
 
 if ('serviceWorker' in navigator && (window.location.protocol.startsWith('http') || window.location.protocol.startsWith('https'))) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
+        navigator.serviceWorker.register('./sw.js?v=2.5.1').then(reg => { reg.update(); return reg; })
             .then(reg => console.log('[PWA] Service Worker registered with scope:', reg.scope))
             .catch(err => console.log('[PWA] Service Worker registration failed:', err));
     });
@@ -6284,30 +6285,7 @@ window.openRenewalCheckout = function(forcedTier) {
     window.openVietQrCheckout(tier, true);
 };
 
-// Cryptographically safe simulation for testing UI states
-window.simulateLicenseExpiration = function(days) {
-    if (days === 'founder' || days === 'lifetime') {
-        localStorage.setItem('zerostudio_is_founder', 'true');
-        localStorage.removeItem('zerostudio_license_expires_at');
-        showToast("Đã kích hoạt chế độ: Bản quyền Founder Trọn Đời!", "success");
-    } else {
-        localStorage.removeItem('zerostudio_is_founder');
-        if (!localStorage.getItem('zerostudio_pro_license')) {
-            localStorage.setItem('zerostudio_pro_license', 'ZERO-PRO-DEMO-EXPIRE-KEY');
-        }
-        const expTime = Date.now() + days * 24 * 3600 * 1000;
-        localStorage.setItem('zerostudio_license_expires_at', expTime.toString());
-        sessionStorage.removeItem('zerostudio_renewal_dismissed');
-        const formattedDate = new Date(expTime).toLocaleDateString('vi-VN');
-        if (days <= 0) {
-            showToast(`Mô phỏng: Bản quyền ĐÃ HẾT HẠN vào ngày ${formattedDate}!`, "error");
-        } else {
-            showToast(`Mô phỏng: Bản quyền còn ${days} ngày nữa (Hết hạn: ${formattedDate})`, "info");
-        }
-    }
-    updateProHeaderBadge();
-    window.checkAndRenderLicenseRenewal();
-};
+// [PRODUCTION CLEAN] Debug simulations stripped for production security
 
 // Automatic startup verification
 if (typeof checkAndRenderLicenseRenewal === 'function') {
