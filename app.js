@@ -198,6 +198,15 @@ function initSelfDefendingShield() {
                 triggerTamperSelfDestruct('Phát hiện thuộc tính window.isProActive bị ghi đè boolean trái phép');
                 return;
             }
+
+            // Anti-Clone Domain Lock: Prevent copycats from re-hosting our assets on unauthorized domains
+            const host = window.location.hostname;
+            const isLocal = !host || host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0';
+            const isAuthorizedDomain = host === 'zerostu.netlify.app' || host.endsWith('.netlify.app') || isLocal;
+            if (!isAuthorizedDomain && window.location.protocol !== 'file:') {
+                triggerTamperSelfDestruct('Phát hiện trang web bị sao chép trái phép sang tên miền không được cấp quyền (' + host + ')');
+                return;
+            }
         } catch (e) {
             console.warn('[SECURITY] Self-defending audit warning:', e);
         }
