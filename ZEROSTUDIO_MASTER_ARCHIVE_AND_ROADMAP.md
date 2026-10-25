@@ -2,17 +2,18 @@
 ## MASTER ARCHIVE & STRATEGIC EVOLUTION BLUEPRINT (2026 - 2027)
 
 > [!IMPORTANT]
-> **TÀI LIỆU BẢO LƯU CHIẾN LƯỢC VĨNH VIỄN:** Toàn bộ thông tin kiến trúc, tính năng, cơ chế bảo mật, quy trình kinh doanh và bản đồ tiến hóa của dự án **ZeroStudio** được lưu trữ cố định tại đây. Mọi phiên làm việc tiếp theo đều có thể tham chiếu tài liệu này để tiếp tục nâng cấp mà không bao giờ bị quên lãng hay thất thoát ý tưởng.
+> **TÀI LIỆU BẢO LƯU CHIẾN LƯỢC VĨNH VIỄN:** Toàn bộ thông tin kiến trúc, tính năng, cơ chế bảo mật, quy trình kinh doanh, lịch sử phiên bản và bản đồ tiến hóa của dự án **ZeroStudio** được lưu trữ cố định tại đây. Mọi phiên làm việc tiếp theo đều có thể tham chiếu tài liệu này để tiếp tục nâng cấp mà không bao giờ bị quên lãng hay thất thoát ý tưởng.
 
 ---
 
 ## MỤC LỤC CHI TIẾT
 1. [I. BẢN SẮC CỐT LÕI & TRIẾT LÝ DỰ ÁN](#i-bản-sắc-cốt-lõi--triết-lý-dự-án)
-2. [II. HỆ THỐNG TÍNH NĂNG ĐÃ HOÀN THIỆN 100%](#ii-hệ-thống-tính-năng-đã-hoàn-thiện-100)
+2. [II. HỆ THỐNG TÍNH NĂNG ĐÃ HOÀN THIỆN 100% (PHÁT HÀNH v2.5.3)](#ii-hệ-thống-tính-năng-đã-hoàn-thiện-100-phát-hành-v253)
 3. [III. HỆ THỐNG AN NINH MẠNG & CHỐNG CRACK ĐA TẦNG](#iii-hệ-thống-an-ninh-mạng--chống-crack-đa-tầng)
-4. [IV. MÔ HÌNH KINH DOANH & CƠ CHẾ THANH TOÁN TỰ ĐỘNG VIETQR](#iv-mô-hình-kinh-doanh--cơ-chế-thanh-toán-tự-động-vietqr)
-5. [V. BẢN ĐỒ NÂNG CẤP CHIẾN LƯỢC TƯƠNG LAI (ROADMAP)](#v-bản-đồ-nâng-cấp-chiến-lược-tương-lai-roadmap)
-6. [VI. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#vi-cẩm-nang-vận-hành-dành-cho-admin-runbook)
+4. [IV. MÔ HÌNH KINH DOANH, ĐỊNH GIÁ & BỘ ĐẾM 100 SUẤT FOUNDER](#iv-mô-hình-kinh-doanh-định-giá--bộ-đếm-100-suất-founder)
+5. [V. LỊCH SỬ TIẾN HÓA PHIÊN BẢN (VERSION CHANGELOG)](#v-lịch-sử-tiến-hóa-phiên-bản-version-changelog)
+6. [VI. BẢN ĐỒ NÂNG CẤP CHIẾN LƯỢC TƯƠNG LAI (ROADMAP 2026 - 2027)](#vi-bản-đồ-nâng-cấp-chiến-lược-tương-lai-roadmap-2026---2027)
+7. [VII. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#vii-cẩm-nang-vận-hành-dành-cho-admin-runbook)
 
 ---
 
@@ -31,11 +32,11 @@
 
 ---
 
-## II. HỆ THỐNG TÍNH NĂNG ĐÃ HOÀN THIỆN 100%
+## II. HỆ THỐNG TÍNH NĂNG ĐÃ HOÀN THIỆN 100% (PHÁT HÀNH v2.5.3)
 
 ```mermaid
 mindmap
-  root((ZeroStudio Suite))
+  root((ZeroStudio Suite v2.5.3))
     PDF & Van Phong
       Gop PDF Merge
       Tach & Cat Trang Split
@@ -55,15 +56,18 @@ mindmap
       Cao Kenh YouTube TikTok Hang Loat
       Batch Workspace 500 Video
       AI Subtitle Studio Dich SRT
-    ZeroAI Specialist 247
-      Widget Glassmorphism Noi
-      Dong Co Cua Bo 0d Scoring NLP
-      Ket Noi Google Gemini 15 Flash
-      Nut Hanh Dong 1 Cham Tuong Tac
-    Bo Cai Dat Desktop
-      ZeroStudio Setup EXE Co Icon
-      ZeroStudio Portable ZIP
-      Mo Frameless Native App 60fps
+    Kinh Doanh & Growth
+      Bo Dem 100 Suat Founder Tu Dong
+      Vong Doi Gia Han Thong Minh Renewal
+      3 Dieu Khoan Cam Ket Minh Bach
+      VietQR MB Bank Tu Dong 100%
+      Zalo Hotline 247 0962876139
+      Buc Tuong Review 5 Sao Confetti
+    Da Ngon Ngu & He Thong
+      i18n Dong Bo 100% vi en zh ja
+      In-App OTA Self-Update v2.5.3
+      Zero-Bypass Strict Verification
+      Native Frameless CSharp Setup EXE
 ```
 
 ### 1. Module 1: Xử Lý PDF & Văn Phòng Cục Bộ (WebAssembly)
@@ -105,40 +109,50 @@ mindmap
   - `[💳 Nâng Cấp Pro 299k]` / `[👑 Nâng Cấp Ultra 699k]` $\rightarrow$ Mở popup VietQR MB Bank.
   - `[🔄 Kiểm Tra Video Bridge]` $\rightarrow$ Live ping trực tiếp máy chủ Python và báo độ trễ (18ms).
 
-### 5. Module 5: Bộ Cài Đặt Desktop Chính Thức
-- **`ZeroStudio-Setup.exe` (39.9 KB):**
-  - Biên dịch bằng C# native (`csc.exe`), nhúng sẵn Icon ứng dụng chất lượng cao `assets/app_icon.ico`.
-  - Màn hình cài đặt hiện đại Obsidian Dark với thanh tiến trình.
-  - Tự động tạo Shortcut Desktop: **`ZeroStudio Pro.lnk`**.
-  - Kích hoạt dịch vụ Python Video Bridge ngầm.
-  - Khởi động cửa sổ ứng dụng Native Frameless (không thanh URL, kích thước 1360x900).
-- **`ZeroStudio-Pro-Desktop.zip` (1.99 MB):** Trọn gói mã nguồn offline, giải nén là chạy portable ngay lập tức.
+### 5. Module 5: Bộ Đếm 100 Suất Founder & Tự Động Chuyển Trạng Thái (Founder Slot Tracker Engine)
+- **Thanh đo tiến trình Neon Gradient sống động:** Nằm ở vị trí danh dự trên đầu bảng giá Pro Modal.
+- **Trạng thái 1: Khi còn suất (< 100 suất):**
+  - Hiển thị badge xanh Neon Pulsing: `CHỈ CÒN X / 100 SUẤT`.
+  - Dải ruy băng rực rỡ: `FOUNDER EDITION`.
+  - Giá áp dụng ưu đãi: Pro `299.000đ / Năm đầu` (gốc 599.000đ), Ultra `699.000đ / Năm đầu` (gốc 1.490.000đ).
+- **Trạng thái 2: Khi đã đủ 100 suất (Sold-out):**
+  - Thanh tiến trình chuyển sang trạng thái khóa 100% hoàn thành.
+  - Dải ruy băng tự động chuyển thành: `BẢN QUYỀN CHÍNH THỨC` (hoặc `OFFICIAL STANDARD`, `官方正式版`, `正規スタンダード版`).
+  - Giá tự động chuyển về biểu giá tiêu chuẩn: Pro `599.000đ / Năm`, Ultra `1.490.000đ / Năm`.
+  - Mã QR thanh toán VietQR tự động sinh số tiền mới tương ứng mà không cần sửa code.
 
-### 6. Module 6: Hệ Thống Đa Ngôn Ngữ Toàn Cầu (i18n Multi-Language Engine)
+### 6. Module 6: Hệ Thống Đồng Bộ Đa Ngôn Ngữ 100% (i18n Multi-Language Engine v2.5.3)
 - **Tập tin kiến trúc:** `libs/i18n.js` tích hợp 4 bộ từ điển hoàn chỉnh:
-  - 🇻🇳 **Tiếng Việt (`vi`):** Ngôn ngữ bản địa mặc định, tối ưu hóa cho cộng đồng văn phòng và creator MMO Việt Nam.
-  - 🇺🇸 **English (`en`):** Chuẩn hóa quốc tế cho người dùng toàn cầu, traffic US/EU và thị trường POD/E-commerce quốc tế.
-  - 🇨🇳 **中文 - 简体 (`zh`):** Dành riêng cho giới làm Dropshipping, Taobao/1688, cào clip Douyin/Kuaishou và MMO Trung - Việt.
-  - 🇯🇵 **日本語 (`ja`):** Dành cho editor Nhật Bản, anime/manga creators và thị trường sáng tạo nội dung châu Á.
-- **Tính năng nổi bật:**
-  - **Menu Dropdown Glassmorphism:** Hiển thị quốc kỳ, tên ngôn ngữ và dấu tích trạng thái đang chọn.
-  - **Đồng bộ thời gian thực với ZeroAI Specialist:** Khi đổi ngôn ngữ, chatbot tự động chuyển câu chào, danh sách nút bấm nhanh và gợi ý sang tiếng tương ứng.
-  - **Lưu trữ bền vững (localStorage Persistence):** Ghi nhớ vĩnh viễn ngôn ngữ khách đã chọn, tự động khôi phục trong các phiên mở tiếp theo mà không cần chọn lại.
-  - **Tương thích hoàn hảo với OTA:** Được đồng bộ tự động qua cơ chế In-App Auto-Update.
+  - 🇻🇳 **Tiếng Việt (`vi`):** Ngôn ngữ bản địa mặc định.
+  - 🇺🇸 **English (`en`):** Chuẩn hóa quốc tế cho thị trường Global.
+  - 🇨🇳 **中文 - 简体 (`zh`):** Dành cho MMO Dropshipping & Douyin.
+  - 🇯🇵 **日本語 (`ja`):** Dành cho thị trường creator Nhật Bản.
+- **Đồng bộ hóa 100% không sót thành phần:**
+  - Cả 3 thẻ giá (Free, Pro, Ultra), 16 tiêu chí tính năng, 3 điều khoản cam kết minh bạch.
+  - Bộ đếm 100 suất Founder, nhãn trạng thái và giải thích chi tiết.
+  - Toàn bộ giao diện thanh toán VietQR (hướng dẫn, tên tài khoản, nội dung chuyển khoản).
+  - Tất cả các vùng kéo thả dropzone của mọi công cụ.
+  - Chuyển cờ là toàn bộ giao diện tự động vẽ lại ngay lập tức mà không cần F5.
 
-### 7. Module 7: Bức Tường Đánh Giá 5 Sao & Thu Thập Phản Hồi Trực Tiếp (Customer Reviews Wall)
-- **Vị trí hiển thị:** Ngay dưới Đấu trường Battle Slider và trên Footer.
-- **Thang điểm tổng quan:** Điểm trung bình `4.9 / 5.0 ⭐` (tổng hợp 1,482+ lượt đánh giá, 98.6% khuyên dùng gói Ultra).
-- **Hộp thoại gửi đánh giá tương tác (Interactive Review Modal):**
-  - Đánh giá từ 1 đến 5 sao vàng ánh kim có hiệu ứng scale và phản hồi cảm xúc tức thì.
-  - Tự động nhận diện quyền hạn người dùng (gắn badge `👑 ULTRA MMO MASTER`, `💎 BẢN QUYỀN PRO`, hoặc `⭐ Đánh Giá Của Bạn`).
-  - Hiệu ứng pháo hoa Confetti vàng Champagne rực rỡ khi gửi đánh giá 5 sao.
-- **Lưu trữ đa tầng (Zero Server Cost):**
-  - Lưu tức thì vào `localStorage` trên máy người dùng, render ngay lập tức lên đầu danh sách đánh giá.
-  - Bắn qua Video Bridge (`POST /api/feedback`) lưu thành file JSON vĩnh viễn trên ổ cứng máy tính (`~/.zerostudio_feedback.json`).
-  - Admin chỉ cần mở trang web là đọc được toàn bộ đánh giá & đóng góp ý kiến thực tế của khách hàng trực tiếp trên giao diện.
-- **Bộ lọc danh mục đánh giá:**
-  - `Tất Cả (1,480+)`, `5 Sao ⭐`, `Dân Video MMO 🔥`, `Văn Phòng & Kế Toán 📑`, `Đánh Giá Của Bạn 👤`.
+### 7. Module 7: Vòng Đời Gia Hạn Thông Minh (Renewal Lifecycle Management)
+- **Theo dõi thời hạn bản quyền:** `licenseExpiry` được lưu trữ an toàn trong `localStorage`.
+- **Giai đoạn sắp hết hạn (Expiring Soon - 30 ngày trước):**
+  - Thanh cảnh báo vàng hổ phách hiển thị tế nhị trên đầu ứng dụng.
+  - Nút bấm `[Gia Hạn Ngay]` mở trực tiếp VietQR checkout với mã giữ nguyên đặc quyền cũ.
+- **Giai đoạn đã hết hạn (Expired):**
+  - Hộp thoại thông báo hết hạn phong cách Obsidian Dark sang trọng xuất hiện.
+  - Cam kết 100% an toàn dữ liệu: Dữ liệu cá nhân và cấu hình không bị xóa, chỉ tạm dừng các tính năng Pro/Ultra cho đến khi gia hạn.
+
+### 8. Module 8: Cập Nhật Tự Động Không Cần Cài Lại (In-App OTA Self-Update System)
+- Kiểm tra `version.json` ngầm khi ứng dụng khởi chạy.
+- Nếu có phiên bản mới trên máy chủ: Hiển thị Banner và Modal thông báo cập nhật với changelog chi tiết.
+- Nút `[Cập Nhật Ngay]` tự động dọn dẹp cache Service Worker cũ (`zerostudio-cache-v...`), nạp tài nguyên mới và tải lại trang trong 1 giây.
+
+### 9. Module 9: Bộ Cài Đặt Desktop Chính Thức & Trình Đánh Giá 5 Sao
+- **`ZeroStudio-Setup.exe` (39.9 KB):** Biên dịch C# native có icon sắc nét, tạo shortcut Desktop, chạy app frameless 60fps.
+- **`ZeroStudio-Pro-Desktop.zip` (2.2 MB):** Bản nén portable đầy đủ tài nguyên offline.
+- **Bức Tường Đánh Giá 5 Sao (Customer Reviews Wall):** Điểm trung bình 4.9/5.0⭐, hiệu ứng pháo hoa Confetti Champagne khi đánh giá, lưu đa tầng vào `localStorage` và `~/.zerostudio_feedback.json`.
+- **Kênh hỗ trợ Admin Zalo Hotline 24/7:** `0962.876.139` gắn trực tiếp trên toàn hệ thống.
 
 ---
 
@@ -182,30 +196,34 @@ mindmap
 - Mỗi Key hợp lệ bắt buộc mang 4 ký tự Checksum bí mật: PREFIX-PAYLOAD-[SHA256[:4]].
 - Khóa bí mật máy chủ: ZEROSTUDIO_MASTER_INTEGRITY_SALT_2026_@HIEU.
 - Tự chế key hoặc đoán mò sai checksum sẽ bị từ chối và tính vào số lần vi phạm khóa máy.
-- Xóa bỏ 100% Dev Fallback tự cấp key miễn phí trong code.
-- Khóa chặt Video Bridge bằng Origin Whitelist (Chống CSRF / Drive-by attack từ web lạ).
 - Ẩn hoàn toàn bảng Admin Test Tier sau tổ hợp phím bí mật Ctrl + Shift + Alt + Z.
+                                      │
+                                      ▼
+                      LỚP 7: CHỐNG BYPASS THANH TOÁN TUYỆT ĐỐI (ZERO BYPASS)
+- Xóa bỏ 100% cửa hậu confirmDev / AUTO-DEV99 trong mã nguồn client.
+- Hệ thống chỉ cấp bản quyền duy nhất khi SePAY xác nhận có biến động số dư thực tế tại MB Bank.
+- Bấm nút xác nhận thanh toán khi chưa chuyển tiền sẽ bị từ chối và cảnh báo ngay lập tức.
 ========================================================================================
 ```
 
 ---
 
-## IV. MÔ HÌNH KINH DOANH & CƠ CHẾ THANH TOÁN TỰ ĐỘNG VIETQR
+## IV. MÔ HÌNH KINH DOANH, ĐỊNH GIÁ & BỘ ĐẾM 100 SUẤT FOUNDER
 
-### 1. Phân Tầng Sản Phẩm (Pricing Matrix):
-* **Bản Miễn Phí (Free):** Dùng thử ghép/tách PDF cơ bản, giới hạn 3 lượt tải video/ngày, giới hạn nén.
-* **GÓI PRO (299.000 VNĐ - Sở hữu vĩnh viễn):**
-  - Cấp phép cho **1 thiết bị cố định**.
-  - Mở khóa Nén PDF không giới hạn.
-  - Tải & lách video MMO không giới hạn.
-  - Xóa logo/sub, xáo cao độ âm thanh chống gậy bản quyền.
-* **GÓI ULTRA MMO MASTER (699.000 VNĐ - Sở hữu vĩnh viễn):**
-  - Cấp phép cho **2 thiết bị độc lập** (Ví dụ: 1 PC ở nhà + 1 Laptop đi làm).
-  - Toàn bộ quyền lợi Pro + Trọn bộ **AI Office Studio** (Tách nền ảnh thẻ vi mô & Quét OCR tiếng Việt sang Word).
-  - **Bàn làm việc hàng loạt (Batch Workspace)** xử lý 500 video/tài liệu cùng lúc.
-  - Cào kênh TikTok / YouTube Shorts hàng loạt theo hashtag.
+### 1. Bảng So Sánh Giá & Sự Chuyển Đổi Trạng Thái:
 
-### 2. Thông Tin Cổng Thanh Toán VietQR Tự Động:
+| Gói Dịch Vụ | Giá Ưu Đãi 100 Suất Đầu (Founder Edition) | Giá Bản Quyền Chính Thức (Sau 100 Suất) | Phạm Vi Bản Quyền & Tính Năng |
+| :--- | :---: | :---: | :--- |
+| **GÓI MIỄN PHÍ** | **0 VNĐ** | **0 VNĐ** | Trải nghiệm cơ bản, 3 lượt tải video/ngày, giới hạn nén PDF. |
+| **GÓI PRO** | **299.000 VNĐ / Năm đầu**<br>*(Tiết kiệm 50%)* | **599.000 VNĐ / Năm** | • 1 Thiết bị cố định.<br>• Nén PDF không giới hạn dung lượng.<br>• Tải & lách bản quyền video MMO 4 bước không giới hạn. |
+| **GÓI ULTRA MASTER** | **699.000 VNĐ / Năm đầu**<br>*(Tiết kiệm 53%)* | **1.490.000 VNĐ / Năm** | • 2 Thiết bị độc lập.<br>• Trọn bộ AI Office Studio (Tách nền tóc tơ & OCR sang Word .doc).<br>• Bàn làm việc hàng loạt 500 video/tài liệu.<br>• Cào kênh TikTok/Shorts hàng loạt. |
+
+### 2. Cam Kết Minh Bạch 3 Điều Khoản (Transparency Guarantee):
+1. **Không Tự Động Trừ Tiền (No Auto-Debit):** ZeroStudio không lưu thông tin thẻ tín dụng của khách. Khách hàng chủ động chuyển khoản VietQR khi muốn tiếp tục sử dụng.
+2. **Cảnh Báo Gia Hạn Trước 30 Ngày:** Ứng dụng thông báo lịch sự, rõ ràng để khách hàng chủ động ngân sách, không gây gián đoạn công việc.
+3. **Bảo Lưu Toàn Bộ Dữ Liệu Dự Án:** Dù hết hạn, toàn bộ dữ liệu và file đã xử lý vẫn thuộc quyền sở hữu 100% của khách hàng, không bao giờ bị xóa.
+
+### 3. Thông Tin Cổng Thanh Toán VietQR Tự Động:
 - **Ngân hàng:** Ngân Hàng TMCP Quân Đội (**MB Bank**).
 - **Mã BIN Ngân hàng:** `970422`.
 - **Số tài khoản:** `9704229209755632403` (hoặc `0937841804`).
@@ -217,18 +235,50 @@ mindmap
   - Hệ thống tự động polling kiểm tra sao kê mỗi 3.5 giây.
   - Ngay khi tiền vào tài khoản, hệ thống tự động kích hoạt key và chuyển sang màn hình chúc mừng trong 3-5 giây.
 
-### 3. Kênh Hỗ Trợ Khẩn Cấp & Chăm Sóc Khách Hàng Trực Tiếp (Admin Hotline 24/7):
-- **Hotline / Zalo Admin Trực Tiếp:** `0962.876.139` (Link kết nối tức thì: `https://zalo.me/0962876139`).
-- **Widget Zalo Nổi (Floating Support):** Bố trí đối xứng hoàn hảo tại góc dưới trái (`bottom: 28px; left: 28px;`), trang bị hiệu ứng ánh sáng Zalo Blue Pulse, logo Vector sắc nét và chấm tín hiệu Online 24/7.
-- **Thanh Hỗ Trợ Trong VietQR Checkout:** Gắn trực tiếp thẻ hỗ trợ bên dưới nút thanh toán, giúp khách hàng gửi biên lai hoặc yêu cầu kích hoạt thủ công siêu tốc.
-- **Tích Hợp Sâu Trong ZeroAI Chatbot:** Khi khách hàng hỏi về liên hệ admin, số điện thoại, đổi máy tính mới hoặc lỗi kỹ thuật, bot tự động hiển thị Hotline `0962.876.139` kèm nút bấm 1-click mở ứng dụng Zalo trên cả PC và Mobile.
+---
+
+## V. LỊCH SỬ TIẾN HÓA PHIÊN BẢN (VERSION CHANGELOG)
+
+| Phiên Bản | Ngày Hoàn Thành | Nội Dung Nâng Cấp Chi Tiết |
+| :---: | :---: | :--- |
+| **v1.0.0** | 2026-10-23 | Khởi tạo dự án ZeroPDF: Gộp, tách, chuyển đổi ảnh sang PDF và nén PDF cục bộ bằng WebAssembly. |
+| **v2.0.0** | 2026-10-24 | Chuyển mình thành ZeroStudio: Ra mắt AI Office Studio (Tách nền & OCR sang Word) cùng Video Studio lách bản quyền MMO 4 bước. |
+| **v2.2.0** | 2026-10-24 | Xây dựng hệ thống an ninh 6 lớp: Khóa phím, chữ ký phần cứng, giới hạn 3 thiết bị, blacklist IP và HMAC-SHA256 checksum. |
+| **v2.3.0** | 2026-10-25 | Tích hợp cổng VietQR MB Bank tự động 100%, Trợ lý ZeroAI Specialist 24/7 và Bức tường đánh giá 5 sao Confetti. |
+| **v2.4.0** | 2026-10-25 | Ra mắt bộ cài đặt C# Native `ZeroStudio-Setup.exe` có icon, hệ thống cập nhật tự động qua mạng (In-App OTA Self-Update) và Zalo Hotline `0962.876.139`. |
+| **v2.5.0** | 2026-10-25 | Tái định vị mô hình kinh doanh: Chuyển từ Lifetime sang mô hình **100 Suất Founder + Gia hạn Năm**, xây dựng vòng đời gia hạn thông minh (Renewal Lifecycle). |
+| **v2.5.1** | 2026-10-25 | Loại bỏ triệt để lỗ hổng thanh toán (Zero Bypass Backdoor), chặn hoàn toàn việc tự cấp mã khi chưa thanh toán MB Bank. |
+| **v2.5.2** | 2026-10-25 | Tích hợp bộ đếm 100 suất Founder Neon Gradient thời gian thực, tự động chuyển đổi sang giá tiêu chuẩn khi chạm mốc 100 suất. |
+| **v2.5.3** | 2026-10-25 | **Đồng bộ hóa 100% Đa Ngôn Ngữ (vi, en, zh, ja)** trên toàn bộ giao diện, bảng giá, bộ đếm, form thanh toán và công cụ; sửa triệt để lỗi chữ Trung hiển thị nhầm. |
 
 ---
 
-## V. BẢN ĐỒ NÂNG CẤP CHIẾN LƯỢC TƯƠNG LAI (ROADMAP)
+## VI. BẢN ĐỒ NÂNG CẤP CHIẾN LƯỢC TƯƠNG LAI (ROADMAP 2026 - 2027)
 
-### Giai Đoạn 1: Vũ Khí Thống Trị Cho Dân Video & MMO
-1. **AI Voice Clone & Lồng Tiếng Tiếng Việt Tự Nhiên (Text-to-Speech 0đ):**
+```mermaid
+timeline
+    title Lộ Trình Phát Triển ZeroStudio (2026 - 2027)
+    section Giai Đoạn 1 (Q4/2026)<br>Vũ Khí MMO Đỉnh Cao
+        AI Edge-TTS 0d : Tự động lồng tiếng tiếng Việt tự nhiên chuẩn nhịp reup
+        MrBeast Style Auto-Captions : Phụ đề nảy chữ neon highlight theo âm thanh
+        AI Trend Optimizer : Gợi ý 5 tiêu đề giật tít và 10 hashtag viral triệu view
+    section Giai Đoạn 2 (Q1/2027)<br>Doanh Nghiệp & Kế Toán
+        Anti-Fraud CCCD Watermark : Phủ chìm dấu chống vay app không thể xóa
+        AI Table PDF to Excel : Xuất bảng biểu hóa đơn sang .xlsx chuẩn công thức
+        Digital Signature Stamp : Ký số nội bộ trực tiếp bằng bút cảm ứng/chuột
+    section Giai Đoạn 3 (Q2/2027)<br>Đẳng Cấp Trải Nghiệm
+        Desktop Floating Drop-Zone : Thanh Mini Dock góc màn hình kéo thả 3s xuất file
+        Haptic Mechanical Audio : Âm thanh vi cơ học click Thụy Sĩ và ding pha lê
+        Theme Packs Độc Quyền : Cyberpunk Neon, Apple Titanium, Champagne Gold
+    section Giai Đoạn 4 (Q3/2027)<br>Bùng Nổ Doanh Số
+        Affiliate Marketing 1-Click : Hoa hồng 30-40% cho creator review phần mềm
+        Automated Telegram/Zalo Bot : Tự động gửi key và nhắc gia hạn qua bot OTT
+```
+
+### Chi Tiết Từng Giai Đoạn Chiến Lược:
+
+#### Giai Đoạn 1: Vũ Khí Thống Trị Cho Dân Video & MMO (Q4/2026)
+1. **AI Voice Clone & Lồng Tiếng Tiếng Việt Tự Nhiên (Text-to-Speech 0đ API):**
    - Tích hợp giọng đọc AI tiếng Việt tự nhiên (dùng Edge-TTS 100% miễn phí không tốn tiền API).
    - Dán kịch bản vào $\rightarrow$ 1-click tự động đọc lồng tiếng chuẩn nhịp video để reup Douyin/Shorts.
 2. **Auto-Caption Phụ Đề Nảy Chữ Kiểu MrBeast / Alex Hormozi:**
@@ -236,7 +286,7 @@ mindmap
 3. **Bộ Tối Ưu Tiêu Đề & Hashtag Triệu View (AI Trend Optimizer):**
    - Tự động phân tích video và gợi ý 5 tiêu đề giật tít cùng 10 hashtag thịnh hành nhất.
 
-### Giai Đoạn 2: Siêu Tiện Ích Văn Phòng Doanh Nghiệp & Kế Toán
+#### Giai Đoạn 2: Siêu Tiện Ích Văn Phòng Doanh Nghiệp & Kế Toán (Q1/2027)
 1. **Đóng Dấu Chống Lừa Đảo CCCD / Hợp Đồng (Anti-Identity Theft Watermark):**
    - Đánh trúng nỗi sợ lộ CCCD đi vay tiền app.
    - Kéo ảnh/PDF vào $\rightarrow$ Phủ chìm dòng chữ chéo: *"BẢN SAO CHỈ DÙNG ĐỂ MỞ TÀI KHOẢN NGÀY... - KHÔNG CÓ GIÁ TRỊ VAY VỐN"* không thể tẩy xóa.
@@ -245,7 +295,7 @@ mindmap
 3. **Ký Số Điện Tử Nội Bộ (Digital Signature Stamp):**
    - Ký tên trực tiếp bằng chuột/bút cảm ứng lên file PDF/Word, mã hóa chữ ký số riêng biệt.
 
-### Giai Đoạn 3: Tiến Hóa Giao Diện Đẳng Cấp & Thanh Thao Tác Nổi
+#### Giai Đoạn 3: Tiến Hóa Giao Diện Đẳng Cấp & Thanh Thao Tác Nổi (Q2/2027)
 1. **Thanh Mini Dock Nổi Góc Màn Hình (Desktop Floating Drop-Zone):**
    - Widget nhỏ nằm ở góc màn hình. Kéo video từ Desktop thả vào là tự động xử lý và xuất file mới ra Desktop trong 3 giây mà không cần mở cả cửa sổ to.
 2. **Âm Thanh Cơ Học Haptic Feedback:**
@@ -253,7 +303,7 @@ mindmap
 3. **Bộ Giao Diện Đa Sắc Màu Độc Quyền (Ultra Theme Packs):**
    - Bổ sung các theme: *Cyberpunk Neon Green*, *Apple Titanium Silver*, *Royal Champagne Gold*.
 
-### Giai Đoạn 4: Tự Động Hóa Doanh Số & Viral Tăng Trưởng
+#### Giai Đoạn 4: Tự Động Hóa Doanh Số & Viral Tăng Trưởng (Q3/2027)
 1. **Hệ Thống Đại Lý Tiếp Thị Liên Kết 1-Click (Affiliate Marketing):**
    - Mỗi khách hàng được cấp 1 link giới thiệu. Người khác mua qua link, người giới thiệu nhận hoa hồng 30-40%.
    - Hàng nghìn bạn trẻ làm MMO sẽ tự giác làm video review ZeroStudio để kiếm tiền $\rightarrow$ Tạo đội quân marketing 0 đồng.
@@ -262,7 +312,7 @@ mindmap
 
 ---
 
-## VI. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
+## VII. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
 
 ### 1. Cập Nhật Trang Web Online (Netlify):
 - **Trang quản lý:** [https://app.netlify.com/sites/zerostu/deploys](https://app.netlify.com/sites/zerostu/deploys).
@@ -281,4 +331,4 @@ mindmap
 - Hệ thống sẽ tự động gửi mã xác thực SHA-256 an toàn lên máy chủ, dọn sạch danh sách cấm và phục hồi toàn bộ quyền truy cập Ultra trong 1 giây.
 
 ---
-*Tài liệu được biên soạn và lưu trữ cố định vào hệ thống phiên bản Git của ZeroStudio.*
+*Tài liệu được biên soạn và bảo lưu cố định vào hệ thống Git của ZeroStudio - Cập nhật hoàn tất ngày 25/10/2026.*
