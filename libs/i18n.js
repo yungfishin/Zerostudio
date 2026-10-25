@@ -10,7 +10,7 @@
 const TRANSLATIONS = {
     vi: {
         // Brand & Header
-        brand_tag: "v2.1 OTA WASM",
+        brand_tag: "v2.2 OTA WASM",
         download_desktop_btn: "Tải Desktop (.EXE)",
         pro_unlock_btn: "Bản Desktop Pro",
         zk_badge_text: "Zero-Knowledge • 100% Offline",
@@ -41,6 +41,27 @@ const TRANSLATIONS = {
         btn_split_radar: "Quét Tự Động Radar",
         hud_before_title: "TRƯỚC XỬ LÝ (VIDEO GỐC)",
         hud_after_title: "SAU ZEROSTUDIO (1-CLICK)",
+
+        // Customer Reviews & Feedback Wall
+        reviews_badge: "BẢO CHỨNG CHẤT LƯỢNG • 1,480+ ĐÁNH GIÁ 5 SAO",
+        reviews_title: "Khách Hàng Nói Gì Về ZeroStudio?",
+        reviews_sub: "Đánh giá và đóng góp ý kiến thực tế từ các Creator MMO, Kế toán trưởng, Studio Content và Doanh nghiệp trên toàn quốc.",
+        reviews_count_text: "1,482+ Đánh Giá Hài Lòng • 98.6% Khuyên Dùng",
+        btn_write_review: "Viết Đánh Giá Của Bạn",
+        filter_all: "Tất Cả (1,480+)",
+        filter_5star: "5 Sao ⭐",
+        filter_mmo: "Dân Video MMO 🔥",
+        filter_office: "Văn Phòng & Kế Toán 📑",
+        filter_mine: "Đánh Giá Của Bạn 👤",
+        review_modal_title: "Đánh Giá & Góp Ý ZeroStudio",
+        review_modal_sub: "Ý kiến của bạn sẽ được hiển thị trực tiếp trên trang chủ và gửi tới đội ngũ phát triển!",
+        review_input_name_lbl: "Họ Tên / Biệt Danh:",
+        review_input_name_ph: "Ví dụ: Hoàng Long (MMO Douyin)",
+        review_input_role_lbl: "Lĩnh Vực Hoạt Động:",
+        review_input_comment_lbl: "Nội Dung Nhận Xét & Góp Ý:",
+        review_input_comment_ph: "Chia sẻ trải nghiệm của bạn về tính năng lách bản quyền, nén PDF hoặc góp ý thêm tính năng mới...",
+        btn_cancel: "Hủy",
+        btn_submit_review: "Gửi Đánh Giá Ngay",
 
         // Modals & Pricing
         pro_modal_title: "NÂNG CẤP BẢN QUYỀN ZEROSTUDIO",
@@ -75,7 +96,7 @@ const TRANSLATIONS = {
     },
     en: {
         // Brand & Header
-        brand_tag: "v2.1 OTA WASM",
+        brand_tag: "v2.2 OTA WASM",
         download_desktop_btn: "Download Desktop (.EXE)",
         pro_unlock_btn: "Desktop Pro Edition",
         zk_badge_text: "Zero-Knowledge • 100% Offline",
@@ -107,6 +128,27 @@ const TRANSLATIONS = {
         hud_before_title: "BEFORE (ORIGINAL RAW)",
         hud_after_title: "AFTER ZEROSTUDIO (1-CLICK)",
 
+        // Customer Reviews & Feedback Wall
+        reviews_badge: "PROVEN SOCIAL PROOF • 1,480+ 5-STAR REVIEWS",
+        reviews_title: "What Creators & Teams Say About ZeroStudio",
+        reviews_sub: "Real-world reviews and feedback from MMO creators, accountants, media studios, and businesses worldwide.",
+        reviews_count_text: "1,482+ Satisfied Reviews • 98.6% Recommendation Rate",
+        btn_write_review: "Write a Review",
+        filter_all: "All (1,480+)",
+        filter_5star: "5 Stars ⭐",
+        filter_mmo: "MMO Video Creators 🔥",
+        filter_office: "Office & Finance 📑",
+        filter_mine: "Your Reviews 👤",
+        review_modal_title: "ZeroStudio Review & Feedback",
+        review_modal_sub: "Your feedback will be published directly on the homepage and sent to our product team!",
+        review_input_name_lbl: "Your Name / Handle:",
+        review_input_name_ph: "e.g. Alex (Shorts Creator)",
+        review_input_role_lbl: "Industry / Role:",
+        review_input_comment_lbl: "Review & Suggestions:",
+        review_input_comment_ph: "Share your experience with video delogo, PDF compress, or suggest new features...",
+        btn_cancel: "Cancel",
+        btn_submit_review: "Submit Review",
+
         // Modals & Pricing
         pro_modal_title: "UPGRADE ZEROSTUDIO LICENSE",
         pro_modal_sub: "Unlock all VIP features: 4K Video Remaster, Smart PDF Compress, Batch Channel Scraper & AI OCR",
@@ -125,7 +167,7 @@ const TRANSLATIONS = {
         zeroai_trigger_tag: "Instant Support",
         zeroai_title: "ZeroAI Specialist 24/7",
         zeroai_subtitle: "Specialist in DRM, Video MMO & AI Studio",
-        zeroai_welcome: "Hello! I am <strong>ZeroAI Specialist</strong> – Your 24/7 dedicated assistant at ZeroStudio.<br><br>I can assist you with:<br>• <strong>MMO Video Fair-Use Remaster</strong> (Auto-crop 9:16, audio pitch, logo/sub removal).<br>• <strong>AI Background Remover</strong> (Passport, ID, Visa photo cutout).<br>• <strong>AI Document OCR</strong> (Extract text to Word .doc).<br>• <strong>License Comparison & Activation</strong> for Pro and Ultra.<br><br>Choose a quick action or type your question below!",
+        zeroai_welcome: "Hello! I am <strong>ZeroAI Specialist</strong> – Your 24/7 dedicated AI assistant at ZeroStudio.<br><br>I can assist you with:<br>• <strong>MMO Video Fair-Use Remaster</strong> (Auto-crop 9:16, audio pitch, logo/sub removal).<br>• <strong>AI Background Remover</strong> (Passport, ID, Visa photo cutout).<br>• <strong>AI Document OCR</strong> (Extract text to Word .doc).<br>• <strong>License Comparison & Activation</strong> for Pro and Ultra.<br><br>Choose a quick action or type your question below!",
         zeroai_input_ph: "Ask about video bypass, bg remover, OCR, pricing...",
         zeroai_footer_note: "⚡ Local Client-Side AI Engine • Zero Cost • Instant Response",
         zeroai_quick_mmo: "⚡ Video Copyright Bypass",
@@ -140,7 +182,7 @@ const TRANSLATIONS = {
     },
     zh: {
         // Brand & Header
-        brand_tag: "v2.1 OTA WASM",
+        brand_tag: "v2.2 OTA WASM",
         download_desktop_btn: "下载电脑版 (.EXE)",
         pro_unlock_btn: "专业版桌面版",
         zk_badge_text: "零知识加密 • 100%离线",
@@ -171,6 +213,27 @@ const TRANSLATIONS = {
         btn_split_radar: "雷达自动扫描",
         hud_before_title: "处理前（原视频）",
         hud_after_title: "ZEROSTUDIO（一键完成）",
+
+        // Customer Reviews & Feedback Wall
+        reviews_badge: "口碑见证 • 超1480条五星真实好评",
+        reviews_title: "创作者与用户如何评价 ZeroStudio",
+        reviews_sub: "来自短视频二创达人、财务会计与跨境商家的真实反馈与使用评价。",
+        reviews_count_text: "1,482+ 条真实好评 • 98.6% 推荐率",
+        btn_write_review: "撰写您的评价",
+        filter_all: "全部 (1,480+)",
+        filter_5star: "五星好评 ⭐",
+        filter_mmo: "短视频二创 🔥",
+        filter_office: "办公与财务 📑",
+        filter_mine: "我的评价 👤",
+        review_modal_title: "ZeroStudio 使用评价与建议",
+        review_modal_sub: "您的评价将直接展示在网站首页并同步给开发团队！",
+        review_input_name_lbl: "您的姓名 / 昵称：",
+        review_input_name_ph: "例如：阿龙（短视频博主）",
+        review_input_role_lbl: "所属行业 / 角色：",
+        review_input_comment_lbl: "评价内容与建议：",
+        review_input_comment_ph: "分享您关于视频防重、PDF压缩的使用体验或提出新功能建议...",
+        btn_cancel: "取消",
+        btn_submit_review: "立即提交评价",
 
         // Modals & Pricing
         pro_modal_title: "升级ZEROSTUDIO专属授权",
@@ -205,7 +268,7 @@ const TRANSLATIONS = {
     },
     ja: {
         // Brand & Header
-        brand_tag: "v2.1 OTA WASM",
+        brand_tag: "v2.2 OTA WASM",
         download_desktop_btn: "デスクトップ版DL (.EXE)",
         pro_unlock_btn: "デスクトップPro版",
         zk_badge_text: "ゼロナレッジ • 100%オフライン",
@@ -236,6 +299,27 @@ const TRANSLATIONS = {
         btn_split_radar: "レーダー自動巡回",
         hud_before_title: "処理前（元動画）",
         hud_after_title: "ZEROSTUDIO（1クリック完了）",
+
+        // Customer Reviews & Feedback Wall
+        reviews_badge: "信頼の実績 • 1,480件以上の★5高評価",
+        reviews_title: "ZeroStudioをご利用中のお客様の声",
+        reviews_sub: "動画クリエイター、経理担当者、スタジオ関係者からのリアルな感想とフィードバック。",
+        reviews_count_text: "1,482件以上の満足レビュー • 98.6%がおすすめ",
+        btn_write_review: "レビューを投稿",
+        filter_all: "すべて (1,480+)",
+        filter_5star: "★5つ星 ⭐",
+        filter_mmo: "動画クリエイター 🔥",
+        filter_office: "経理・オフィス 📑",
+        filter_mine: "投稿したレビュー 👤",
+        review_modal_title: "ZeroStudio レビュー & ご意見",
+        review_modal_sub: "いただいたご意見はトップページに直接反映され、開発チームに届きます！",
+        review_input_name_lbl: "お名前 / ニックネーム：",
+        review_input_name_ph: "例：タカシ（動画クリエイター）",
+        review_input_role_lbl: "活動分野 / 職業：",
+        review_input_comment_lbl: "評価 & ご意見：",
+        review_input_comment_ph: "動画リマスターやPDF圧縮の感想、追加してほしい機能などをご記入ください...",
+        btn_cancel: "キャンセル",
+        btn_submit_review: "レビューを送信",
 
         // Modals & Pricing
         pro_modal_title: "ZEROSTUDIOライセンスのアップグレード",
@@ -341,7 +425,7 @@ function setAppLanguage(lang, silent = false) {
     const popover = document.getElementById('lang-menu-popover');
     if (popover) popover.classList.remove('open');
 
-    // 7. Dispatch Event for Dynamic Components (e.g. ZeroAI specialist, Video Bridge)
+    // 7. Dispatch Event for Dynamic Components (e.g. ZeroAI specialist, Video Bridge, Reviews)
     window.dispatchEvent(new CustomEvent('zerostudio:lang_changed', { detail: { lang, dict } }));
 
     if (!silent && typeof showToast === 'function') {

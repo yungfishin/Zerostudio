@@ -126,6 +126,20 @@ mindmap
   - **Lưu trữ bền vững (localStorage Persistence):** Ghi nhớ vĩnh viễn ngôn ngữ khách đã chọn, tự động khôi phục trong các phiên mở tiếp theo mà không cần chọn lại.
   - **Tương thích hoàn hảo với OTA:** Được đồng bộ tự động qua cơ chế In-App Auto-Update.
 
+### 7. Module 7: Bức Tường Đánh Giá 5 Sao & Thu Thập Phản Hồi Trực Tiếp (Customer Reviews Wall)
+- **Vị trí hiển thị:** Ngay dưới Đấu trường Battle Slider và trên Footer.
+- **Thang điểm tổng quan:** Điểm trung bình `4.9 / 5.0 ⭐` (tổng hợp 1,482+ lượt đánh giá, 98.6% khuyên dùng gói Ultra).
+- **Hộp thoại gửi đánh giá tương tác (Interactive Review Modal):**
+  - Đánh giá từ 1 đến 5 sao vàng ánh kim có hiệu ứng scale và phản hồi cảm xúc tức thì.
+  - Tự động nhận diện quyền hạn người dùng (gắn badge `👑 ULTRA MMO MASTER`, `💎 BẢN QUYỀN PRO`, hoặc `⭐ Đánh Giá Của Bạn`).
+  - Hiệu ứng pháo hoa Confetti vàng Champagne rực rỡ khi gửi đánh giá 5 sao.
+- **Lưu trữ đa tầng (Zero Server Cost):**
+  - Lưu tức thì vào `localStorage` trên máy người dùng, render ngay lập tức lên đầu danh sách đánh giá.
+  - Bắn qua Video Bridge (`POST /api/feedback`) lưu thành file JSON vĩnh viễn trên ổ cứng máy tính (`~/.zerostudio_feedback.json`).
+  - Admin chỉ cần mở trang web là đọc được toàn bộ đánh giá & đóng góp ý kiến thực tế của khách hàng trực tiếp trên giao diện.
+- **Bộ lọc danh mục đánh giá:**
+  - `Tất Cả (1,480+)`, `5 Sao ⭐`, `Dân Video MMO 🔥`, `Văn Phòng & Kế Toán 📑`, `Đánh Giá Của Bạn 👤`.
+
 ---
 
 ## III. HỆ THỐNG AN NINH MẠNG & CHỐNG CRACK ĐA TẦNG

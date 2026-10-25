@@ -1,14 +1,14 @@
 {
-  "version": "2.2.0",
+  "version": "2.3.0",
   "release_date": "2026-10-25",
-  "title": "Bản Nâng Cấp Toàn Cầu Đa Ngôn Ngữ & Trợ Lý ZeroAI Đa Quốc Gia",
+  "title": "Bản Nâng Cấp Bức Tường Đánh Giá Khách Hàng 5 Sao & Đa Ngôn Ngữ",
   "changelog": [
+    "Bức Tường Đánh Giá & Phản Hồi Khách Hàng 5 Sao Trực Tuyến (Social Proof Wall)",
+    "Hộp thoại gửi đánh giá tương tác (1-5 sao, chọn vai trò, pháo hoa Confetti vàng)",
+    "Bộ lọc đánh giá thông minh: Tất Cả, 5 Sao, Dân Video MMO, Dân Văn Phòng, Đánh Giá Của Tôi",
+    "Tự động lưu phản hồi khách vào đĩa cứng qua Video Bridge (/api/feedback)",
     "Hỗ trợ Đa Ngôn Ngữ (i18n): Tiếng Việt 🇻🇳, English 🇺🇸, 中文 (简体) 🇨🇳, 日本語 🇯🇵",
-    "Tự động đồng bộ ngôn ngữ cho Trợ lý ZeroAI Chuyên gia 24/7",
-    "Giao diện Dropdown Glassmorphism chuyển đổi ngôn ngữ tức thì",
-    "Lưu trạng thái ngôn ngữ bền vững (localStorage persistence)",
     "Lõi bảo mật WebAssembly Binary DRM Core v2 (.wasm)",
-    "Hệ thống Tự Vệ Chống Sửa Mã & Tự Hủy Bộ Nhớ (Tamper-Destruct)",
     "Động cơ Tự Động Cập Nhật OTA 1-Click (In-App Auto Updater)"
   ],
   "web_url": "https://zerostu.netlify.app",

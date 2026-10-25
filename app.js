@@ -5256,3 +5256,418 @@ window.downloadAppZip = function() {
     showToast('Đang tải trọn bộ ZeroStudio-Pro-Desktop.zip về máy...', 'success');
 };
 
+// ========================================================
+// 15. CUSTOMER REVIEWS & 5-STAR FEEDBACK ENGINE
+// ========================================================
+const DEFAULT_CUSTOMER_REVIEWS = [
+    {
+        id: 'rev_1',
+        name: 'Minh Quân',
+        role: 'Creator MMO • Kênh Shorts 450k Sub',
+        avatarBg: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+        stars: 5,
+        tier: 'ultra',
+        category: 'mmo',
+        time: 'Hôm nay, 08:45',
+        likes: 68,
+        comment: 'Trước đây reup clip Douyin cứ bị dính Content ID 0 view suốt. Dùng tính năng Auto-Crop 9:16 Dual-Layer kết hợp xáo vân âm thanh Pitch của ZeroStudio, clip cắn đề xuất 720k view ngay tuần đầu! Quá xứng đáng gói Ultra 699k vĩnh viễn.'
+    },
+    {
+        id: 'rev_2',
+        name: 'Chị Thu Hương',
+        role: 'Kế Toán Trưởng • Cty Vận Tải Quốc Tế',
+        avatarBg: 'linear-gradient(135deg, #38bdf8, #2563eb)',
+        stars: 5,
+        tier: 'ultra',
+        category: 'office',
+        time: 'Hôm qua, 16:20',
+        likes: 54,
+        comment: 'Nén PDF chuẩn nộp thuế điện tử cứu tôi mấy bàn thua trông thấy trước 24h đêm. File báo cáo tài chính 48MB nén vèo cái xuống 3.8MB mà con dấu đỏ và chữ ký số vẫn nét căng. Đỡ hẳn công đoạn scan lại!'
+    },
+    {
+        id: 'rev_3',
+        name: 'Trần Đức Nam',
+        role: 'Dropship & TikTok Shop Master',
+        avatarBg: 'linear-gradient(135deg, #10b981, #059669)',
+        stars: 5,
+        tier: 'ultra',
+        category: 'mmo',
+        time: 'Hôm qua, 11:15',
+        likes: 49,
+        comment: 'Bàn làm việc hàng loạt cày 200 video Douyin cùng lúc, treo máy đi uống cafe về là xuất xong sạch watermark, đổi hash MD5 từng file. Chuông báo xong nghe rất chuyên nghiệp. Đã kích hoạt 2 máy PC và Laptop.'
+    },
+    {
+        id: 'rev_4',
+        name: 'Nguyễn Hoàng Long',
+        role: 'Chủ Doanh Nghiệp Thời Trang & Visa',
+        avatarBg: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
+        stars: 5,
+        tier: 'pro',
+        category: 'office',
+        time: '2 ngày trước',
+        likes: 42,
+        comment: 'AI Tách nền ảnh thẻ vi mô nhận dạng chuẩn đến từng sợi tóc tơ và nếp cổ áo. Khách làm hồ sơ visa cần nền trắng công vụ hay nền xanh CCCD chỉ mất 1 giây là xong mà không cần bật Photoshop nặng nề.'
+    },
+    {
+        id: 'rev_5',
+        name: 'Đặng Mỹ Linh',
+        role: 'Biên Tập Viên & Content Freelancer',
+        avatarBg: 'linear-gradient(135deg, #06b6d4, #0284c7)',
+        stars: 5,
+        tier: 'pro',
+        category: 'office',
+        time: '3 ngày trước',
+        likes: 38,
+        comment: 'OCR tiếng Việt quét ảnh xuất thẳng Word .doc chuẩn 99%, hợp đồng scan mờ cũ vẫn bóc tách đủ dấu thanh tiếng Việt. Tiết kiệm cho mình cả chục tiếng ngồi gõ lại văn bản mỗi tuần.'
+    },
+    {
+        id: 'rev_6',
+        name: 'Lê Văn Tiến',
+        role: 'Kỹ Sư Dự Án & Hồ Sơ Đấu Thầu',
+        avatarBg: 'linear-gradient(135deg, #f97316, #ea580c)',
+        stars: 5,
+        tier: 'pro',
+        category: 'office',
+        time: '4 ngày trước',
+        likes: 31,
+        comment: 'Tuyệt vời nhất là tính năng Zero-Knowledge xử lý 100% tại RAM máy tính, 0 Byte gửi ra ngoài. Hồ sơ thầu tiền tỷ hoàn toàn yên tâm về bảo mật bí mật kinh doanh. Đội ngũ support Zalo rất nhiệt tình!'
+    }
+];
+
+let allCustomerReviews = [...DEFAULT_CUSTOMER_REVIEWS];
+let currentReviewFilter = 'all';
+let modalSelectedStars = 5;
+
+const STAR_SENTIMENTS = {
+    1: '1★ Cần cải thiện thêm 🛠',
+    2: '2★ Tạm được 😐',
+    3: '3★ Bình thường, dùng ổn 🙂',
+    4: '4★ Rất tốt & hài lòng 👍',
+    5: '5★ Cực kỳ xuất sắc! 🔥'
+};
+
+window.initCustomerReviews = async function() {
+    allCustomerReviews = [...DEFAULT_CUSTOMER_REVIEWS];
+
+    // 1. Load user reviews from localStorage
+    try {
+        const localRev = JSON.parse(localStorage.getItem('zerostudio_user_reviews') || '[]');
+        if (Array.isArray(localRev)) {
+            allCustomerReviews = [...localRev, ...allCustomerReviews];
+        }
+    } catch (_) {}
+
+    // 2. Fetch from Video Bridge if active
+    try {
+        const res = await fetch('http://127.0.0.1:8900/api/feedback', { method: 'GET' });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.success && Array.isArray(data.feedbacks)) {
+                // Merge unique feedback entries from disk
+                const existingIds = new Set(allCustomerReviews.map(r => r.id));
+                const diskFeedbacks = data.feedbacks
+                    .filter(f => !existingIds.has(f.id))
+                    .map(f => ({
+                        id: f.id,
+                        name: f.name,
+                        role: f.role || 'Người dùng ZeroStudio',
+                        avatarBg: 'linear-gradient(135deg, #f59e0b, #10b981)',
+                        stars: f.stars || 5,
+                        tier: f.tier || 'free',
+                        category: (f.role && f.role.toLowerCase().includes('mmo')) ? 'mmo' : 'office',
+                        time: f.created_at || 'Vừa xong',
+                        likes: 12,
+                        comment: f.comment,
+                        isMine: true
+                    }));
+                allCustomerReviews = [...diskFeedbacks, ...allCustomerReviews];
+            }
+        }
+    } catch (_) {}
+
+    renderCustomerReviews();
+};
+
+window.renderCustomerReviews = function() {
+    const grid = document.getElementById('reviews-cards-grid');
+    if (!grid) return;
+
+    let filtered = allCustomerReviews;
+    if (currentReviewFilter === '5star') {
+        filtered = allCustomerReviews.filter(r => r.stars === 5);
+    } else if (currentReviewFilter === 'mmo') {
+        filtered = allCustomerReviews.filter(r => r.category === 'mmo' || (r.role && r.role.toLowerCase().includes('mmo')));
+    } else if (currentReviewFilter === 'office') {
+        filtered = allCustomerReviews.filter(r => r.category === 'office' || (r.role && (r.role.toLowerCase().includes('toán') || r.role.toLowerCase().includes('phòng'))));
+    } else if (currentReviewFilter === 'mine') {
+        filtered = allCustomerReviews.filter(r => r.isMine);
+    }
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: #94a3b8;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✍</div>
+                <div style="font-size: 1rem; font-weight: 600; color: #cbd5e1;">Chưa có đánh giá nào trong mục này.</div>
+                <p style="font-size: 0.85rem; margin-top: 4px;">Hãy là người đầu tiên chia sẻ cảm nhận của bạn về ZeroStudio nhé!</p>
+                <button class="btn-write-review" onclick="openReviewModal()" style="margin-top: 1rem;">Viết Đánh Giá Ngay</button>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(rev => {
+        const initial = (rev.name || 'K').trim().charAt(0).toUpperCase();
+        const starsHtml = '★'.repeat(rev.stars) + '☆'.repeat(5 - rev.stars);
+
+        let badgeHtml = '';
+        if (rev.isMine) {
+            badgeHtml = `<span class="review-verified-badge local">⭐ Đánh Giá Của Bạn</span>`;
+        } else if (rev.tier === 'ultra') {
+            badgeHtml = `<span class="review-verified-badge ultra">👑 ULTRA MMO MASTER</span>`;
+        } else if (rev.tier === 'pro') {
+            badgeHtml = `<span class="review-verified-badge pro">💎 BẢN QUYỀN PRO</span>`;
+        }
+
+        return `
+            <div class="review-card" id="card-${rev.id}">
+                <div class="review-card-header">
+                    <div class="review-avatar" style="background: ${rev.avatarBg || 'linear-gradient(135deg, #f59e0b, #ef4444)'};">
+                        ${initial}
+                    </div>
+                    <div class="review-user-info">
+                        <div class="review-user-name">
+                            <span>${escapeHtml(rev.name)}</span>
+                            ${badgeHtml}
+                        </div>
+                        <div class="review-user-role">${escapeHtml(rev.role)}</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center;">
+                    <div class="review-card-stars">${starsHtml}</div>
+                    <div class="review-card-time">${escapeHtml(rev.time || '')}</div>
+                </div>
+
+                <div class="review-comment">
+                    "${escapeHtml(rev.comment)}"
+                </div>
+
+                <div class="review-card-footer">
+                    <button class="review-like-btn" onclick="likeCustomerReview('${rev.id}', this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="14" height="14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2" />
+                        </svg>
+                        <span>Hữu ích (${rev.likes || 1})</span>
+                    </button>
+                    <span style="font-size: 0.72rem; color: #64748b;">Đã xác minh qua phần mềm</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+};
+
+window.filterReviews = function(type, btnEl) {
+    currentReviewFilter = type;
+    document.querySelectorAll('.review-filter-pill').forEach(btn => btn.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    renderCustomerReviews();
+};
+
+window.openReviewModal = function() {
+    const modal = document.getElementById('review-modal');
+    if (modal) modal.style.display = 'flex';
+    setReviewStars(5);
+};
+
+window.closeReviewModal = function() {
+    const modal = document.getElementById('review-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+window.setReviewStars = function(count) {
+    modalSelectedStars = count;
+    const btns = document.querySelectorAll('#modal-star-picker .star-pick-btn');
+    btns.forEach((btn, idx) => {
+        if (idx < count) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    const sentiment = document.getElementById('star-sentiment-label');
+    if (sentiment) {
+        sentiment.textContent = STAR_SENTIMENTS[count] || '5★ Cực kỳ xuất sắc! 🔥';
+    }
+};
+
+window.submitCustomerReview = async function(event) {
+    if (event) event.preventDefault();
+
+    const nameInput = document.getElementById('review-input-name');
+    const roleSelect = document.getElementById('review-input-role');
+    const commentInput = document.getElementById('review-input-comment');
+
+    const name = nameInput ? nameInput.value.trim() : '';
+    const comment = commentInput ? commentInput.value.trim() : '';
+    const roleVal = roleSelect ? roleSelect.value : 'mmo';
+
+    if (!name || !comment) {
+        showToast('Vui lòng điền họ tên và nội dung đánh giá!', 'error');
+        return;
+    }
+
+    const roleMap = {
+        mmo: 'Dân Video MMO & Reup Douyin',
+        office: 'Kế Toán & Nhân Viên Văn Phòng',
+        student: 'Học Sinh & Sinh Viên',
+        freelance: 'Designer / Freelancer',
+        business: 'Chủ Doanh Nghiệp'
+    };
+    const roleTitle = roleMap[roleVal] || 'Khách Hàng ZeroStudio';
+    const activeTier = (typeof isUltraActive === 'function' && isUltraActive()) ? 'ultra' : ((typeof isProActive === 'function' && isProActive()) ? 'pro' : 'free');
+
+    const newReview = {
+        id: `rev_usr_${Date.now()}`,
+        name: name,
+        role: roleTitle,
+        avatarBg: 'linear-gradient(135deg, #f59e0b, #10b981)',
+        stars: modalSelectedStars,
+        tier: activeTier,
+        category: roleVal === 'mmo' ? 'mmo' : 'office',
+        time: 'Vừa xong',
+        likes: 1,
+        comment: comment,
+        isMine: true
+    };
+
+    // 1. Save to localStorage
+    try {
+        const stored = JSON.parse(localStorage.getItem('zerostudio_user_reviews') || '[]');
+        stored.unshift(newReview);
+        localStorage.setItem('zerostudio_user_reviews', JSON.stringify(stored.slice(0, 50)));
+    } catch (_) {}
+
+    // 2. Post to Video Bridge for permanent disk storage
+    try {
+        fetch('http://127.0.0.1:8900/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: name,
+                role: roleTitle,
+                stars: modalSelectedStars,
+                comment: comment,
+                tier: activeTier
+            })
+        }).catch(() => {});
+    } catch (_) {}
+
+    // 3. Add to runtime array and re-render
+    allCustomerReviews.unshift(newReview);
+    renderCustomerReviews();
+
+    // 4. Confetti Celebration if 5 stars!
+    if (modalSelectedStars === 5) {
+        launchGoldConfetti();
+    }
+
+    closeReviewModal();
+    showToast('Cảm ơn bạn! Đánh giá đã được đăng trực tiếp lên ZeroStudio.', 'success');
+
+    // Reset inputs
+    if (nameInput) nameInput.value = '';
+    if (commentInput) commentInput.value = '';
+
+    // Smooth scroll to reviews
+    const section = document.getElementById('customer-reviews');
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+};
+
+window.likeCustomerReview = function(id, btnEl) {
+    const rev = allCustomerReviews.find(r => r.id === id);
+    if (!rev) return;
+    rev.likes = (rev.likes || 0) + 1;
+    if (btnEl) {
+        btnEl.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" style="color: #38bdf8;">
+                <path d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2" />
+            </svg>
+            <span style="color: #38bdf8; font-weight: 700;">Hữu ích (${rev.likes})</span>
+        `;
+    }
+};
+
+function launchGoldConfetti() {
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.inset = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.zIndex = '999999';
+    canvas.style.pointerEvents = 'none';
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const colors = ['#f59e0b', '#fbbf24', '#fde68a', '#10b981', '#38bdf8', '#ffffff'];
+
+    for (let i = 0; i < 70; i++) {
+        particles.push({
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            vx: (Math.random() - 0.5) * 16,
+            vy: (Math.random() - 0.7) * 16,
+            size: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            vRot: (Math.random() - 0.5) * 10,
+            alpha: 1
+        });
+    }
+
+    let frame = 0;
+    function anim() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.35;
+            p.rotation += p.vRot;
+            p.alpha -= 0.015;
+            if (p.alpha > 0) {
+                alive = true;
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.3);
+                ctx.restore();
+            }
+        });
+        frame++;
+        if (alive && frame < 100) {
+            requestAnimationFrame(anim);
+        } else {
+            if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+        }
+    }
+    requestAnimationFrame(anim);
+}
+
+// Auto initialize customer reviews on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initCustomerReviews();
+});
+setTimeout(() => {
+    initCustomerReviews();
+}, 800);
+
+

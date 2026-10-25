@@ -461,6 +461,24 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             return
 
         # ----------------------------------------------------
+        # CUSTOMER REVIEWS & FEEDBACK API
+        # ----------------------------------------------------
+        if parsed.path == '/api/feedback':
+            feedback_file = Path.home() / '.zerostudio_feedback.json'
+            feedbacks = []
+            if feedback_file.exists():
+                try:
+                    feedbacks = json.loads(feedback_file.read_text(encoding='utf-8'))
+                except Exception:
+                    feedbacks = []
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'success': True, 'feedbacks': feedbacks}).encode('utf-8'))
+            return
+
+        # ----------------------------------------------------
         # PERMANENT LOCAL DISK LICENSE STORAGE
         # ----------------------------------------------------
         if parsed.path == '/api/license':
@@ -820,6 +838,55 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps(result).encode())
+            return
+
+        # ----------------------------------------------------
+        # CUSTOMER REVIEWS & FEEDBACK SUBMISSION
+        # ----------------------------------------------------
+        if parsed.path == '/api/feedback':
+            feedback_file = Path.home() / '.zerostudio_feedback.json'
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+            except Exception:
+                data = {}
+
+            name = data.get('name', 'Khách hàng ẩn danh').strip()[:60]
+            role = data.get('role', 'Người dùng ZeroStudio').strip()[:60]
+            stars = int(data.get('stars', 5))
+            comment = data.get('comment', '').strip()[:1000]
+            tier = data.get('tier', 'free')
+
+            new_entry = {
+                'id': f"fb_{int(time.time() * 1000)}",
+                'name': name,
+                'role': role,
+                'stars': max(1, min(5, stars)),
+                'comment': comment,
+                'tier': tier,
+                'created_at': datetime.now().strftime('%d/%m/%Y %H:%M'),
+                'client_ip': client_ip
+            }
+
+            feedbacks = []
+            if feedback_file.exists():
+                try:
+                    feedbacks = json.loads(feedback_file.read_text(encoding='utf-8'))
+                except Exception:
+                    feedbacks = []
+
+            feedbacks.insert(0, new_entry)
+            feedbacks = feedbacks[:500]
+
+            try:
+                feedback_file.write_text(json.dumps(feedbacks, ensure_ascii=False, indent=2), encoding='utf-8')
+            except Exception:
+                pass
+
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'success': True, 'entry': new_entry}).encode('utf-8'))
             return
 
         if parsed.path == '/api/save-license':
