@@ -62,6 +62,7 @@ const TRANSLATIONS = {
         review_input_comment_ph: "Chia sẻ trải nghiệm của bạn về tính năng lách bản quyền, nén PDF hoặc góp ý thêm tính năng mới...",
         btn_cancel: "Hủy",
         btn_submit_review: "Gửi Đánh Giá Ngay",
+        btn_load_more_reviews: "Xem Thêm Đánh Giá Khác",
 
         // Modals & Pricing
         pro_modal_title: "NÂNG CẤP BẢN QUYỀN ZEROSTUDIO",
@@ -148,6 +149,7 @@ const TRANSLATIONS = {
         review_input_comment_ph: "Share your experience with video delogo, PDF compress, or suggest new features...",
         btn_cancel: "Cancel",
         btn_submit_review: "Submit Review",
+        btn_load_more_reviews: "Load More Reviews",
 
         // Modals & Pricing
         pro_modal_title: "UPGRADE ZEROSTUDIO LICENSE",
@@ -234,6 +236,7 @@ const TRANSLATIONS = {
         review_input_comment_ph: "分享您关于视频防重、PDF压缩的使用体验或提出新功能建议...",
         btn_cancel: "取消",
         btn_submit_review: "立即提交评价",
+        btn_load_more_reviews: "加载更多评价",
 
         // Modals & Pricing
         pro_modal_title: "升级ZEROSTUDIO专属授权",
@@ -320,6 +323,7 @@ const TRANSLATIONS = {
         review_input_comment_ph: "動画リマスターやPDF圧縮の感想、追加してほしい機能などをご記入ください...",
         btn_cancel: "キャンセル",
         btn_submit_review: "レビューを送信",
+        btn_load_more_reviews: "もっとレビューを見る",
 
         // Modals & Pricing
         pro_modal_title: "ZEROSTUDIOライセンスのアップグレード",

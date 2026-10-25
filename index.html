@@ -6765,6 +6765,17 @@
             <div class="reviews-grid" id="reviews-cards-grid">
                 <!-- Dynamically rendered via app.js -->
             </div>
+
+            <!-- Load More Pagination Deck -->
+            <div id="reviews-load-more-wrap" style="text-align: center; margin-top: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <button id="btn-load-more-reviews" class="btn-outline" onclick="loadMoreReviews()" style="border-radius: 999px; padding: 10px 28px; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; background: rgba(245, 158, 11, 0.08); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    <span id="load-more-btn-text" data-i18n="btn_load_more_reviews">Xem Thêm Đánh Giá Khác</span>
+                </button>
+                <div id="reviews-progress-text" style="font-size: 0.8rem; color: #64748b; font-weight: 500;">
+                    Đang hiển thị 6 / 18 đánh giá
+                </div>
+            </div>
         </section>
 
         <!-- MODAL: WRITE CUSTOMER REVIEW & FEEDBACK -->

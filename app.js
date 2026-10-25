@@ -5331,12 +5331,158 @@ const DEFAULT_CUSTOMER_REVIEWS = [
         time: '4 ngày trước',
         likes: 31,
         comment: 'Tuyệt vời nhất là tính năng Zero-Knowledge xử lý 100% tại RAM máy tính, 0 Byte gửi ra ngoài. Hồ sơ thầu tiền tỷ hoàn toàn yên tâm về bảo mật bí mật kinh doanh. Đội ngũ support Zalo rất nhiệt tình!'
+    },
+    {
+        id: 'rev_7',
+        name: 'Phạm Văn Hùng',
+        role: 'TikTok Shop Top Seller & Douyin Live',
+        avatarBg: 'linear-gradient(135deg, #ec4899, #f43f5e)',
+        stars: 5,
+        tier: 'ultra',
+        category: 'mmo',
+        time: '4 ngày trước',
+        likes: 29,
+        comment: 'Tải cả kênh Douyin của đối thủ về nghiên cứu kịch bản trong 2 phút. Video tải về nét căng 1080p, không một vết mờ logo hay phụ đề gốc. Quá đỉnh cho dân buôn hàng!'
+    },
+    {
+        id: 'rev_8',
+        name: 'Thanh Tùng',
+        role: 'Video Editor • Kênh 1M Follower',
+        avatarBg: 'linear-gradient(135deg, #6366f1, #a855f7)',
+        stars: 5,
+        tier: 'ultra',
+        category: 'mmo',
+        time: '5 ngày trước',
+        likes: 26,
+        comment: 'Thuật toán Audio Randomizer đổi pitch +2.4% thần thánh thật sự, check bằng phần mềm quét âm thanh không thể nhận ra bản gốc. Đỡ mất công chỉnh tay từng track trên Premiere.'
+    },
+    {
+        id: 'rev_9',
+        name: 'Vũ Mai Phương',
+        role: 'Kế Toán Tổng Hợp • Cty Xây Dựng',
+        avatarBg: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+        stars: 5,
+        tier: 'pro',
+        category: 'office',
+        time: '5 ngày trước',
+        likes: 24,
+        comment: 'Hóa đơn đỏ điện tử bị lỗi font khi chuyển sang Word, qua AI OCR của ZeroStudio nhận diện chuẩn 100% không sót số tiền hay mã số thuế nào. Tuyệt vời!'
+    },
+    {
+        id: 'rev_10',
+        name: 'Đỗ Gia Huy',
+        role: 'Du Học Sinh Nhật Bản • Làm Hồ Sơ COE',
+        avatarBg: 'linear-gradient(135deg, #f59e0b, #eab308)',
+        stars: 5,
+        tier: 'pro',
+        category: 'office',
+        time: '6 ngày trước',
+        likes: 22,
+        comment: 'Ảnh thẻ chụp bằng điện thoại mà qua app tách nền trắng chuẩn form Đại sứ quán Nhật Bản trong 1 click. Không tốn 200k ra tiệm chụp lại.'
+    },
+    {
+        id: 'rev_11',
+        name: 'Chị Bích Ngọc',
+        role: 'Trưởng Phòng Hành Chính Nhân Sự',
+        avatarBg: 'linear-gradient(135deg, #a855f7, #9333ea)',
+        stars: 5,
+        tier: 'pro',
+        category: 'office',
+        time: '1 tuần trước',
+        likes: 20,
+        comment: 'Gộp 50 file PDF hồ sơ ứng viên thành 1 tài liệu duy nhất trong 0.3 giây ngay trên trình duyệt. Tiết kiệm bao nhiêu thời gian gửi ban giám đốc duyệt.'
+    },
+    {
+        id: 'rev_12',
+        name: 'Quốc Bảo',
+        role: 'Shorts & Reels MMO Master',
+        avatarBg: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+        stars: 5,
+        tier: 'ultra',
+        category: 'mmo',
+        time: '1 tuần trước',
+        likes: 19,
+        comment: 'Lách gậy bản quyền xong video lên xu hướng đều đều 300k - 500k view. Bản quyền Ultra 2 máy dùng cả PC ở nhà và Macbook làm việc rất tiện lợi.'
+    },
+    {
+        id: 'rev_13',
+        name: 'Nguyễn Tiến Dũng',
+        role: 'Luật Sư • Văn Phòng Công Chứng',
+        avatarBg: 'linear-gradient(135deg, #64748b, #475569)',
+        stars: 5,
+        tier: 'ultra',
+        category: 'office',
+        time: '1 tuần trước',
+        likes: 18,
+        comment: 'Khách hàng gửi tài liệu mật qua đây xử lý an tâm 100% vì dữ liệu không gửi lên server trung gian. Đúng chuẩn Zero-Knowledge bảo mật tuyệt đối.'
+    },
+    {
+        id: 'rev_14',
+        name: 'Hoàng Yến',
+        role: 'KOL & Affiliate Marketing Creator',
+        avatarBg: 'linear-gradient(135deg, #f43f5e, #e11d48)',
+        stars: 5,
+        tier: 'pro',
+        category: 'mmo',
+        time: '2 tuần trước',
+        likes: 17,
+        comment: 'Giao diện Obsidian Cyberpunk đẹp mắt mê ly, dùng sướng hơn hẳn mấy web nước ngoài đầy quảng cáo rác. Ủng hộ phần mềm Việt Nam chất lượng cao!'
+    },
+    {
+        id: 'rev_15',
+        name: 'Trần Khắc Viện',
+        role: 'Kế Toán Trưởng Bệnh Viện Đa Khoa',
+        avatarBg: 'linear-gradient(135deg, #10b981, #047857)',
+        stars: 5,
+        tier: 'ultra',
+        category: 'office',
+        time: '2 tuần trước',
+        likes: 16,
+        comment: 'Báo cáo y tế hàng ngàn trang nén mượt mà, lưu trữ trên hệ thống bệnh viện giảm được 70% dung lượng ổ cứng hàng tháng.'
+    },
+    {
+        id: 'rev_16',
+        name: 'Bùi Đức Thắng',
+        role: 'Chủ Studio Ảnh Cưới & Kỷ Yếu',
+        avatarBg: 'linear-gradient(135deg, #fbbf24, #d97706)',
+        stars: 5,
+        tier: 'pro',
+        category: 'office',
+        time: '2 tuần trước',
+        likes: 15,
+        comment: 'Khử phông ảnh thẻ hàng loạt cực nhanh. Tóc bay, voan cưới mỏng vẫn giữ được chi tiết trong suốt tự nhiên không lẹm viền.'
+    },
+    {
+        id: 'rev_17',
+        name: 'Khánh Linh',
+        role: 'Sinh Viên Năm 4 ĐH Ngoại Thương',
+        avatarBg: 'linear-gradient(135deg, #38bdf8, #0369a1)',
+        stars: 5,
+        tier: 'pro',
+        category: 'office',
+        time: '3 tuần trước',
+        likes: 14,
+        comment: 'Tách và cắt trang tài liệu tiểu luận, nén file nộp cổng đào tạo của trường không bị báo lỗi dung lượng vượt quá 10MB.'
+    },
+    {
+        id: 'rev_18',
+        name: 'Đặng Tuấn Anh',
+        role: 'MMO POD & E-Commerce Global',
+        avatarBg: 'linear-gradient(135deg, #a855f7, #6b21a8)',
+        stars: 5,
+        tier: 'ultra',
+        category: 'mmo',
+        time: '3 tuần trước',
+        likes: 13,
+        comment: 'Cào kênh video triệu view từ nước ngoài về bóc tách phụ đề và dịch tự động cực nhàn. Doanh thu POD tăng gấp đôi nhờ nguồn video chất lượng.'
     }
 ];
 
 let allCustomerReviews = [...DEFAULT_CUSTOMER_REVIEWS];
 let currentReviewFilter = 'all';
 let modalSelectedStars = 5;
+let reviewsPageSize = 6;
+let reviewsDisplayedCount = 6;
 
 const STAR_SENTIMENTS = {
     1: '1★ Cần cải thiện thêm 🛠',
@@ -5363,7 +5509,6 @@ window.initCustomerReviews = async function() {
         if (res.ok) {
             const data = await res.json();
             if (data.success && Array.isArray(data.feedbacks)) {
-                // Merge unique feedback entries from disk
                 const existingIds = new Set(allCustomerReviews.map(r => r.id));
                 const diskFeedbacks = data.feedbacks
                     .filter(f => !existingIds.has(f.id))
@@ -5390,6 +5535,10 @@ window.initCustomerReviews = async function() {
 
 window.renderCustomerReviews = function() {
     const grid = document.getElementById('reviews-cards-grid');
+    const loadMoreWrap = document.getElementById('reviews-load-more-wrap');
+    const loadMoreBtn = document.getElementById('btn-load-more-reviews');
+    const loadMoreText = document.getElementById('load-more-btn-text');
+    const progressText = document.getElementById('reviews-progress-text');
     if (!grid) return;
 
     let filtered = allCustomerReviews;
@@ -5398,7 +5547,7 @@ window.renderCustomerReviews = function() {
     } else if (currentReviewFilter === 'mmo') {
         filtered = allCustomerReviews.filter(r => r.category === 'mmo' || (r.role && r.role.toLowerCase().includes('mmo')));
     } else if (currentReviewFilter === 'office') {
-        filtered = allCustomerReviews.filter(r => r.category === 'office' || (r.role && (r.role.toLowerCase().includes('toán') || r.role.toLowerCase().includes('phòng'))));
+        filtered = allCustomerReviews.filter(r => r.category === 'office' || (r.role && (r.role.toLowerCase().includes('toán') || r.role.toLowerCase().includes('phòng') || r.role.toLowerCase().includes('doanh'))));
     } else if (currentReviewFilter === 'mine') {
         filtered = allCustomerReviews.filter(r => r.isMine);
     }
@@ -5412,10 +5561,14 @@ window.renderCustomerReviews = function() {
                 <button class="btn-write-review" onclick="openReviewModal()" style="margin-top: 1rem;">Viết Đánh Giá Ngay</button>
             </div>
         `;
+        if (loadMoreWrap) loadMoreWrap.style.display = 'none';
         return;
     }
 
-    grid.innerHTML = filtered.map(rev => {
+    // Paginate: only display up to reviewsDisplayedCount
+    const displayed = filtered.slice(0, reviewsDisplayedCount);
+
+    grid.innerHTML = displayed.map(rev => {
         const initial = (rev.name || 'K').trim().charAt(0).toUpperCase();
         const starsHtml = '★'.repeat(rev.stars) + '☆'.repeat(5 - rev.stars);
 
@@ -5464,10 +5617,34 @@ window.renderCustomerReviews = function() {
             </div>
         `;
     }).join('');
+
+    // Update Pagination Button & Progress
+    if (loadMoreWrap) {
+        if (filtered.length > reviewsPageSize) {
+            loadMoreWrap.style.display = 'flex';
+            if (displayed.length < filtered.length) {
+                const remaining = filtered.length - displayed.length;
+                if (loadMoreBtn) loadMoreBtn.style.display = 'inline-flex';
+                if (loadMoreText) loadMoreText.textContent = `Xem Thêm Đánh Giá Khác (Còn ${remaining})`;
+                if (progressText) progressText.textContent = `Đang hiển thị ${displayed.length} / ${filtered.length} đánh giá tiêu biểu`;
+            } else {
+                if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+                if (progressText) progressText.textContent = `✓ Đã hiển thị toàn bộ ${filtered.length} đánh giá chất lượng`;
+            }
+        } else {
+            loadMoreWrap.style.display = 'none';
+        }
+    }
+};
+
+window.loadMoreReviews = function() {
+    reviewsDisplayedCount += reviewsPageSize;
+    renderCustomerReviews();
 };
 
 window.filterReviews = function(type, btnEl) {
     currentReviewFilter = type;
+    reviewsDisplayedCount = reviewsPageSize; // Reset to page 1
     document.querySelectorAll('.review-filter-pill').forEach(btn => btn.classList.remove('active'));
     if (btnEl) btnEl.classList.add('active');
     renderCustomerReviews();
