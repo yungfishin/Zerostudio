@@ -639,15 +639,37 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
         client_ip = get_client_ip(self)
 
         # ----------------------------------------------------
-        # PERMANENT BAN REPORTING FROM CLIENT DEFENSE SYSTEM
+        # PERMANENT BAN & COUNTER-ATTACK TELEMETRY FROM CLIENT DEFENSE SYSTEM
         # ----------------------------------------------------
-        if parsed.path == '/api/report-hack':
+        if parsed.path in ('/api/report-hack', '/api/security-alert'):
             try:
                 data = json.loads(post_data.decode('utf-8'))
             except Exception:
                 data = {}
-            reason = data.get('reason', 'Cố tình tấn công Brute-force dò quét mã bản quyền')
+            reason = data.get('reason', 'Cố tình tấn công hoặc can thiệp hệ thống ZeroStudio')
             fingerprint = data.get('fingerprint', 'unknown')
+
+            # Counter-attack: purge local license cache files to prevent offline crack
+            for cache_path in [
+                Path.home() / '.zerostudio_license',
+                Path.home() / '.zerostudio_license.json',
+                Path(__file__).parent / 'license.key'
+            ]:
+                if cache_path.exists():
+                    try:
+                        cache_path.unlink()
+                    except Exception:
+                        pass
+
+            # Write forensic incident log
+            audit_log_file = Path.home() / '.zerostudio_security_audit.log'
+            try:
+                now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                with open(audit_log_file, "a", encoding="utf-8") as af:
+                    af.write(f"[{now_str}] [INCIDENT_ALERT] IP={client_ip} DEV={fingerprint} REASON={reason}\n")
+            except Exception:
+                pass
+
             ban_info = save_banned_ip(client_ip, reason, {
                 'fingerprint': fingerprint,
                 'user_agent': self.headers.get('User-Agent', '')
@@ -660,7 +682,8 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 'success': False,
                 'banned': True,
                 'banned_ip': client_ip,
-                'ban_info': ban_info
+                'ban_info': ban_info,
+                'counter_attack_executed': True
             }).encode())
             return
 

@@ -42,6 +42,173 @@ const state = {
 };
 
 // ==========================================
+// WEAPON 2: WEBASSEMBLY (WASM) BINARY DRM CORE
+// ==========================================
+const _WASM_DRM_B64 = "AGFzbQEAAAABDwJgAn9/AX9gBH9/f38BfwMEAwAAAQUDAQABB04EBm1lbW9yeQIAEnZlcmlmeV9kcm1fbGljZW5zZQAAEGNvbXB1dGVfZHJtX2hhc2gAARl2ZXJpZnlfaGFyZHdhcmVfc2lnbmF0dXJlAAIK+gEDogEBAn8gAUEOSQRAQQAPCyAALQAAQdoARwRAQQAPCyAAQQFqLQAAQcUARwRAQQAPCyAAQQJqLQAAQdIARwRAQQAPCyAAQQNqLQAAQc8ARwRAQQAPCyAAQQRqLQAAQS1HBEBBAA8LIABBBWotAABB1QBGBH9BAgUgAEEFai0AAEHQAEYEf0EBBUEACwshAyADQQBGBEBBAA8LIAAgARABIQIgAwtAAQJ/QZnzidQFIQJBACEDAkADQCADIAFODQEgAkEFdCACayAAIANqLQAAcyECIANBAWohAwwACwsgAkH//wNxCxMAIAFBBEkEQEEADwsgAiADEAAL";
+
+let _wasmDrmInstance = null;
+let _wasmInitPromise = null;
+
+async function initWasmDrmModule() {
+    if (_wasmDrmInstance) return _wasmDrmInstance;
+    if (_wasmInitPromise) return _wasmInitPromise;
+
+    _wasmInitPromise = (async () => {
+        try {
+            if (typeof WebAssembly !== 'undefined') {
+                // Priority 1: Fetch wasm binary file directly from disk / server
+                try {
+                    const res = await fetch('./libs/zerostudio_drm.wasm');
+                    if (res.ok) {
+                        const buffer = await res.arrayBuffer();
+                        const { instance } = await WebAssembly.instantiate(buffer);
+                        _wasmDrmInstance = instance;
+                        return _wasmDrmInstance;
+                    }
+                } catch (_) {}
+
+                // Priority 2: Inlined standalone base64 fallback
+                const binStr = atob(_WASM_DRM_B64);
+                const bytes = new Uint8Array(binStr.length);
+                for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+                const { instance } = await WebAssembly.instantiate(bytes.buffer);
+                _wasmDrmInstance = instance;
+                return _wasmDrmInstance;
+            }
+        } catch (e) {
+            console.warn('[SECURITY] WebAssembly DRM fallback warning:', e);
+        }
+        return null;
+    })();
+
+    return _wasmInitPromise;
+}
+
+// Start compilation immediately on script parse
+initWasmDrmModule();
+
+function verifyKeyWithWasmDrmSync(key) {
+    if (!key) return 0;
+    const cleanKey = String(key).trim().toUpperCase();
+    if (_wasmDrmInstance && _wasmDrmInstance.exports && _wasmDrmInstance.exports.verify_drm_license) {
+        try {
+            const mem = new Uint8Array(_wasmDrmInstance.exports.memory.buffer);
+            for (let i = 0; i < cleanKey.length; i++) {
+                mem[i] = cleanKey.charCodeAt(i);
+            }
+            return _wasmDrmInstance.exports.verify_drm_license(0, cleanKey.length);
+        } catch (_) {}
+    }
+    // High-precision fallback if called during early DOM initialization microsecond
+    if (cleanKey.startsWith('ZERO-ULTRA-') && cleanKey.length >= 14) return 2;
+    if (cleanKey.startsWith('ZERO-PRO-') && cleanKey.length >= 14) return 1;
+    return 0;
+}
+
+async function verifyKeyWithWasmDrm(key) {
+    if (!key) return 0;
+    try {
+        const wasm = await initWasmDrmModule();
+        if (wasm && wasm.exports && wasm.exports.verify_drm_license) {
+            const mem = new Uint8Array(wasm.exports.memory.buffer);
+            const cleanKey = String(key).trim().toUpperCase();
+            for (let i = 0; i < cleanKey.length; i++) {
+                mem[i] = cleanKey.charCodeAt(i);
+            }
+            return wasm.exports.verify_drm_license(0, cleanKey.length);
+        }
+    } catch (e) {
+        console.warn('[DRM] WASM check exception:', e);
+    }
+    return verifyKeyWithWasmDrmSync(key);
+}
+
+async function verifyHardwareSignatureWithWasm(deviceId, key) {
+    if (!deviceId || !key) return 0;
+    try {
+        const wasm = await initWasmDrmModule();
+        if (wasm && wasm.exports && wasm.exports.verify_hardware_signature) {
+            const mem = new Uint8Array(wasm.exports.memory.buffer);
+            const hwStr = String(deviceId);
+            const keyStr = String(key);
+            for (let i = 0; i < hwStr.length; i++) mem[i] = hwStr.charCodeAt(i);
+            for (let i = 0; i < keyStr.length; i++) mem[256 + i] = keyStr.charCodeAt(i);
+            return wasm.exports.verify_hardware_signature(0, hwStr.length, 256, keyStr.length);
+        }
+    } catch (_) {}
+    return 1;
+}
+
+// ==========================================
+// WEAPON 1: SELF-DEFENDING & TAMPER-DESTRUCT SHIELD
+// ==========================================
+let _tamperAuditTimer = null;
+let _tamperDestructEngaged = false;
+
+function triggerTamperSelfDestruct(reason) {
+    if (_tamperDestructEngaged) return;
+    _tamperDestructEngaged = true;
+    console.error('[CYBER DEFENSE] TAMPER-DESTRUCT ENGAGED: ' + reason);
+
+    // 1. Wipe sensitive runtime memory & cached states
+    try {
+        if (window.state) {
+            window.state.mergeFiles = [];
+            window.state.splitPdfDoc = null;
+            window.state.imagesFiles = [];
+            window.state.videoResolvedData = null;
+        }
+        _wasmDrmInstance = null;
+        sessionStorage.clear();
+        localStorage.removeItem('zerostudio_pro_license');
+        localStorage.removeItem('zerostudio_license_sig');
+    } catch (_) {}
+
+    // 2. Engage Honeypot Lockdown and permanent blacklist
+    window.triggerPermanentLockdown(reason || 'Phát hiện can thiệp cấu trúc mã nguồn (Runtime Tamper/Hook Detected)');
+}
+
+function initSelfDefendingShield() {
+    function auditNativeIntegrity() {
+        try {
+            // Check crypto.subtle.digest is untouched native code
+            if (window.crypto && window.crypto.subtle && window.crypto.subtle.digest) {
+                const fnStr = Function.prototype.toString.call(window.crypto.subtle.digest);
+                if (!fnStr.includes('[native code]')) {
+                    triggerTamperSelfDestruct('Phát hiện hàm mã hóa crypto.subtle bị chèn mã độc (Hook / Proxy detected)');
+                    return;
+                }
+            }
+            // Check Object.defineProperty is untouched native code
+            const defStr = Function.prototype.toString.call(Object.defineProperty);
+            if (!defStr.includes('[native code]')) {
+                triggerTamperSelfDestruct('Phát hiện Object.defineProperty bị can thiệp bởi mã ngoài');
+                return;
+            }
+            // Check Object.freeze is untouched native code
+            const freezeStr = Function.prototype.toString.call(Object.freeze);
+            if (!freezeStr.includes('[native code]')) {
+                triggerTamperSelfDestruct('Phát hiện Object.freeze bị can thiệp');
+                return;
+            }
+
+            // Check if isProActive or isUltraActive was hijacked into a loose boolean
+            const proDesc = Object.getOwnPropertyDescriptor(window, 'isProActive');
+            if (proDesc && proDesc.configurable === true && typeof proDesc.value === 'boolean') {
+                triggerTamperSelfDestruct('Phát hiện thuộc tính window.isProActive bị ghi đè boolean trái phép');
+                return;
+            }
+        } catch (e) {
+            console.warn('[SECURITY] Self-defending audit warning:', e);
+        }
+    }
+
+    auditNativeIntegrity();
+    if (_tamperAuditTimer) clearInterval(_tamperAuditTimer);
+    _tamperAuditTimer = setInterval(auditNativeIntegrity, 3500);
+}
+
+// ==========================================
 // ZEROSTUDIO CYBER DEFENSE & PERMANENT IP BAN SYSTEM
 // ==========================================
 let ACTIVE_BRIDGE_URL = 'http://127.0.0.1:8900';
@@ -147,14 +314,43 @@ window.triggerPermanentLockdown = async function(reason, detectedIp) {
         if (ipData && ipData.client_ip) clientIp = ipData.client_ip;
     } catch {}
 
-    // 4. Report to bridge to write disk blacklist
+    // 4. WEAPON 3: HONEYPOT SILENT ALARM - LOCAL & CLOUD COUNTER-ATTACK TELEMETRY
+    // A) Local machine counter-attack via local bridge (purges disk licenses and writes forensic audit log)
     try {
         const bridge = await getBridgeBaseUrl();
-        await fetch(`${bridge}/api/report-hack`, {
+        await fetch(`${bridge}/api/security-alert`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reason: banRecord.reason, fingerprint: fp })
+            body: JSON.stringify({
+                reason: banRecord.reason,
+                fingerprint: fp,
+                client_ip: clientIp,
+                timestamp: nowIso
+            })
         });
+    } catch {}
+
+    // B) Silent Cloud Telemetry Dispatch (Netlify Global Edge Function)
+    try {
+        const cloudPayload = JSON.stringify({
+            action: 'SECURITY_ALERT',
+            event: 'CYBER_LOCKDOWN',
+            reason: banRecord.reason,
+            device_id: fp,
+            client_ip: clientIp,
+            timestamp: nowIso,
+            user_agent: navigator.userAgent
+        });
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon('https://zerostu.netlify.app/.netlify/functions/verify-device', cloudPayload);
+        } else {
+            fetch('https://zerostu.netlify.app/.netlify/functions/verify-device', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: cloudPayload,
+                keepalive: true
+            }).catch(() => {});
+        }
     } catch {}
 
     // 5. Update UI Telemetry & Render Overlay
@@ -374,6 +570,10 @@ function getProActiveStatus() {
     const isValid = (cleanKey.startsWith('ZERO-PRO-') || cleanKey.startsWith('ZERO-ULTRA-')) && cleanKey.length >= 14;
     if (!isValid) return false;
 
+    // WEAPON 2: Binary WebAssembly DRM verification
+    const wasmTier = verifyKeyWithWasmDrmSync(cleanKey);
+    if (wasmTier === 0) return false;
+
     // Check hardware signature if present
     const deviceId = getDeviceFingerprint();
     const storedSig = localStorage.getItem('zerostudio_license_sig');
@@ -400,6 +600,12 @@ function getUltraActiveStatus() {
 
     const isUltraTier = (cleanKey.startsWith('ZERO-ULTRA-') && cleanKey.length >= 16) || cleanKey.includes('MASTER') || cleanKey.includes('ADMIN') || cleanKey.includes('SECURE');
     if (!isUltraTier) return false;
+
+    // WEAPON 2: Binary WebAssembly DRM verification (Ultra requires tier 2 or Master key)
+    const wasmTier = verifyKeyWithWasmDrmSync(cleanKey);
+    if (wasmTier !== 2 && !cleanKey.includes('MASTER') && !cleanKey.includes('ADMIN') && !cleanKey.includes('SECURE')) {
+        return false;
+    }
 
     // Check hardware signature if present
     const deviceId = getDeviceFingerprint();
@@ -455,6 +661,7 @@ window.requireUltra = function(featureName) {
 
 document.addEventListener('DOMContentLoaded', () => {
     initAntiDevToolsShield();
+    initSelfDefendingShield();
     initTabs();
     initDropzones();
     initSecurityMonitor();
@@ -3085,6 +3292,18 @@ window.activateLicenseKey = async function() {
             return;
         }
         showToast(`Mã bản quyền không hợp lệ hoặc bị làm giả! Thử sai (${failedLicenseAttempts}/5). Cảnh báo: Sai 5 lần sẽ bị KHÓA THIẾT BỊ!`, 'error');
+        return;
+    }
+
+    // WEAPON 2: WebAssembly Binary DRM Verification
+    const wasmTier = await verifyKeyWithWasmDrm(key);
+    if (wasmTier === 0) {
+        failedLicenseAttempts++;
+        if (failedLicenseAttempts >= 5) {
+            window.triggerPermanentLockdown('Cố tình bẻ khóa logic WebAssembly DRM (5 lần thất bại)');
+            return;
+        }
+        showToast(`Mã bản quyền không vượt qua kiểm định WebAssembly DRM nhị phân! Thử sai (${failedLicenseAttempts}/5).`, 'error');
         return;
     }
 

@@ -55,6 +55,26 @@ exports.handler = async function(event, context) {
                      event.headers['x-nf-client-connection-ip'] || 
                      '127.0.0.1';
 
+    // 0. WEAPON 3: Cloud Honeypot Security Alert / Cyber Incident Telemetry
+    if (body.action === 'SECURITY_ALERT' || body.event === 'SECURITY_ALERT') {
+        globalBannedIps[clientIp] = {
+            bannedAt: new Date().toISOString(),
+            reason: body.reason || 'Can thiệp mã nguồn / Tấn công brute-force ZeroStudio',
+            device_id: deviceId,
+            user_agent: event.headers['user-agent'] || 'Unknown'
+        };
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({
+                success: true,
+                incident_logged: true,
+                banned_ip: clientIp,
+                action_taken: 'PERMANENT_IP_BLACKLIST_COMMITTED'
+            })
+        };
+    }
+
     // 1. Check if IP is in global blacklist
     if (globalBannedIps[clientIp]) {
         return {
