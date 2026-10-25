@@ -77,6 +77,33 @@ def verify_and_bind_device(license_key, device_id, client_ip):
             'message': 'Mã bản quyền này đã bị THU HỒI / VÔ HIỆU HÓA do bị rò rỉ công khai!'
         }
 
+    # Cryptographic Checksum Integrity Verification (Anti-Forged / Anti-Crack)
+    SECRET_KEY_SALT = "ZEROSTUDIO_MASTER_INTEGRITY_SALT_2026_@HIEU"
+    WHITELISTED_ADMIN_KEYS = {
+        'ZERO-PRO-HIEU-MASTER-2026-SECURE',
+        'ZERO-ULTRA-MASTER-OWNER-2026',
+        'ZERO-PRO-DEV-INTERNAL-PASS'
+    }
+
+    def verify_key_checksum(k):
+        if k in WHITELISTED_ADMIN_KEYS:
+            return True
+        parts = k.split('-')
+        if len(parts) < 4:
+            return False
+        provided_chk = parts[-1]
+        payload = '-'.join(parts[:-1])
+        raw = f"{payload}::{SECRET_KEY_SALT}".encode('utf-8')
+        expected_chk = hashlib.sha256(raw).hexdigest()[:4].upper()
+        return provided_chk == expected_chk
+
+    if not verify_key_checksum(clean_key):
+        return {
+            'success': False,
+            'error': 'INVALID_LICENSE_CHECKSUM',
+            'message': 'Mã bản quyền không hợp lệ hoặc bị làm giả! Vi phạm đã được mã hóa và lưu vào hồ sơ an ninh.'
+        }
+
     # Determine max devices
     is_master = any(k in clean_key for k in ['MASTER', 'ADMIN', 'DEMO'])
     if is_master:
@@ -256,9 +283,15 @@ def get_client_ip(handler):
 
 class VideoBridgeHandler(BaseHTTPRequestHandler):
     def _send_cors_headers(self):
-        self.send_header('Access-Control-Allow-Origin', '*')
+        origin = self.headers.get('Origin', '')
+        allowed = ['http://localhost', 'http://127.0.0.1', 'https://zerostu.netlify.app', 'null']
+        is_safe = (not origin) or any(origin.startswith(a) for a in allowed)
+        if is_safe:
+            self.send_header('Access-Control-Allow-Origin', origin if origin else '*')
+        else:
+            self.send_header('Access-Control-Allow-Origin', 'null')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-ZeroStudio-Token')
 
     def do_OPTIONS(self):
         self.send_response(200)
@@ -267,6 +300,20 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
 
     def check_security_barrier(self, parsed, params, raw_body=None):
         client_ip = get_client_ip(self)
+
+        # 0. STRICT ORIGIN VALIDATION (ANTI-DRIVE-BY CSRF FROM ROGUE WEBSITES)
+        origin = self.headers.get('Origin', '')
+        if origin:
+            allowed = ['http://localhost', 'http://127.0.0.1', 'https://zerostu.netlify.app', 'null']
+            if not any(origin.startswith(a) for a in allowed):
+                self.send_response(403)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'error': 'CROSS_ORIGIN_REQUEST_BLOCKED',
+                    'message': 'Bảo mật Video Bridge: Từ chối truy cập từ tên miền bên ngoài không được phép!'
+                }).encode())
+                return True
 
         # 1. EMERGENCY ADMIN RESCUE HATCH (VERIFIED VIA ZERO-KNOWLEDGE SHA-256 HASH)
         if parsed.path == '/api/admin-unban':

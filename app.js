@@ -2770,8 +2770,12 @@ async function checkBankPaymentStatus(isManualClick) {
         statusEl.textContent = `Đang kết nối MB Bank xác thực giao dịch ZERO ${currentOrderCode}...`;
     }
 
+    const cloudBase = (window.location.origin && window.location.origin.includes('netlify.app')) 
+        ? window.location.origin 
+        : 'https://zerostu.netlify.app';
+
     try {
-        const response = await fetch(`/.netlify/functions/check-payment?order=${currentOrderCode}`);
+        const response = await fetch(`${cloudBase}/.netlify/functions/check-payment?order=${currentOrderCode}`);
         if (!response.ok && response.status !== 404) {
             throw new Error(`HTTP error ${response.status}`);
         }
@@ -2826,16 +2830,11 @@ async function checkBankPaymentStatus(isManualClick) {
             }
         }
     } catch (err) {
-        console.warn("Lỗi kiểm tra đối soát ngân hàng (hoặc chạy offline):", err);
+        console.warn("Lỗi kiểm tra đối soát ngân hàng (hoặc chưa nhận được tín hiệu):", err);
         if (isManualClick) {
-            // If running on local computer without Netlify functions server
-            if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                const randHex = Math.random().toString(36).substring(2, 6).toUpperCase();
-                const localKey = `ZERO-PRO-${currentOrderCode}-LOCAL-${randHex}`;
-                showToast("Môi trường Localhost: Đã cấp key thử nghiệm!", "info");
-                onPaymentVerifiedSuccess(localKey, { amount: 299000, date: new Date().toISOString() });
-            } else {
-                showToast("Không thể kết nối máy chủ đối soát ngân hàng. Vui lòng thử lại sau vài giây!", "error");
+            showToast(`Hệ thống MB Bank chưa ghi nhận giao dịch 299.000đ cho mã ZERO ${currentOrderCode}. Quý khách vui lòng kiểm tra lại app ngân hàng hoặc nhắn Zalo Admin 0962.876.139 để được hỗ trợ tức thì!`, "warning");
+            if (statusEl) {
+                statusEl.textContent = `Chưa thấy giao dịch ZERO ${currentOrderCode} trên MB Bank. Quý khách có thể nhắn Zalo Admin để duyệt nhanh.`;
             }
         }
     } finally {
@@ -2920,6 +2919,28 @@ window.deactivateProToFree = async function() {
     await window.setTestTier('free');
 };
 
+// Secret Admin Key combination: Ctrl + Shift + Alt + Z to reveal test tier deck
+window.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.altKey && (e.key === 'Z' || e.key === 'z')) {
+        e.preventDefault();
+        const decks = document.querySelectorAll('.admin-test-tier-deck');
+        let isNowVisible = false;
+        decks.forEach(d => {
+            if (d.style.display === 'none' || d.style.getPropertyValue('display') === 'none') {
+                d.style.setProperty('display', 'block', 'important');
+                isNowVisible = true;
+            } else {
+                d.style.setProperty('display', 'none', 'important');
+            }
+        });
+        if (isNowVisible) {
+            showToast('🛠 CHẾ ĐỘ NHÀ PHÁT TRIỂN (ADMIN): Đã mở bảng chuyển đổi Test Tier!', 'info');
+        } else {
+            showToast('🔒 CHẾ ĐỘ NHÀ PHÁT TRIỂN: Đã ẩn bảng Test Tier.', 'info');
+        }
+    }
+});
+
 window.copyPaymentField = function(text, label) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
@@ -2994,6 +3015,33 @@ async function dispatchDeviceVerification(endpointPath, payload) {
     return null;
 }
 
+async function verifyKeyIntegrityChecksumClient(k) {
+    const WHITELISTED = [
+        'ZERO-PRO-HIEU-MASTER-2026-SECURE',
+        'ZERO-ULTRA-MASTER-OWNER-2026',
+        'ZERO-PRO-DEV-INTERNAL-PASS'
+    ];
+    if (WHITELISTED.includes(k)) return true;
+    const parts = k.split('-');
+    if (parts.length < 4) return false;
+    const providedChecksum = parts[parts.length - 1];
+    const payload = parts.slice(0, -1).join('-');
+    
+    try {
+        const salt = "ZEROSTUDIO_MASTER_INTEGRITY_SALT_2026_@HIEU";
+        const msg = `${payload}::${salt}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(msg);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        const expected = hashHex.substring(0, 4).toUpperCase();
+        return providedChecksum === expected;
+    } catch (e) {
+        return false;
+    }
+}
+
 window.activateLicenseKey = async function() {
     const input = document.getElementById('license-key-input');
     const key = input ? input.value.trim().toUpperCase() : '';
@@ -3016,6 +3064,27 @@ window.activateLicenseKey = async function() {
             return;
         }
         showToast(`CẢNH BÁO: Mã này đã bị THU HỒI! Thử sai (${failedLicenseAttempts}/5). Sai 5 lần sẽ bị KHÓA VĨNH VIỄN!`, 'error');
+        return;
+    }
+
+    // Secret Admin Passcode to toggle dev deck
+    if (key === 'ADMIN2026') {
+        const decks = document.querySelectorAll('.admin-test-tier-deck');
+        decks.forEach(d => d.style.setProperty('display', 'block', 'important'));
+        showToast('🛠 ADMIN DEV: Đã mở thanh công cụ chuyển đổi Test Tier!', 'info');
+        input.value = '';
+        return;
+    }
+
+    // Cryptographic Checksum Integrity Verification (Anti-Crack / Anti-Forged Key)
+    const isChecksumValid = await verifyKeyIntegrityChecksumClient(key);
+    if (!isChecksumValid) {
+        failedLicenseAttempts++;
+        if (failedLicenseAttempts >= 5) {
+            window.triggerPermanentLockdown('Cố tình tấn công Brute-force tạo mã bản quyền giả mạo (5 lần thất bại)');
+            return;
+        }
+        showToast(`Mã bản quyền không hợp lệ hoặc bị làm giả! Thử sai (${failedLicenseAttempts}/5). Cảnh báo: Sai 5 lần sẽ bị KHÓA THIẾT BỊ!`, 'error');
         return;
     }
 

@@ -3,6 +3,7 @@
  * Verified against MB Bank transactions via SePAY API (https://sepay.vn)
  */
 const https = require('https');
+const crypto = require('crypto');
 
 exports.handler = async function(event, context) {
     // Enable CORS for frontend API calls
@@ -92,9 +93,20 @@ exports.handler = async function(event, context) {
         });
 
         if (matched) {
-            // Transaction found in MB Bank! Generate authorized Pro License Key
+            // Transaction found in MB Bank! Generate cryptographically signed License Key
+            const amountIn = parseFloat(matched.amount_in || matched.transferAmount || 0);
+            const isUltra = (amountIn >= 599000);
+            const tierPrefix = isUltra ? 'ZERO-ULTRA' : 'ZERO-PRO';
             const randHex = Math.random().toString(36).substring(2, 6).toUpperCase();
-            const licenseKey = `ZERO-PRO-${cleanDigits}-HIEU-${randHex}`;
+            const payload = `${tierPrefix}-${cleanDigits}-HIEU-${randHex}`;
+
+            const SECRET_KEY_SALT = "ZEROSTUDIO_MASTER_INTEGRITY_SALT_2026_@HIEU";
+            const chk = crypto.createHash('sha256')
+                .update(`${payload}::${SECRET_KEY_SALT}`)
+                .digest('hex')
+                .substring(0, 4)
+                .toUpperCase();
+            const licenseKey = `${payload}-${chk}`;
 
             return {
                 statusCode: 200,
