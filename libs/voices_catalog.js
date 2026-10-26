@@ -1,6 +1,6 @@
 /**
- * ZeroStudio - Global Voices Catalog (322 Voices across 142 Locales)
- * Generated directly from Edge-TTS Neural Registry
+ * ZeroStudio - Global Voices Catalog (Expanded 3-5 Voices per Country)
+ * Generated with Multilingual Neural Expansion
  */
 window.ZEROSTUDIO_GLOBAL_VOICES = [
   {
@@ -11,12 +11,27 @@ window.ZEROSTUDIO_GLOBAL_VOICES = [
     "voices": [
       {
         "id": "vi-VN-HoaiMyNeural",
-        "label": "Hoài My • Nữ (Truyền cảm, Review, Bán hàng)",
+        "label": "Hoài My • Nữ miền Bắc (Truyền cảm, Review, Bán hàng)",
         "gender": "Female"
       },
       {
         "id": "vi-VN-NamMinhNeural",
-        "label": "Nam Minh • Nam (Trầm ấm, Phim tài liệu, Tin tức)",
+        "label": "Nam Minh • Nam miền Bắc (Trầm ấm, Phim tài liệu, Tin tức)",
+        "gender": "Male"
+      },
+      {
+        "id": "en-US-AvaMultilingualNeural",
+        "label": "Ava AI • Nữ Đa Ngôn Ngữ (Trẻ trung, Vlog, Hiện đại)",
+        "gender": "Female"
+      },
+      {
+        "id": "en-US-AndrewMultilingualNeural",
+        "label": "Andrew AI • Nam Đa Ngôn Ngữ (Năng động, Review sản phẩm)",
+        "gender": "Male"
+      },
+      {
+        "id": "en-US-BrianMultilingualNeural",
+        "label": "Brian AI • Nam Đa Ngôn Ngữ (Điện ảnh, Trầm quyền lực)",
         "gender": "Male"
       }
     ]
@@ -200,6 +215,21 @@ window.ZEROSTUDIO_GLOBAL_VOICES = [
         "id": "ja-JP-NanamiNeural",
         "label": "Nanami • Nữ (Trong trẻo, Anime, Du lịch)",
         "gender": "Female"
+      },
+      {
+        "id": "en-US-AvaMultilingualNeural",
+        "label": "Ava AI • Nữ Đa Ngôn Ngữ (Trẻ trung, Vlog, Hiện đại)",
+        "gender": "Female"
+      },
+      {
+        "id": "en-US-AndrewMultilingualNeural",
+        "label": "Andrew AI • Nam Đa Ngôn Ngữ (Năng động, Review sản phẩm)",
+        "gender": "Male"
+      },
+      {
+        "id": "en-US-BrianMultilingualNeural",
+        "label": "Brian AI • Nam Đa Ngôn Ngữ (Điện ảnh, Trầm quyền lực)",
+        "gender": "Male"
       }
     ]
   },
@@ -223,6 +253,16 @@ window.ZEROSTUDIO_GLOBAL_VOICES = [
         "id": "ko-KR-SunHiNeural",
         "label": "SunHi • Nữ (Ngọt ngào K-Drama, Mỹ phẩm)",
         "gender": "Female"
+      },
+      {
+        "id": "en-US-AvaMultilingualNeural",
+        "label": "Ava AI • Nữ Đa Ngôn Ngữ (Trẻ trung, Vlog, Hiện đại)",
+        "gender": "Female"
+      },
+      {
+        "id": "en-US-AndrewMultilingualNeural",
+        "label": "Andrew AI • Nam Đa Ngôn Ngữ (Năng động, Review sản phẩm)",
+        "gender": "Male"
       }
     ]
   },
@@ -241,6 +281,21 @@ window.ZEROSTUDIO_GLOBAL_VOICES = [
         "id": "th-TH-PremwadeeNeural",
         "label": "Premwadee • Nữ (TikTok Shop Thái Lan, Review đồ ăn)",
         "gender": "Female"
+      },
+      {
+        "id": "en-US-AvaMultilingualNeural",
+        "label": "Ava AI • Nữ Đa Ngôn Ngữ (Trẻ trung, Vlog, Hiện đại)",
+        "gender": "Female"
+      },
+      {
+        "id": "en-US-AndrewMultilingualNeural",
+        "label": "Andrew AI • Nam Đa Ngôn Ngữ (Năng động, Review sản phẩm)",
+        "gender": "Male"
+      },
+      {
+        "id": "en-US-BrianMultilingualNeural",
+        "label": "Brian AI • Nam Đa Ngôn Ngữ (Điện ảnh, Trầm quyền lực)",
+        "gender": "Male"
       }
     ]
   },
@@ -259,6 +314,21 @@ window.ZEROSTUDIO_GLOBAL_VOICES = [
         "id": "id-ID-GadisNeural",
         "label": "Gadis • Nữ (Female)",
         "gender": "Female"
+      },
+      {
+        "id": "en-US-AvaMultilingualNeural",
+        "label": "Ava AI • Nữ Đa Ngôn Ngữ (Trẻ trung, Vlog, Hiện đại)",
+        "gender": "Female"
+      },
+      {
+        "id": "en-US-AndrewMultilingualNeural",
+        "label": "Andrew AI • Nam Đa Ngôn Ngữ (Năng động, Review sản phẩm)",
+        "gender": "Male"
+      },
+      {
+        "id": "en-US-BrianMultilingualNeural",
+        "label": "Brian AI • Nam Đa Ngôn Ngữ (Điện ảnh, Trầm quyền lực)",
+        "gender": "Male"
       }
     ]
   },
@@ -371,6 +441,16 @@ window.ZEROSTUDIO_GLOBAL_VOICES = [
         "id": "es-ES-ElviraNeural",
         "label": "Elvira • Nữ (Female)",
         "gender": "Female"
+      },
+      {
+        "id": "en-US-AvaMultilingualNeural",
+        "label": "Ava AI • Nữ Đa Ngôn Ngữ (Trẻ trung, Vlog, Hiện đại)",
+        "gender": "Female"
+      },
+      {
+        "id": "en-US-AndrewMultilingualNeural",
+        "label": "Andrew AI • Nam Đa Ngôn Ngữ (Năng động, Review sản phẩm)",
+        "gender": "Male"
       }
     ]
   },
@@ -430,6 +510,21 @@ window.ZEROSTUDIO_GLOBAL_VOICES = [
         "id": "ru-RU-SvetlanaNeural",
         "label": "Svetlana • Nữ (Female)",
         "gender": "Female"
+      },
+      {
+        "id": "en-US-AvaMultilingualNeural",
+        "label": "Ava AI • Nữ Đa Ngôn Ngữ (Trẻ trung, Vlog, Hiện đại)",
+        "gender": "Female"
+      },
+      {
+        "id": "en-US-AndrewMultilingualNeural",
+        "label": "Andrew AI • Nam Đa Ngôn Ngữ (Năng động, Review sản phẩm)",
+        "gender": "Male"
+      },
+      {
+        "id": "en-US-BrianMultilingualNeural",
+        "label": "Brian AI • Nam Đa Ngôn Ngữ (Điện ảnh, Trầm quyền lực)",
+        "gender": "Male"
       }
     ]
   },
@@ -476,6 +571,21 @@ window.ZEROSTUDIO_GLOBAL_VOICES = [
         "id": "hi-IN-SwaraNeural",
         "label": "Swara • Nữ (Female)",
         "gender": "Female"
+      },
+      {
+        "id": "en-US-AvaMultilingualNeural",
+        "label": "Ava AI • Nữ Đa Ngôn Ngữ (Trẻ trung, Vlog, Hiện đại)",
+        "gender": "Female"
+      },
+      {
+        "id": "en-US-AndrewMultilingualNeural",
+        "label": "Andrew AI • Nam Đa Ngôn Ngữ (Năng động, Review sản phẩm)",
+        "gender": "Male"
+      },
+      {
+        "id": "en-US-BrianMultilingualNeural",
+        "label": "Brian AI • Nam Đa Ngôn Ngữ (Điện ảnh, Trầm quyền lực)",
+        "gender": "Male"
       }
     ]
   },

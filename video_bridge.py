@@ -1,3 +1,44 @@
+import re
+import json
+import os
+from pathlib import Path
+
+# ----------------------------------------------------
+# WEAPON 1: AUTO-EMOJI MAGIC ENGINE
+# ----------------------------------------------------
+EMOJI_TRIGGERS = [
+    (re.compile(r'\b(tiền|triệu|tỷ|giàu|dollar|usd|vnd|kiếm tiền|thu nhập)\b', re.IGNORECASE), ' 💰'),
+    (re.compile(r'\b(nguy hiểm|cảnh báo|chú ý|cẩn thận|chết|mất mạng|sốc)\b', re.IGNORECASE), ' ⚠️'),
+    (re.compile(r'\b(bí mật|ẩn|hé lộ|không ngờ|giấu)\b', re.IGNORECASE), ' 🤫'),
+    (re.compile(r'\b(bứt phá|tên lửa|bay|tăng trưởng|thành công)\b', re.IGNORECASE), ' 🚀'),
+    (re.compile(r'\b(nóng|cháy|hot|đỉnh cao|siêu phẩm)\b', re.IGNORECASE), ' 🔥'),
+    (re.compile(r'\b(thời gian|nhanh|tốc độ|hạn chót|gấp)\b', re.IGNORECASE), ' ⏳'),
+    (re.compile(r'\b(ai|máy tính|hacker|tool|bot|công nghệ)\b', re.IGNORECASE), ' 🤖'),
+    (re.compile(r'\b(yêu|tim|thích|hâm mộ|tình cảm)\b', re.IGNORECASE), ' ❤️'),
+    (re.compile(r'\b(số 1|top 1|vô địch|vương miện|chiến thắng)\b', re.IGNORECASE), ' 👑'),
+    (re.compile(r'\b(money|rich|dollar|cash|wealth)\b', re.IGNORECASE), ' 💰'),
+    (re.compile(r'\b(danger|warning|careful|caution)\b', re.IGNORECASE), ' ⚠️'),
+    (re.compile(r'\b(secret|hidden|reveal)\b', re.IGNORECASE), ' 🤫'),
+    (re.compile(r'\b(rocket|growth|boost|success)\b', re.IGNORECASE), ' 🚀'),
+    (re.compile(r'\b(fire|trending)\b', re.IGNORECASE), ' 🔥')
+]
+
+def inject_viral_emojis(srt_text: str) -> str:
+    lines = srt_text.splitlines()
+    out_lines = []
+    for line in lines:
+        stripped = line.strip()
+        # If line is integer counter or timestamp (00:00:00,000 --> 00:00:00,000) skip
+        if stripped.isdigit() or '-->' in stripped or not stripped:
+            out_lines.append(line)
+        else:
+            mod_line = line
+            for pattern, emo in EMOJI_TRIGGERS:
+                if pattern.search(mod_line) and emo.strip() not in mod_line:
+                    mod_line = pattern.sub(r'\1' + emo, mod_line, count=1)
+            out_lines.append(mod_line)
+    return '\n'.join(out_lines)
+
 """
 
 ZeroStudio - Local High-Speed Video Bridge & Cyber Defense Core
@@ -957,9 +998,41 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
 
             self.end_headers()
 
-            self.wfile.write(json.dumps({'status': 'ok', 'service': 'ZeroStudio Video Bridge & Cyber Defense', 'version': '2.5.0'}).encode())
+            self.wfile.write(json.dumps({'status': 'ok', 'service': 'ZeroStudio Video Bridge & Cyber Defense', 'version': '2.7.0'}).encode())
 
             return
+
+        if parsed.path == '/api/sfx-catalog':
+            sfx_manifest = Path(__file__).parent / 'assets' / 'sfx' / 'manifest.json'
+            if sfx_manifest.exists():
+                data = sfx_manifest.read_bytes()
+            else:
+                data = json.dumps([]).encode('utf-8')
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(data)
+            return
+
+        if parsed.path.startswith('/api/sfx-audio/'):
+            filename = parsed.path.replace('/api/sfx-audio/', '').strip()
+            # security: sanitize filename
+            safe_name = Path(filename).name
+            sfx_file = Path(__file__).parent / 'assets' / 'sfx' / safe_name
+            if sfx_file.exists():
+                mime = 'audio/mpeg' if safe_name.endswith('.mp3') else 'audio/wav'
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', mime)
+                self.end_headers()
+                self.wfile.write(sfx_file.read_bytes())
+                return
+            else:
+                self.send_response(404)
+                self.end_headers()
+                return
+
 
 
 
@@ -1699,6 +1772,262 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
 
             return
 
+
+
+        
+        # ----------------------------------------------------
+        # WEAPON 2: SMART SILENCE REMOVER
+        # ----------------------------------------------------
+        if parsed.path == '/api/silence-remove':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                input_file = (data.get('video_path') or '').strip()
+                threshold_db = data.get('threshold_db') or -30
+                min_duration = data.get('min_duration') or 0.35
+
+                input_path = Path(input_file)
+                if not input_path.exists():
+                    self.send_response(400)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': 'Không tìm thấy file video'}).encode())
+                    return
+
+                out_dir = Path.home() / 'Downloads' / 'ZeroStudio_Viral_Exports'
+                out_dir.mkdir(parents=True, exist_ok=True)
+                timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_file = out_dir / f"{input_path.stem}_fastcut_{timestamp_str}.mp4"
+
+                filter_arg = f"silenceremove=stop_periods=-1:stop_duration={min_duration}:stop_threshold={threshold_db}dB:start_periods=1:start_duration=0.05:start_threshold={threshold_db}dB"
+                cmd = [
+                    "ffmpeg", "-y", "-i", str(input_path),
+                    "-af", filter_arg,
+                    "-c:v", "libx264", "-preset", "faster", "-crf", "20",
+                    "-c:a", "aac", "-b:a", "192k",
+                    str(output_file)
+                ]
+                res = subprocess.run(cmd, capture_output=True, text=True)
+                if res.returncode != 0:
+                    self.send_response(500)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': f"Lỗi FFmpeg: {res.stderr[-300:]}"}).encode())
+                    return
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'output_file': str(output_file),
+                    'size_bytes': output_file.stat().st_size if output_file.exists() else 0
+                }).encode())
+                return
+            except Exception as e:
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
+                return
+
+        # ----------------------------------------------------
+        # WEAPON 3: DUAL-LAYER AMBIENT DEPTH (16:9 -> 9:16)
+        # ----------------------------------------------------
+        if parsed.path == '/api/dual-layer-ambient':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                input_file = (data.get('video_path') or '').strip()
+                blur_val = data.get('blur') or 25
+
+                input_path = Path(input_file)
+                if not input_path.exists():
+                    self.send_response(400)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': 'Không tìm thấy file video'}).encode())
+                    return
+
+                out_dir = Path.home() / 'Downloads' / 'ZeroStudio_Viral_Exports'
+                out_dir.mkdir(parents=True, exist_ok=True)
+                timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_file = out_dir / f"{input_path.stem}_ambient916_{timestamp_str}.mp4"
+
+                filter_complex = (
+                    f"[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur={blur_val}:5,colorchannelmixer=aa=0.82[bg];"
+                    f"[0:v]scale=1040:585:force_original_aspect_ratio=decrease,pad=1060:605:10:10:color=0x06b6d4@0.65[fg];"
+                    f"[bg][fg]overlay=(W-w)/2:(H-h)/2[v_out]"
+                )
+                cmd = [
+                    "ffmpeg", "-y", "-i", str(input_path),
+                    "-filter_complex", filter_complex,
+                    "-map", "[v_out]", "-map", "0:a?",
+                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "21",
+                    "-c:a", "aac", "-b:a", "192k",
+                    str(output_file)
+                ]
+                res = subprocess.run(cmd, capture_output=True, text=True)
+                if res.returncode != 0:
+                    self.send_response(500)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': f"Lỗi FFmpeg: {res.stderr[-300:]}"}).encode())
+                    return
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'output_file': str(output_file),
+                    'size_bytes': output_file.stat().st_size if output_file.exists() else 0
+                }).encode())
+                return
+            except Exception as e:
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
+                return
+
+        # ----------------------------------------------------
+        # WEAPON 4: CAMERA EXIF SPOOFER & DEEP STEALTH
+        # ----------------------------------------------------
+        if parsed.path == '/api/deep-stealth-exif':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                input_file = (data.get('video_path') or '').strip()
+                camera_model = data.get('camera_model') or "iPhone 16 Pro Max"
+
+                input_path = Path(input_file)
+                if not input_path.exists():
+                    self.send_response(400)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': 'Không tìm thấy file video'}).encode())
+                    return
+
+                out_dir = Path.home() / 'Downloads' / 'ZeroStudio_Viral_Exports'
+                out_dir.mkdir(parents=True, exist_ok=True)
+                timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_file = out_dir / f"{input_path.stem}_stealth_{timestamp_str}.mp4"
+
+                stealth_filter = "eq=saturation=1.018:contrast=1.012:brightness=0.005"
+                cmd = [
+                    "ffmpeg", "-y", "-i", str(input_path),
+                    "-vf", stealth_filter,
+                    "-map_metadata", "-1",
+                    "-metadata", "make=Apple",
+                    "-metadata", f"model={camera_model}",
+                    "-metadata", "software=iOS 18.2",
+                    "-metadata", "handler_name=Core Media Video",
+                    "-c:v", "libx264", "-preset", "faster", "-crf", "20",
+                    "-c:a", "aac", "-b:a", "192k",
+                    str(output_file)
+                ]
+                res = subprocess.run(cmd, capture_output=True, text=True)
+                if res.returncode != 0:
+                    self.send_response(500)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': f"Lỗi FFmpeg: {res.stderr[-300:]}"}).encode())
+                    return
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'output_file': str(output_file),
+                    'camera_spoofed': camera_model,
+                    'size_bytes': output_file.stat().st_size if output_file.exists() else 0
+                }).encode())
+                return
+            except Exception as e:
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
+                return
+
+        # ----------------------------------------------------
+        # WEAPON 5: DYNAMIC AUTO-DUCKING BGM
+        # ----------------------------------------------------
+        if parsed.path == '/api/auto-ducking':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                video_file = (data.get('video_path') or '').strip()
+                bgm_file = (data.get('bgm_path') or '').strip()
+                duck_threshold = data.get('duck_threshold') or 0.08
+
+                video_path = Path(video_file)
+                bgm_path = Path(bgm_file)
+                if not video_path.exists() or not bgm_path.exists():
+                    self.send_response(400)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': 'Thiếu file video hoặc file nhạc nền'}).encode())
+                    return
+
+                out_dir = Path.home() / 'Downloads' / 'ZeroStudio_Viral_Exports'
+                out_dir.mkdir(parents=True, exist_ok=True)
+                timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_file = out_dir / f"{video_path.stem}_ducked_{timestamp_str}.mp4"
+
+                filter_complex = (
+                    f"[1:a]volume=0.85[a_bgm];"
+                    f"[0:a]volume=1.0[a_voice];"
+                    f"[a_bgm][a_voice]sidechaincompress=threshold={duck_threshold}:ratio=6:attack=80:release=350[bgm_ducked];"
+                    f"[bgm_ducked][a_voice]amix=inputs=2:duration=first[a_final]"
+                )
+                cmd = [
+                    "ffmpeg", "-y",
+                    "-i", str(video_path),
+                    "-i", str(bgm_path),
+                    "-filter_complex", filter_complex,
+                    "-map", "0:v", "-map", "[a_final]",
+                    "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
+                    "-shortest",
+                    str(output_file)
+                ]
+                res = subprocess.run(cmd, capture_output=True, text=True)
+                if res.returncode != 0:
+                    self.send_response(500)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': f"Lỗi FFmpeg: {res.stderr[-300:]}"}).encode())
+                    return
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'output_file': str(output_file),
+                    'size_bytes': output_file.stat().st_size if output_file.exists() else 0
+                }).encode())
+                return
+            except Exception as e:
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
+                return
 
 
         self.send_response(404)
@@ -2670,6 +2999,9 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 output_file = out_dir / f"{input_path.stem}_viral_{style}_{timestamp_str}.mp4"
 
                 temp_srt = out_dir / f"temp_{timestamp_str}.srt"
+                auto_emoji = data.get('auto_emoji', True)
+                if auto_emoji:
+                    srt_content = inject_viral_emojis(srt_content)
                 temp_srt.write_text(srt_content, encoding='utf-8')
 
                 srt_escaped = str(temp_srt).replace('\\', '/').replace(':', '\\:')
@@ -2730,6 +3062,262 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                     'output_file': str(output_file),
                     'size_bytes': output_file.stat().st_size if output_file.exists() else 0,
                     'style': style
+                }).encode())
+                return
+            except Exception as e:
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
+                return
+
+
+        
+        # ----------------------------------------------------
+        # WEAPON 2: SMART SILENCE REMOVER
+        # ----------------------------------------------------
+        if parsed.path == '/api/silence-remove':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                input_file = (data.get('video_path') or '').strip()
+                threshold_db = data.get('threshold_db') or -30
+                min_duration = data.get('min_duration') or 0.35
+
+                input_path = Path(input_file)
+                if not input_path.exists():
+                    self.send_response(400)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': 'Không tìm thấy file video'}).encode())
+                    return
+
+                out_dir = Path.home() / 'Downloads' / 'ZeroStudio_Viral_Exports'
+                out_dir.mkdir(parents=True, exist_ok=True)
+                timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_file = out_dir / f"{input_path.stem}_fastcut_{timestamp_str}.mp4"
+
+                filter_arg = f"silenceremove=stop_periods=-1:stop_duration={min_duration}:stop_threshold={threshold_db}dB:start_periods=1:start_duration=0.05:start_threshold={threshold_db}dB"
+                cmd = [
+                    "ffmpeg", "-y", "-i", str(input_path),
+                    "-af", filter_arg,
+                    "-c:v", "libx264", "-preset", "faster", "-crf", "20",
+                    "-c:a", "aac", "-b:a", "192k",
+                    str(output_file)
+                ]
+                res = subprocess.run(cmd, capture_output=True, text=True)
+                if res.returncode != 0:
+                    self.send_response(500)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': f"Lỗi FFmpeg: {res.stderr[-300:]}"}).encode())
+                    return
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'output_file': str(output_file),
+                    'size_bytes': output_file.stat().st_size if output_file.exists() else 0
+                }).encode())
+                return
+            except Exception as e:
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
+                return
+
+        # ----------------------------------------------------
+        # WEAPON 3: DUAL-LAYER AMBIENT DEPTH (16:9 -> 9:16)
+        # ----------------------------------------------------
+        if parsed.path == '/api/dual-layer-ambient':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                input_file = (data.get('video_path') or '').strip()
+                blur_val = data.get('blur') or 25
+
+                input_path = Path(input_file)
+                if not input_path.exists():
+                    self.send_response(400)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': 'Không tìm thấy file video'}).encode())
+                    return
+
+                out_dir = Path.home() / 'Downloads' / 'ZeroStudio_Viral_Exports'
+                out_dir.mkdir(parents=True, exist_ok=True)
+                timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_file = out_dir / f"{input_path.stem}_ambient916_{timestamp_str}.mp4"
+
+                filter_complex = (
+                    f"[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur={blur_val}:5,colorchannelmixer=aa=0.82[bg];"
+                    f"[0:v]scale=1040:585:force_original_aspect_ratio=decrease,pad=1060:605:10:10:color=0x06b6d4@0.65[fg];"
+                    f"[bg][fg]overlay=(W-w)/2:(H-h)/2[v_out]"
+                )
+                cmd = [
+                    "ffmpeg", "-y", "-i", str(input_path),
+                    "-filter_complex", filter_complex,
+                    "-map", "[v_out]", "-map", "0:a?",
+                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "21",
+                    "-c:a", "aac", "-b:a", "192k",
+                    str(output_file)
+                ]
+                res = subprocess.run(cmd, capture_output=True, text=True)
+                if res.returncode != 0:
+                    self.send_response(500)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': f"Lỗi FFmpeg: {res.stderr[-300:]}"}).encode())
+                    return
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'output_file': str(output_file),
+                    'size_bytes': output_file.stat().st_size if output_file.exists() else 0
+                }).encode())
+                return
+            except Exception as e:
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
+                return
+
+        # ----------------------------------------------------
+        # WEAPON 4: CAMERA EXIF SPOOFER & DEEP STEALTH
+        # ----------------------------------------------------
+        if parsed.path == '/api/deep-stealth-exif':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                input_file = (data.get('video_path') or '').strip()
+                camera_model = data.get('camera_model') or "iPhone 16 Pro Max"
+
+                input_path = Path(input_file)
+                if not input_path.exists():
+                    self.send_response(400)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': 'Không tìm thấy file video'}).encode())
+                    return
+
+                out_dir = Path.home() / 'Downloads' / 'ZeroStudio_Viral_Exports'
+                out_dir.mkdir(parents=True, exist_ok=True)
+                timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_file = out_dir / f"{input_path.stem}_stealth_{timestamp_str}.mp4"
+
+                stealth_filter = "eq=saturation=1.018:contrast=1.012:brightness=0.005"
+                cmd = [
+                    "ffmpeg", "-y", "-i", str(input_path),
+                    "-vf", stealth_filter,
+                    "-map_metadata", "-1",
+                    "-metadata", "make=Apple",
+                    "-metadata", f"model={camera_model}",
+                    "-metadata", "software=iOS 18.2",
+                    "-metadata", "handler_name=Core Media Video",
+                    "-c:v", "libx264", "-preset", "faster", "-crf", "20",
+                    "-c:a", "aac", "-b:a", "192k",
+                    str(output_file)
+                ]
+                res = subprocess.run(cmd, capture_output=True, text=True)
+                if res.returncode != 0:
+                    self.send_response(500)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': f"Lỗi FFmpeg: {res.stderr[-300:]}"}).encode())
+                    return
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'output_file': str(output_file),
+                    'camera_spoofed': camera_model,
+                    'size_bytes': output_file.stat().st_size if output_file.exists() else 0
+                }).encode())
+                return
+            except Exception as e:
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': str(e)}).encode())
+                return
+
+        # ----------------------------------------------------
+        # WEAPON 5: DYNAMIC AUTO-DUCKING BGM
+        # ----------------------------------------------------
+        if parsed.path == '/api/auto-ducking':
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                video_file = (data.get('video_path') or '').strip()
+                bgm_file = (data.get('bgm_path') or '').strip()
+                duck_threshold = data.get('duck_threshold') or 0.08
+
+                video_path = Path(video_file)
+                bgm_path = Path(bgm_file)
+                if not video_path.exists() or not bgm_path.exists():
+                    self.send_response(400)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': 'Thiếu file video hoặc file nhạc nền'}).encode())
+                    return
+
+                out_dir = Path.home() / 'Downloads' / 'ZeroStudio_Viral_Exports'
+                out_dir.mkdir(parents=True, exist_ok=True)
+                timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_file = out_dir / f"{video_path.stem}_ducked_{timestamp_str}.mp4"
+
+                filter_complex = (
+                    f"[1:a]volume=0.85[a_bgm];"
+                    f"[0:a]volume=1.0[a_voice];"
+                    f"[a_bgm][a_voice]sidechaincompress=threshold={duck_threshold}:ratio=6:attack=80:release=350[bgm_ducked];"
+                    f"[bgm_ducked][a_voice]amix=inputs=2:duration=first[a_final]"
+                )
+                cmd = [
+                    "ffmpeg", "-y",
+                    "-i", str(video_path),
+                    "-i", str(bgm_path),
+                    "-filter_complex", filter_complex,
+                    "-map", "0:v", "-map", "[a_final]",
+                    "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
+                    "-shortest",
+                    str(output_file)
+                ]
+                res = subprocess.run(cmd, capture_output=True, text=True)
+                if res.returncode != 0:
+                    self.send_response(500)
+                    self._send_cors_headers()
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'success': False, 'error': f"Lỗi FFmpeg: {res.stderr[-300:]}"}).encode())
+                    return
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'output_file': str(output_file),
+                    'size_bytes': output_file.stat().st_size if output_file.exists() else 0
                 }).encode())
                 return
             except Exception as e:

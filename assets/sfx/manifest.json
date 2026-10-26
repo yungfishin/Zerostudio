@@ -1,0 +1,206 @@
+[
+  {
+    "name": "Cash Register",
+    "file": "cash-register.wav",
+    "category": "rewards",
+    "size": 70604
+  },
+  {
+    "name": "Chime",
+    "file": "chime.mp3",
+    "category": "rewards",
+    "size": 27309
+  },
+  {
+    "name": "Chime",
+    "file": "chime.wav",
+    "category": "rewards",
+    "size": 115244
+  },
+  {
+    "name": "Click Soft",
+    "file": "click-soft.mp3",
+    "category": "ui",
+    "size": 11702
+  },
+  {
+    "name": "Click",
+    "file": "click.mp3",
+    "category": "ui",
+    "size": 11702
+  },
+  {
+    "name": "Click",
+    "file": "click.wav",
+    "category": "ui",
+    "size": 11564
+  },
+  {
+    "name": "Clock Tick",
+    "file": "clock-tick.wav",
+    "category": "ui",
+    "size": 8864
+  },
+  {
+    "name": "Complete",
+    "file": "complete.wav",
+    "category": "rewards",
+    "size": 134444
+  },
+  {
+    "name": "Error",
+    "file": "error.mp3",
+    "category": "ui",
+    "size": 51827
+  },
+  {
+    "name": "Fall",
+    "file": "fall.wav",
+    "category": "transitions",
+    "size": 62444
+  },
+  {
+    "name": "Glitch 1",
+    "file": "glitch-1.mp3",
+    "category": "transitions",
+    "size": 84427
+  },
+  {
+    "name": "Glitch 2",
+    "file": "glitch-2.mp3",
+    "category": "transitions",
+    "size": 112128
+  },
+  {
+    "name": "Glitch 3",
+    "file": "glitch-3.mp3",
+    "category": "transitions",
+    "size": 99072
+  },
+  {
+    "name": "Impact Bass 1",
+    "file": "impact-bass-1.mp3",
+    "category": "impacts",
+    "size": 67709
+  },
+  {
+    "name": "Impact Bass 2",
+    "file": "impact-bass-2.mp3",
+    "category": "impacts",
+    "size": 82944
+  },
+  {
+    "name": "Impact",
+    "file": "impact.wav",
+    "category": "impacts",
+    "size": 48044
+  },
+  {
+    "name": "Key Press",
+    "file": "key-press.mp3",
+    "category": "ui",
+    "size": 3909
+  },
+  {
+    "name": "Meme Air Horn",
+    "file": "meme-air-horn.wav",
+    "category": "meme",
+    "size": 44144
+  },
+  {
+    "name": "Notification",
+    "file": "notification.mp3",
+    "category": "ui",
+    "size": 78576
+  },
+  {
+    "name": "Ping",
+    "file": "ping.mp3",
+    "category": "rewards",
+    "size": 26400
+  },
+  {
+    "name": "Pop",
+    "file": "pop.mp3",
+    "category": "ui",
+    "size": 23040
+  },
+  {
+    "name": "Pop",
+    "file": "pop.wav",
+    "category": "ui",
+    "size": 24044
+  },
+  {
+    "name": "Record Scratch",
+    "file": "record-scratch.wav",
+    "category": "meme",
+    "size": 39734
+  },
+  {
+    "name": "Rise",
+    "file": "rise.wav",
+    "category": "transitions",
+    "size": 62444
+  },
+  {
+    "name": "Riser",
+    "file": "riser.mp3",
+    "category": "transitions",
+    "size": 321024
+  },
+  {
+    "name": "Shutter",
+    "file": "shutter.wav",
+    "category": "ui",
+    "size": 21164
+  },
+  {
+    "name": "Sparkle",
+    "file": "sparkle.mp3",
+    "category": "rewards",
+    "size": 57678
+  },
+  {
+    "name": "Sub Bass 40Hz",
+    "file": "sub-bass-40hz.wav",
+    "category": "impacts",
+    "size": 132344
+  },
+  {
+    "name": "Twinkle",
+    "file": "twinkle.wav",
+    "category": "rewards",
+    "size": 144044
+  },
+  {
+    "name": "Typing",
+    "file": "typing.mp3",
+    "category": "rewards",
+    "size": 26852
+  },
+  {
+    "name": "Whoosh Cinematic",
+    "file": "whoosh-cinematic.mp3",
+    "category": "transitions",
+    "size": 177408
+  },
+  {
+    "name": "Whoosh Short",
+    "file": "whoosh-short.mp3",
+    "category": "transitions",
+    "size": 18390
+  },
+  {
+    "name": "Whoosh",
+    "file": "whoosh.mp3",
+    "category": "transitions",
+    "size": 18390
+  },
+  {
+    "name": "Whoosh",
+    "file": "whoosh.wav",
+    "category": "transitions",
+    "size": 76844
+  }
+]

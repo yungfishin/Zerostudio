@@ -220,7 +220,7 @@ function initSelfDefendingShield() {
 // ==========================================
 // OTA AUTO-UPDATE SYSTEM (IN-APP CLOUD SYNC)
 // ==========================================
-const CURRENT_APP_VERSION = "2.6.0";
+const CURRENT_APP_VERSION = "2.7.0";
 
 function compareVersions(v1, v2) {
     if (!v1 || !v2) return 0;
@@ -5142,6 +5142,35 @@ let zeroAIMessages = [];
 // Knowledge Base Dictionary (100% Offline, Zero-Cost)
 const ZEROAI_KB = [
     {
+        id: 'killer_weapons_suite',
+        keywords: ['vũ khí', 'hủy diệt', 'cắt khoảng lặng', 'silence', '9:16', 'dual layer', 'ambient', 'exif', 'iphone 16', 'tàng hình', 'lách bản quyền nâng cao', 'emoji', 'auto emoji', 'submagic'],
+        title: 'Bộ 5 Vũ Khí Hủy Diệt Đối Thủ • Giai Đoạn 1 Pro',
+        response: `⚔️ <strong>BỘ 5 VŨ KHÍ HỦY DIỆT ĐỐI THỦ (ZeroStudio v2.7.0):</strong><br><br>
+• <strong>1. Auto-Emoji Magic:</strong> Tự động nhận diện 60+ từ khóa cảm xúc (tiền 💰, cảnh báo ⚠️, bí mật 🤫, bứt phá 🚀) để chèn emoji động vào phụ đề MrBeast (tiết kiệm 20$/tháng so với Submagic).<br>
+• <strong>2. Smart Silence Remover:</strong> Cắt sạch các đoạn ngập ngừng, "ờ, à" hoặc khoảng lặng >0.35s giúp video dồn dập, đẩy thời gian xem trung bình >75%.<br>
+• <strong>3. Dual-Layer Ambient Depth:</strong> Chuyển video ngang 16:9 sang 9:16 dọc không mất góc và không viền đen (Nền mờ quang học Bokeh 25px + Lớp trước viền sáng Neon).<br>
+• <strong>4. Camera EXIF Spoofer:</strong> Xóa 100% mã cũ, bơm siêu dữ liệu Apple iPhone 16 Pro Max, iOS 18.2 kèm vi điều biến màu sắc để qua mặt AI kiểm duyệt reup.<br>
+• <strong>5. Auto-Ducking BGM:</strong> Nhạc nền tự động né tiếng nói khi có giọng AI/người nói và nổi lên khi ngắt câu.`,
+        actions: [
+            { text: '✂️ Dùng Smart Silence Remover', func: "switchStudioTab('video'); switchVideoSubMode('antiban');" },
+            { text: '🖼️ Tạo 9:16 Dual-Layer Ambient', func: "switchStudioTab('video'); switchVideoSubMode('antiban');" },
+            { text: '🎙️ Studio Lồng Tiếng & Auto-Emoji', func: "switchStudioTab('video'); switchVideoSubMode('tts');" }
+        ]
+    },
+    {
+        id: 'unlimited_sfx_and_voices',
+        keywords: ['sfx', 'hiệu ứng âm thanh', 'foley', 'tiếng keng', 'ka-ching', 'whoosh', 'bass drop', '40hz', 'synth', 'web audio', '322 giọng', 'đa ngôn ngữ', 'multilingual'],
+        title: 'Kho Âm Thanh Vô Hạn 34+ Foley & Bảng 3-5 Giọng AI Quốc Gia',
+        response: `🔊 <strong>HỆ THỐNG ÂM THANH ĐA TẦNG VÔ HẠN & BẢNG GIỌNG MỞ RỘNG:</strong><br><br>
+• <strong>34+ Studio Foley Tuyển Chọn:</strong> Whoosh chuyển cảnh, Sub-bass 40Hz drop, Tiếng keng máy tính tiền, Riser dâng trào, Record scratch, Meme air-horn...<br>
+• <strong>Bộ Tạo Âm Thanh Tham Số (DSP Synth):</strong> Tự chế hàng triệu âm thanh bằng Web Audio API với thanh trượt tần số, độ ngân và dạng sóng trực tiếp trong trình duyệt!<br>
+• <strong>Mở Rộng 3 - 5 Giọng Cho Từng Quốc Gia:</strong> Việt Nam có đủ 5 giọng (Hoài My, Nam Minh, Ava AI, Andrew AI, Brian AI). Các quốc gia US, UK, Nhật, Hàn, Thái, Trung, Pháp, Đức đều có từ 5 đến 17 giọng neural tự nhiên!`,
+        actions: [
+            { text: '🎧 Khám Phá Kho SFX & DSP Synth', func: "switchStudioTab('video'); switchVideoSubMode('tts');" },
+            { text: '🎙️ Chọn Giọng Đọc 5 Quốc Gia', func: "switchStudioTab('video'); switchVideoSubMode('tts'); setTimeout(() => document.getElementById('tts-voice-select')?.focus(), 200);" }
+        ]
+    },
+    {
         id: 'ai_tts_voice',
         keywords: ['lồng tiếng', 'giọng đọc', 'tts', 'edge-tts', 'hoài my', 'nam minh', 'thuyết minh', 'đọc kịch bản', 'đọc văn bản', 'chuyển văn bản thành giọng nói', 'voiceover', 'voice', 'sub mrbeast', 'phụ đề nảy chữ'],
         title: 'Studio Lồng Tiếng AI Edge-TTS 0đ & Phụ Đề MrBeast',
@@ -7075,7 +7104,8 @@ window.startBurnSubtitlesAndAudio = async function() {
                         srt_content,
                         style,
                         tts_audio_path,
-                        audio_mix_mode
+                        audio_mix_mode,
+                        auto_emoji: document.getElementById('burn-auto-emoji-check') ? document.getElementById('burn-auto-emoji-check').checked : true
                     })
                 });
                 if (res.ok) {
@@ -7183,4 +7213,238 @@ window.copyAllHooksAndTags = function() {
     }).catch(() => {
         alert(fullText);
     });
+};
+
+
+// =========================================================================
+// WEAPONS SUITE: UNLIMITED SFX TRAY & ALGORITHM CRUSHER
+// =========================================================================
+window.ALL_SFX_ITEMS = [];
+
+window.loadSfxCatalog = async function() {
+    const grid = document.getElementById('sfx-catalog-grid');
+    if (!grid) return;
+    try {
+        const ports = [8900, 8901, 8899];
+        let data = null;
+        for (const p of ports) {
+            try {
+                const res = await fetch(`http://127.0.0.1:${p}/api/sfx-catalog`);
+                if (res.ok) {
+                    data = await res.json();
+                    window.ACTIVE_SFX_PORT = p;
+                    break;
+                }
+            } catch(e) {}
+        }
+        if (!data || !data.length) {
+            grid.innerHTML = '<div style="font-size: 0.72rem; color: #64748b; grid-column: 1/-1; text-align: center; padding: 1rem;">Chưa kết nối Video Bridge hoặc kho âm thanh trống.</div>';
+            return;
+        }
+        window.ALL_SFX_ITEMS = data;
+        const countLabel = document.getElementById('sfx-count-label');
+        if (countLabel) countLabel.textContent = `${data.length} sounds`;
+        window.filterSfxCategory('all');
+    } catch(err) {
+        console.error('[SFX LOAD ERROR]', err);
+    }
+};
+
+window.filterSfxCategory = function(cat) {
+    const grid = document.getElementById('sfx-catalog-grid');
+    if (!grid) return;
+
+    // Update active button
+    const buttons = document.querySelectorAll('[id^="sfx-cat-"]');
+    buttons.forEach(b => b.classList.remove('active'));
+    const activeBtn = document.getElementById(`sfx-cat-${cat}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const items = cat === 'all' 
+        ? window.ALL_SFX_ITEMS 
+        : window.ALL_SFX_ITEMS.filter(it => it.category === cat);
+
+    if (!items.length) {
+        grid.innerHTML = '<div style="font-size: 0.72rem; color: #64748b; grid-column: 1/-1; text-align: center; padding: 1rem;">Không có âm thanh trong danh mục này.</div>';
+        return;
+    }
+
+    grid.innerHTML = items.map(it => `
+        <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 0.5rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.35rem;">
+            <div style="font-size: 0.74rem; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${it.name}">
+                ${it.name}
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.65rem; color: #64748b;">${Math.round(it.size / 1024)} KB</span>
+                <button type="button" class="btn-glow-action" style="padding: 0.15rem 0.45rem; font-size: 0.68rem; background: rgba(56, 189, 248, 0.2); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8;" onclick="previewSfx('${it.file}')">
+                    ▶ Nghe
+                </button>
+            </div>
+        </div>
+    `).join('');
+};
+
+window.CURRENT_SFX_AUDIO = null;
+window.previewSfx = function(filename) {
+    if (window.CURRENT_SFX_AUDIO) {
+        window.CURRENT_SFX_AUDIO.pause();
+        window.CURRENT_SFX_AUDIO = null;
+    }
+    const port = window.ACTIVE_SFX_PORT || 8900;
+    const url = `http://127.0.0.1:${port}/api/sfx-audio/${filename}`;
+    const audio = new Audio(url);
+    window.CURRENT_SFX_AUDIO = audio;
+    audio.play().catch(e => console.warn('Preview error:', e));
+};
+
+// Procedural Web Audio Synthesizer
+window.playCustomSynth = function() {
+    const freq = parseFloat((document.getElementById('synth-freq-range') || {}).value || 440);
+    const decay = parseFloat((document.getElementById('synth-decay-range') || {}).value || 0.35);
+    const wave = (document.getElementById('synth-wave-select') || {}).value || 'sine';
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+
+    if (wave === 'noise') {
+        const bufferSize = Math.floor(ctx.sampleRate * decay);
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = freq;
+        const gain = ctx.createGain();
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0.65, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + decay);
+        noise.start();
+        noise.stop(ctx.currentTime + decay);
+        return;
+    }
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = wave;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.6, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + decay);
+    osc.start();
+    osc.stop(ctx.currentTime + decay);
+};
+
+// Algorithm Crusher 1: Silence Remover
+window.triggerSilenceRemove = async function() {
+    const inputPath = (document.getElementById('burn-video-path-input') || {}).value || '';
+    const video_path = inputPath.trim() || prompt('Nhập đường dẫn file video cần cắt khoảng lặng (ví dụ: D:\\video.mp4):');
+    if (!video_path) return;
+
+    window.showToast('✂️ Đang phân tích sóng âm & cắt khoảng lặng...', 'info');
+    try {
+        const ports = [8900, 8901, 8899];
+        let resp = null;
+        for (const p of ports) {
+            try {
+                const res = await fetch(`http://127.0.0.1:${p}/api/silence-remove`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video_path, min_duration: 0.35, threshold_db: -30 })
+                });
+                if (res.ok) { resp = await res.json(); break; }
+            } catch(e) {}
+        }
+        if (resp && resp.success) {
+            if (typeof confetti === 'function') confetti({ particleCount: 60 });
+            window.showToast('🚀 Đã cắt sạch khoảng lặng! Video mới đã lưu vào Downloads/ZeroStudio_Viral_Exports', 'success');
+            alert(`Thành công! Video đã được cắt khoảng lặng:\n${resp.output_file}`);
+        } else {
+            alert(`Lỗi: ${(resp && resp.error) || 'Không thể kết nối Video Bridge'}`);
+        }
+    } catch(err) {
+        alert(`Lỗi: ${err.message}`);
+    }
+};
+
+// Algorithm Crusher 2: Dual-Layer Ambient Depth
+window.triggerDualLayerAmbient = async function() {
+    const inputPath = (document.getElementById('burn-video-path-input') || {}).value || '';
+    const video_path = inputPath.trim() || prompt('Nhập đường dẫn file video 16:9 cần chuyển sang 9:16 (ví dụ: D:\\video.mp4):');
+    if (!video_path) return;
+
+    window.showToast('🖼️ Đang tạo khung hình phân tầng 9:16 mờ quang học...', 'info');
+    try {
+        const ports = [8900, 8901, 8899];
+        let resp = null;
+        for (const p of ports) {
+            try {
+                const res = await fetch(`http://127.0.0.1:${p}/api/dual-layer-ambient`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video_path, blur: 25 })
+                });
+                if (res.ok) { resp = await res.json(); break; }
+            } catch(e) {}
+        }
+        if (resp && resp.success) {
+            if (typeof confetti === 'function') confetti({ particleCount: 70 });
+            window.showToast('🚀 Đã tạo video 9:16 phân tầng điện ảnh không viền đen!', 'success');
+            alert(`Thành công! Video 9:16 Ambient Depth:\n${resp.output_file}`);
+        } else {
+            alert(`Lỗi: ${(resp && resp.error) || 'Không thể kết nối Video Bridge'}`);
+        }
+    } catch(err) {
+        alert(`Lỗi: ${err.message}`);
+    }
+};
+
+// Algorithm Crusher 3: Deep Stealth EXIF Spoofer
+window.triggerDeepStealthExif = async function() {
+    const inputPath = (document.getElementById('burn-video-path-input') || {}).value || '';
+    const video_path = inputPath.trim() || prompt('Nhập đường dẫn file video cần bơm mã máy Apple (ví dụ: D:\\video.mp4):');
+    if (!video_path) return;
+
+    window.showToast('🕵️ Đang xóa metadata cũ & bơm siêu dữ liệu iPhone 16 Pro Max...', 'info');
+    try {
+        const ports = [8900, 8901, 8899];
+        let resp = null;
+        for (const p of ports) {
+            try {
+                const res = await fetch(`http://127.0.0.1:${p}/api/deep-stealth-exif`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video_path, camera_model: "iPhone 16 Pro Max" })
+                });
+                if (res.ok) { resp = await res.json(); break; }
+            } catch(e) {}
+        }
+        if (resp && resp.success) {
+            if (typeof confetti === 'function') confetti({ particleCount: 80 });
+            window.showToast('🛡️ Đã ngụy trang 100% bằng mã Apple iPhone 16 Pro Max & vi điều biến màu!', 'success');
+            alert(`Thành công! Video tàng hình:\n${resp.output_file}\nCamera: ${resp.camera_spoofed}`);
+        } else {
+            alert(`Lỗi: ${(resp && resp.error) || 'Không thể kết nối Video Bridge'}`);
+        }
+    } catch(err) {
+        alert(`Lỗi: ${err.message}`);
+    }
+};
+
+// Auto-load SFX catalog when switching to TTS pane
+const origSwitchVideoSubMode = window.switchVideoSubMode;
+window.switchVideoSubMode = function(mode) {
+    if (typeof origSwitchVideoSubMode === 'function') {
+        origSwitchVideoSubMode(mode);
+    }
+    if (mode === 'tts') {
+        setTimeout(window.loadSfxCatalog, 200);
+    }
 };

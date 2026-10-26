@@ -9,6 +9,12 @@
 
 const TRANSLATIONS = {
     vi: {
+    auto_emoji_magic: 'Auto-Emoji Magic (Tự Bắn Icon Động Vào Phụ Đề Kiểu Submagic)',
+    smart_silence_remover: 'Cắt Khoảng Lặng Tự Động (0.35s) Tăng Giữ Chân Triệu View',
+    dual_layer_ambient: 'Chuyển 9:16 Phân Tầng Điện Ảnh Không Viền Đen',
+    camera_exif_spoofer: 'Khiên Tàng Hình iPhone 16 Pro Max & Vi Điều Biến Màu',
+    unlimited_sfx_suite: 'Thư Viện Studio 34+ Foley SFX & Bộ Tạo Âm Thanh Vô Hạn',
+    procedural_dsp_synth: 'Bộ Tổng Hợp Âm Thanh Tham Số Web Audio API',
         // Brand & Header
         brand_tag: "v2.5 OTA WASM",
         download_desktop_btn: "Tải Desktop (.EXE)",
@@ -253,6 +259,12 @@ const TRANSLATIONS = {
     },
 
     en: {
+    auto_emoji_magic: 'Auto-Emoji Magic (Submagic-Style Viral Dynamic Emojis)',
+    smart_silence_remover: 'Smart Silence Remover (0.35s Trim for >75% Retention)',
+    dual_layer_ambient: 'Dual-Layer Ambient Depth 9:16 (Zero Black Bars)',
+    camera_exif_spoofer: 'iPhone 16 Pro Max EXIF Spoofer & Deep Algorithm Cloak',
+    unlimited_sfx_suite: 'Studio 34+ Foley SFX Library & Unlimited Audio Synth',
+    procedural_dsp_synth: 'Procedural Web Audio API DSP Synthesizer',
         // Brand & Header
         brand_tag: "v2.5 OTA WASM",
         download_desktop_btn: "Download (.EXE)",
@@ -497,6 +509,12 @@ const TRANSLATIONS = {
     },
 
     zh: {
+    auto_emoji_magic: 'Auto-Emoji 智能表情包引擎（Submagic 动态高留存字幕）',
+    smart_silence_remover: '智能去除静音（0.35s 快速剪辑提高完播率）',
+    dual_layer_ambient: '双层电影级 9:16 画幅景深（告别黑边）',
+    camera_exif_spoofer: 'iPhone 16 Pro Max 原生相机伪装与微调色算法',
+    unlimited_sfx_suite: '34+ 专业 Foley 音效库与无限 DSP 合成器',
+    procedural_dsp_synth: 'Web Audio API 参数化音频合成器',
         // Brand & Header
         brand_tag: "v2.5 OTA WASM",
         download_desktop_btn: "下载客户端 (.EXE)",
@@ -742,6 +760,12 @@ const TRANSLATIONS = {
     },
 
     ja: {
+    auto_emoji_magic: 'Auto-Emoji マジック（Submagic風 ダイナミック絵文字字幕）',
+    smart_silence_remover: 'スマート無音カット（0.35sトリムで視聴維持率向上）',
+    dual_layer_ambient: '映画風デュアルレイヤー 9:16（黒帯なし最適化）',
+    camera_exif_spoofer: 'iPhone 16 Pro Max EXIF 偽装＆ディープアルゴリズムシールド',
+    unlimited_sfx_suite: 'スタジオ 34+ Foley 効果音ライブラリ＆無限 DSP シンセ',
+    procedural_dsp_synth: 'Web Audio API パラメトリック音声シンセサイザー',
         // Brand & Header
         brand_tag: "v2.5 OTA WASM",
         download_desktop_btn: "デスクトップ版 (.EXE)",
