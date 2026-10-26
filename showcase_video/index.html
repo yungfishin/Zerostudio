@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="vi" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <!-- GSAP for 60fps frame-deterministic motion -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg-void: #030712;
+        --cyan: #06b6d4;
+        --cyan-glow: rgba(6, 182, 212, 0.45);
+        --emerald: #10b981;
+        --emerald-glow: rgba(16, 185, 129, 0.45);
+        --magenta: #ec4899;
+        --magenta-glow: rgba(236, 72, 153, 0.45);
+        --purple: #a855f7;
+        --purple-glow: rgba(168, 85, 247, 0.45);
+        --gold: #f59e0b;
+        --gold-glow: rgba(245, 158, 11, 0.5);
+        --font-main: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html, body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--bg-void);
+        color: #ffffff;
+        font-family: var(--font-main);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Base Canvas Stage */
+      #canvas-stage {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 25%, #0f172a 0%, #030712 65%, #010409 100%);
+      }
+
+      /* Background Grid & Ambient Caustics */
+      .bg-grid {
+        position: absolute;
+        inset: 0;
+        background-image: 
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(circle at 50% 50%, black 50%, transparent 95%);
+        pointer-events: none;
+      }
+
+      .bg-ambient-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(140px);
+        pointer-events: none;
+        opacity: 0.4;
+      }
+      .orb-cyan {
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, var(--cyan) 0%, transparent 70%);
+        top: 150px;
+        left: 20px;
+      }
+      .orb-purple {
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, var(--purple) 0%, transparent 70%);
+        bottom: 250px;
+        right: 20px;
+      }
+
+      /* Fixed Top Brand Header */
+      .top-brand-bar {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 65px;
+        z-index: 100;
+      }
+      .brand-badge {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .brand-icon-box {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(168, 85, 247, 0.25));
+        border: 1px solid var(--cyan);
+        box-shadow: 0 0 25px var(--cyan-glow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .brand-icon-box svg {
+        width: 32px;
+        height: 32px;
+        color: #38bdf8;
+      }
+      .brand-name {
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+      }
+      .status-pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-family: var(--font-mono);
+        font-size: 20px;
+        font-weight: 700;
+        color: #34d399;
+      }
+      .status-led {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 12px #10b981;
+      }
+
+      /* Universal Scene Container */
+      .scene {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 180px 65px 120px 65px;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* Generic Typography & Badges */
+      .badge-tag {
+        font-family: var(--font-mono);
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        padding: 8px 24px;
+        border-radius: 999px;
+        margin-bottom: 24px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .scene-title {
+        font-size: 60px;
+        font-weight: 900;
+        text-align: center;
+        line-height: 1.18;
+        margin-bottom: 18px;
+        letter-spacing: -1px;
+      }
+      .scene-subtitle {
+        font-size: 27px;
+        color: #94a3b8;
+        text-align: center;
+        line-height: 1.4;
+        margin-bottom: 48px;
+      }
+
+      /* ========================================================
+         SCENE 1: HOOK & PAIN POINTS (0.0s - 4.5s)
+         ======================================================== */
+      .s1-badge {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #f87171;
+      }
+      .pain-cards-stack {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+      .pain-card {
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 24px;
+        padding: 28px 32px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+      .pain-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 6px;
+        background: #ef4444;
+        box-shadow: 0 0 12px #ef4444;
+      }
+      .pain-icon-wrap {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #f87171;
+      }
+      .pain-icon-wrap svg {
+        width: 34px;
+        height: 34px;
+      }
+      .pain-text {
+        flex: 1;
+      }
+      .pain-title {
+        font-size: 26px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 6px;
+      }
+      .pain-desc {
+        font-size: 21px;
+        color: #94a3b8;
+        line-height: 1.35;
+      }
+      .hook-climax-card {
+        margin-top: 40px;
+        width: 100%;
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(168, 85, 247, 0.2));
+        border: 2px solid var(--cyan);
+        box-shadow: 0 0 50px var(--cyan-glow);
+        padding: 26px 36px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        text-align: center;
+      }
+      .hook-climax-card span {
+        font-size: 29px;
+        font-weight: 900;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+      }
+
+      /* ========================================================
+         SCENE 2: GÓI FREE (4.5s - 10.0s)
+         ======================================================== */
+      .s2-badge {
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.5);
+        color: #34d399;
+      }
+      .free-cards-stack {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+      .free-card {
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        border-radius: 24px;
+        padding: 28px 32px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+      .free-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 6px;
+        background: #10b981;
+        box-shadow: 0 0 14px #10b981;
+      }
+      .free-icon-wrap {
+        width: 66px;
+        height: 66px;
+        border-radius: 18px;
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #34d399;
+      }
+      .free-icon-wrap svg {
+        width: 34px;
+        height: 34px;
+      }
+      .free-badge-chip {
+        font-family: var(--font-mono);
+        font-size: 18px;
+        font-weight: 800;
+        padding: 6px 16px;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+        border: 1px solid #10b981;
+      }
+      .free-stamp-box {
+        margin-top: 40px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px dashed rgba(16, 185, 129, 0.5);
+        padding: 18px 36px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .free-stamp-box span {
+        font-family: var(--font-mono);
+        font-size: 21px;
+        font-weight: 700;
+        color: #6ee7b7;
+      }
+
+      /* ========================================================
+         SCENE 3: GÓI PRO (10.0s - 17.5s)
+         ======================================================== */
+      .s3-badge {
+        background: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.3));
+        border: 1px solid var(--magenta);
+        color: #f472b6;
+        box-shadow: 0 0 20px var(--magenta-glow);
+      }
+      .pro-grid {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .pro-card {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(236, 72, 153, 0.4);
+        border-radius: 22px;
+        padding: 24px 30px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+      .pro-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 6px;
+        background: linear-gradient(180deg, #ec4899, #a855f7);
+        box-shadow: 0 0 14px var(--magenta);
+      }
+      .pro-icon-wrap {
+        width: 62px;
+        height: 62px;
+        border-radius: 16px;
+        background: rgba(236, 72, 153, 0.15);
+        border: 1px solid rgba(236, 72, 153, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #f472b6;
+      }
+      .pro-icon-wrap svg {
+        width: 32px;
+        height: 32px;
+      }
+      .pro-card-title {
+        font-size: 25px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 5px;
+      }
+      .pro-card-desc {
+        font-size: 20px;
+        color: #cbd5e1;
+        line-height: 1.35;
+      }
+      .pro-tag-chip {
+        font-family: var(--font-mono);
+        font-size: 17px;
+        font-weight: 800;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: rgba(236, 72, 153, 0.2);
+        color: #f472b6;
+        border: 1px solid rgba(236, 72, 153, 0.5);
+      }
+
+      /* Audio Visualizer Bar Strip */
+      .pro-visualizer-bar {
+        width: 100%;
+        margin-top: 26px;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(236, 72, 153, 0.3);
+        border-radius: 20px;
+        padding: 18px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .eq-container {
+        display: flex;
+        gap: 7px;
+        align-items: flex-end;
+        height: 40px;
+      }
+      .eq-bar {
+        width: 8px;
+        border-radius: 4px;
+        background: linear-gradient(180deg, #ec4899, #a855f7);
+      }
+
+      /* ========================================================
+         SCENE 4: GÓI ULTRA (17.5s - 24.0s)
+         ======================================================== */
+      .s4-badge {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(239, 68, 68, 0.25));
+        border: 1px solid var(--gold);
+        color: #fbbf24;
+        box-shadow: 0 0 25px var(--gold-glow);
+      }
+      .ultra-grid {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .ultra-card {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(245, 158, 11, 0.45);
+        border-radius: 22px;
+        padding: 24px 30px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+      }
+      .ultra-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 6px;
+        background: linear-gradient(180deg, #f59e0b, #ef4444);
+        box-shadow: 0 0 14px var(--gold);
+      }
+      .ultra-icon-wrap {
+        width: 62px;
+        height: 62px;
+        border-radius: 16px;
+        background: rgba(245, 158, 11, 0.15);
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #fbbf24;
+      }
+      .ultra-icon-wrap svg {
+        width: 32px;
+        height: 32px;
+      }
+      .ultra-card-title {
+        font-size: 25px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 5px;
+      }
+      .ultra-card-desc {
+        font-size: 20px;
+        color: #cbd5e1;
+        line-height: 1.35;
+      }
+      .ultra-tag-chip {
+        font-family: var(--font-mono);
+        font-size: 17px;
+        font-weight: 800;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: rgba(245, 158, 11, 0.2);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.5);
+      }
+      .ultra-speed-badge {
+        margin-top: 26px;
+        width: 100%;
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.2));
+        border: 1.5px solid #f59e0b;
+        box-shadow: 0 0 35px rgba(245, 158, 11, 0.35);
+        padding: 18px 30px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .ultra-speed-badge span {
+        font-family: var(--font-mono);
+        font-size: 22px;
+        font-weight: 800;
+        color: #fef08a;
+      }
+
+      /* ========================================================
+         SCENE 5: CTA & COMMENT MAGNET (24.0s - 29.0s)
+         ======================================================== */
+      .s5-gem-box {
+        width: 130px;
+        height: 130px;
+        border-radius: 36px;
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(245, 158, 11, 0.3));
+        border: 2px solid var(--cyan);
+        box-shadow: 0 0 70px var(--cyan-glow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+      .s5-gem-box svg {
+        width: 72px;
+        height: 72px;
+        color: #38bdf8;
+      }
+      .s5-title {
+        font-size: 64px;
+        font-weight: 900;
+        text-align: center;
+        line-height: 1.15;
+        margin-bottom: 16px;
+      }
+      .s5-subtitle {
+        font-size: 28px;
+        color: #38bdf8;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .comment-magnet-box {
+        width: 100%;
+        background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+        border: 2px solid #fde047;
+        box-shadow: 0 0 60px rgba(245, 158, 11, 0.6);
+        border-radius: 30px;
+        padding: 34px 38px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+      .comment-magnet-box .magnet-callout {
+        font-family: var(--font-mono);
+        font-size: 22px;
+        font-weight: 800;
+        color: #451a03;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .comment-magnet-box .magnet-keyword {
+        font-size: 46px;
+        font-weight: 900;
+        color: #ffffff;
+        letter-spacing: 1px;
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      }
+      .comment-magnet-box .magnet-perk {
+        font-size: 24px;
+        font-weight: 800;
+        color: #1c1917;
+        background: rgba(255, 255, 255, 0.85);
+        padding: 6px 18px;
+        border-radius: 999px;
+      }
+      .s5-url-row {
+        width: 100%;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 18px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+      .s5-url-row .url-txt {
+        font-family: var(--font-mono);
+        font-size: 28px;
+        font-weight: 800;
+        color: #38bdf8;
+      }
+      .s5-url-row .url-badge {
+        font-family: var(--font-mono);
+        font-size: 18px;
+        font-weight: 800;
+        color: #34d399;
+        background: rgba(16, 185, 129, 0.15);
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1px solid #10b981;
+      }
+      .s5-social-proof {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 23px;
+        color: #fbbf24;
+        font-weight: 700;
+      }
+      .s5-urgency-badge {
+        margin-top: 18px;
+        font-family: var(--font-mono);
+        font-size: 19px;
+        font-weight: 800;
+        color: #f87171;
+        background: rgba(239, 68, 68, 0.12);
+        padding: 8px 20px;
+        border-radius: 999px;
+        border: 1px solid rgba(239, 68, 68, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="29"
+      data-width="1080"
+      data-height="1920"
+    >
+      <!-- Dedicated Master Audio Tag with exact 29s duration -->
+      <audio
+        id="master-soundtrack"
+        src="master_audio.wav"
+        data-start="0"
+        data-duration="29"
+        data-track-index="0"
+        data-volume="1"
+      ></audio>
+
+      <div id="canvas-stage">
+        <!-- Ambient Background Grid & Orbs -->
+        <div class="bg-grid"></div>
+        <div class="bg-ambient-orb orb-cyan" data-layout-allow-overflow></div>
+        <div class="bg-ambient-orb orb-purple" data-layout-allow-overflow></div>
+
+        <!-- Top Fixed Brand Watermark -->
+        <div class="top-brand-bar">
+          <div class="brand-badge">
+            <div class="brand-icon-box">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div class="brand-name">ZeroStudio Pro</div>
+          </div>
+          <div class="status-pill">
+            <div class="status-led"></div>
+            <span>100% OFFLINE RAM</span>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             SCENE 1: HOOK & PAIN POINTS (0.0s - 4.5s)
+             ============================================== -->
+        <div id="scene-1" class="scene">
+          <div class="badge-tag s1-badge">BÍ MẬT DÂN MMO & VĂN PHÒNG 2026</div>
+          <h1 class="scene-title">BẠN VẪN ĐANG TỐN HÀNG GIỜ<br>LÀM NHỮNG VIỆC NÀY?</h1>
+          <p class="scene-subtitle">Cực nhọc thủ công • Dễ dính gậy bản quyền • Rò rỉ dữ liệu</p>
+
+          <div class="pain-cards-stack">
+            <!-- Pain 1 -->
+            <div class="pain-card" id="pain-1">
+              <div class="pain-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              </div>
+              <div class="pain-text">
+                <div class="pain-title">Gộp & Tách PDF Bị Giới Hạn</div>
+                <div class="pain-desc">Web online giới hạn số lần, bắt trả phí tháng và sợ lộ bí mật công ty?</div>
+              </div>
+            </div>
+
+            <!-- Pain 2 -->
+            <div class="pain-card" id="pain-2">
+              <div class="pain-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
+              </div>
+              <div class="pain-text">
+                <div class="pain-title">Reup Video Dính Bản Quyền</div>
+                <div class="pain-desc">Trùng dải âm thanh, dính gậy Content ID dẫn tới kênh bị 0 view bóp reach?</div>
+              </div>
+            </div>
+
+            <!-- Pain 3 -->
+            <div class="pain-card" id="pain-3">
+              <div class="pain-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+              <div class="pain-text">
+                <div class="pain-title">Tải Douyin & TikTok Dính Watermark</div>
+                <div class="pain-desc">Logo dính đầy màn hình, edit che mờ vụng về làm video mất giá trị?</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hook-climax-card" id="hook-climax">
+            <svg width="34" height="34" fill="none" viewBox="0 0 24 24" stroke="#38bdf8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>NẾU CÓ TOOL 1-CLICK XỬ LÝ SẠCH MỌI VẤN ĐỀ?</span>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             SCENE 2: GÓI FREE (4.5s - 10.0s)
+             ============================================== -->
+        <div id="scene-2" class="scene">
+          <div class="badge-tag s2-badge">TIỆN ÍCH QUỐC DÂN • 0 ĐỒNG</div>
+          <h1 class="scene-title">GÓI FREE TRỌN ĐỜI<br>MỞ LÊN LÀ DÙNG NGAY</h1>
+          <p class="scene-subtitle">100% Xử Lý Tại RAM • 0 Byte Dữ Liệu Thoát Ra Ngoài</p>
+
+          <div class="free-cards-stack">
+            <!-- Free 1 -->
+            <div class="free-card" id="free-1">
+              <div class="free-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <div class="pain-text">
+                <div class="pain-title">Gộp & Tách PDF Tức Thì 0.1 Giây</div>
+                <div class="pain-desc">Kéo thả không giới hạn dung lượng, giải mã trực tiếp trong trình duyệt</div>
+              </div>
+              <div class="free-badge-chip">0.1s</div>
+            </div>
+
+            <!-- Free 2 -->
+            <div class="free-card" id="free-2">
+              <div class="free-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              </div>
+              <div class="pain-text">
+                <div class="pain-title">Tải Video Douyin / TikTok Không Logo</div>
+                <div class="pain-desc">Tự động nhận diện link, tải video 1080p sắc nét không dính watermark</div>
+              </div>
+              <div class="free-badge-chip">CLEAN HD</div>
+            </div>
+
+            <!-- Free 3 -->
+            <div class="free-card" id="free-3">
+              <div class="free-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+              </div>
+              <div class="pain-text">
+                <div class="pain-title">Trợ Lý AI ZeroAI Tích Hợp</div>
+                <div class="pain-desc">Hỏi đáp kỹ thuật, hỗ trợ quy trình MMO & văn phòng thông minh 24/7</div>
+              </div>
+              <div class="free-badge-chip">AI BOT</div>
+            </div>
+          </div>
+
+          <div class="free-stamp-box" id="free-stamp">
+            <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="#10b981"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            <span>KHÔNG CẦN TẠO TÀI KHOẢN • BẢO MẬT TUYỆT ĐỐI</span>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             SCENE 3: GÓI PRO (10.0s - 17.5s)
+             ============================================== -->
+        <div id="scene-3" class="scene">
+          <div class="badge-tag s3-badge">VŨ KHÍ MMO CREATOR • 299K TRỌN ĐỜI</div>
+          <h1 class="scene-title">GÓI PRO CREATOR<br>LÁCH BẢN QUYỀN & LỒNG TIẾNG AI</h1>
+          <p class="scene-subtitle">Chỉ Bằng 2 Cốc Trà Sữa • X50 Tốc Độ Sản Xuất Video Triệu View</p>
+
+          <div class="pro-grid">
+            <!-- Pro 1 -->
+            <div class="pro-card" id="pro-1">
+              <div class="pro-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div class="pro-card-title">Lách Bản Quyền MMO 4 Bước</div>
+                <div class="pro-card-desc">Đổi MD5, chỉnh pitch dải tần +2.4%, lật gương, khử watermark AI</div>
+              </div>
+              <div class="pro-tag-chip">BYPASS ID</div>
+            </div>
+
+            <!-- Pro 2 -->
+            <div class="pro-card" id="pro-2">
+              <div class="pro-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div class="pro-card-title">Lồng Tiếng AI Toàn Cầu 322 Giọng</div>
+                <div class="pro-card-desc">142 quốc gia, hỗ trợ tiếng Việt Bắc/Nam chuẩn phòng thu quốc tế</div>
+              </div>
+              <div class="pro-tag-chip">322 VOICES</div>
+            </div>
+
+            <!-- Pro 3 -->
+            <div class="pro-card" id="pro-3">
+              <div class="pro-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div class="pro-card-title">6 Bộ Lọc DSP Voice FX Chuyên Sâu</div>
+                <div class="pro-card-desc">Studio Warm, Cyberpunk, Horror, Radio Cổ Điển, Trầm Ấm...</div>
+              </div>
+              <div class="pro-tag-chip">6 DSP FX</div>
+            </div>
+
+            <!-- Pro 4 -->
+            <div class="pro-card" id="pro-4">
+              <div class="pro-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div class="pro-card-title">Phụ Đề Hoạt Họa MrBeast & OCR Hóa Đơn</div>
+                <div class="pro-card-desc">Chữ nhảy Neon Yellow giữ chân người xem 80%+ & OCR tiếng Việt 0.2s</div>
+              </div>
+              <div class="pro-tag-chip">MRBEAST SUB</div>
+            </div>
+          </div>
+
+          <div class="pro-visualizer-bar" id="pro-viz">
+            <span style="font-family: var(--font-mono); font-size: 20px; color: #f472b6; font-weight: 700;">DSP ACOUSTIC EQUALIZER (+2.4% PITCH)</span>
+            <div class="eq-container" id="eq-bars">
+              <!-- 18 EQ bars generated via script -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             SCENE 4: GÓI ULTRA (17.5s - 24.0s)
+             ============================================== -->
+        <div id="scene-4" class="scene">
+          <div class="badge-tag s4-badge">ĐẾ CHẾ TỰ ĐỘNG HÓA • 699K TRỌN ĐỜI</div>
+          <h1 class="scene-title">GÓI ULTRA MASTER<br>XỬ LÝ HÀNG LOẠT 500 FILE</h1>
+          <p class="scene-subtitle">Dành Riêng Cho Studio, Đội Ngũ MMO Chuyên Nghiệp & Doanh Nghiệp</p>
+
+          <div class="ultra-grid">
+            <!-- Ultra 1 -->
+            <div class="ultra-card" id="ultra-1">
+              <div class="ultra-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div class="ultra-card-title">Bàn Làm Việc Hàng Loạt 500 File</div>
+                <div class="ultra-card-desc">Kéo thả cả thư mục PDF / Video, máy tự động chạy hàng loạt xuyên đêm</div>
+              </div>
+              <div class="ultra-tag-chip">500 FILES</div>
+            </div>
+
+            <!-- Ultra 2 -->
+            <div class="ultra-card" id="ultra-2">
+              <div class="ultra-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div class="ultra-card-title">Cào Trọn Bộ Video Cả Kênh Douyin/TikTok</div>
+                <div class="ultra-card-desc">Chỉ cần dán link profile, tự động tải sạch 100% video không watermark</div>
+              </div>
+              <div class="ultra-tag-chip">FULL CHANNEL</div>
+            </div>
+
+            <!-- Ultra 3 -->
+            <div class="ultra-card" id="ultra-3">
+              <div class="ultra-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div class="ultra-card-title">Kích Hoạt Song Song 2 Thiết Bị</div>
+                <div class="ultra-card-desc">Đồng thời sử dụng trên PC văn phòng và Laptop di động không sợ chặn key</div>
+              </div>
+              <div class="ultra-tag-chip">2 DEVICES</div>
+            </div>
+
+            <!-- Ultra 4 -->
+            <div class="ultra-card" id="ultra-4">
+              <div class="ultra-icon-wrap">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div class="ultra-card-title">Thẻ Quà Tặng Digital Gift Card & Affiliate 30%</div>
+                <div class="ultra-card-desc">Tạo gift card tặng bạn bè hoặc kiếm thu nhập thụ động hoa hồng trọn đời</div>
+              </div>
+              <div class="ultra-tag-chip">GIFT & 30%</div>
+            </div>
+          </div>
+
+          <div class="ultra-speed-badge" id="ultra-speed">
+            <span>⚡ TỐC ĐỘ XỬ LÝ GẤP 500 LẦN THỦ CÔNG</span>
+            <span style="color: #fbbf24;">TIẾT KIỆM 95% THỜI GIAN</span>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             SCENE 5: CTA & COMMENT MAGNET (24.0s - 29.0s)
+             ============================================== -->
+        <div id="scene-5" class="scene">
+          <div class="s5-gem-box" id="cta-gem">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h1 class="s5-title" id="cta-title">BẠN ĐÃ SẴN SÀNG<br>BỨT PHÁ CÙNG ZEROSTUDIO?</h1>
+          <div class="s5-subtitle" id="cta-sub">Trải Nghiệm Miễn Phí Hoặc Nâng Cấp Pro/Ultra Trọn Đời</div>
+
+          <div class="comment-magnet-box" id="cta-magnet">
+            <div class="magnet-callout">HÃY TƯƠNG TÁC NGAY DƯỚI VIDEO NÀY</div>
+            <div class="magnet-keyword">👉 BÌNH LUẬN "ZERO" NGAY</div>
+            <div class="magnet-perk">🎁 NHẬN MÃ GIẢM 50% SUẤT FOUNDER + TRỌN BỘ 322 GIỌNG AI</div>
+          </div>
+
+          <div class="s5-url-row" id="cta-url">
+            <div class="url-txt">🌐 zerostu.netlify.app</div>
+            <div class="url-badge">DÙNG THỬ 0Đ</div>
+          </div>
+
+          <div class="s5-social-proof" id="cta-proof">
+            <span>★★★★★</span>
+            <span>4.9 / 5.0 (1,480+ Creator & Kế Toán Đang Tin Dùng)</span>
+          </div>
+
+          <div class="s5-urgency-badge" id="cta-urgency">
+            ⚡ CHỈ CÒN 39 SUẤT FOUNDER TRONG HÔM NAY
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 60FPS Frame-Deterministic GSAP Orchestration -->
+    <script>
+      // Populate EQ Visualizer Bars in Scene 3
+      const eqWrap = document.getElementById('eq-bars');
+      const eqHeights = [15, 30, 22, 38, 28, 40, 25, 35, 18, 32, 24, 39, 20, 36, 26, 34, 16, 28];
+      eqHeights.forEach(h => {
+        const bar = document.createElement('div');
+        bar.className = 'eq-bar';
+        bar.style.height = `${h}px`;
+        eqWrap.appendChild(bar);
+      });
+
+      // HyperFrames Paused Timeline Registration
+      const tl = gsap.timeline({ paused: true });
+
+      // ==========================================
+      // STAGE 1: HOOK & PAIN POINTS (0.0s - 4.5s)
+      // ==========================================
+      tl.set("#scene-1", { opacity: 1, pointerEvents: "auto" }, 0);
+      tl.fromTo("#scene-1 .s1-badge", { y: -25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 0.1);
+      tl.fromTo("#scene-1 .scene-title", { y: 35, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, 0.2);
+      tl.fromTo("#scene-1 .scene-subtitle", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0.45);
+
+      // Staggered Lock-in of 3 Pain Cards (using transforms x and opacity)
+      tl.fromTo("#pain-1", { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.8);
+      tl.fromTo("#pain-2", { x: 80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 1.6);
+      tl.fromTo("#pain-3", { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 2.4);
+
+      // Climax Question Card
+      tl.fromTo("#hook-climax", { scale: 0.85, opacity: 0, y: 30 }, { scale: 1, opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, 3.4);
+
+      // Scene 1 Out
+      tl.to("#scene-1", { opacity: 0, scale: 0.92, duration: 0.35, ease: "power3.in" }, 4.3);
+
+      // ==========================================
+      // STAGE 2: GÓI FREE (4.5s - 10.0s)
+      // ==========================================
+      tl.set("#scene-2", { opacity: 1, pointerEvents: "auto" }, 4.5);
+      tl.fromTo("#scene-2 .s2-badge", { y: -25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35 }, 4.55);
+      tl.fromTo("#scene-2 .scene-title", { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 4.65);
+      tl.fromTo("#scene-2 .scene-subtitle", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 4.85);
+
+      // Free Feature Cards (transforms y, scale, opacity)
+      tl.fromTo("#free-1", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 5.3);
+      tl.fromTo("#free-2", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 6.3);
+      tl.fromTo("#free-3", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 7.3);
+
+      // Free Stamp Guarantee
+      tl.fromTo("#free-stamp", { scale: 1.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.8)" }, 8.4);
+
+      // Scene 2 Out
+      tl.to("#scene-2", { opacity: 0, scale: 0.92, duration: 0.35, ease: "power3.in" }, 9.8);
+
+      // ==========================================
+      // STAGE 3: GÓI PRO (10.0s - 17.5s)
+      // ==========================================
+      tl.set("#scene-3", { opacity: 1, pointerEvents: "auto" }, 10.0);
+      tl.fromTo("#scene-3 .s3-badge", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.6)" }, 10.05);
+      tl.fromTo("#scene-3 .scene-title", { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 10.15);
+      tl.fromTo("#scene-3 .scene-subtitle", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 10.35);
+
+      // 4 Pro Cards with kinetic entry
+      tl.fromTo("#pro-1", { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 10.9);
+      tl.fromTo("#pro-2", { x: 70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 12.1);
+      tl.fromTo("#pro-3", { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 13.4);
+      tl.fromTo("#pro-4", { x: 70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 14.7);
+
+      // EQ Visualizer Bar Animation
+      tl.fromTo("#pro-viz", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, 15.6);
+      tl.fromTo(".eq-bar", { scaleY: 0.3 }, { scaleY: 1.2, duration: 0.3, stagger: 0.03, yoyo: true, repeat: 4, ease: "sine.inOut" }, 15.8);
+
+      // Scene 3 Out
+      tl.to("#scene-3", { opacity: 0, scale: 0.92, duration: 0.35, ease: "power3.in" }, 17.3);
+
+      // ==========================================
+      // STAGE 4: GÓI ULTRA (17.5s - 24.0s)
+      // ==========================================
+      tl.set("#scene-4", { opacity: 1, pointerEvents: "auto" }, 17.5);
+      tl.fromTo("#scene-4 .s4-badge", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.6)" }, 17.55);
+      tl.fromTo("#scene-4 .scene-title", { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 17.65);
+      tl.fromTo("#scene-4 .scene-subtitle", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 17.85);
+
+      // 4 Ultra Power Cards
+      tl.fromTo("#ultra-1", { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 18.5);
+      tl.fromTo("#ultra-2", { x: 70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 19.7);
+      tl.fromTo("#ultra-3", { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 20.9);
+      tl.fromTo("#ultra-4", { x: 70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 22.1);
+
+      // 500x Automation Speed Stamp
+      tl.fromTo("#ultra-speed", { scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" }, 22.8);
+
+      // Scene 4 Out
+      tl.to("#scene-4", { opacity: 0, scale: 0.92, duration: 0.35, ease: "power3.in" }, 23.8);
+
+      // ==========================================
+      // STAGE 5: CTA & COMMENT MAGNET (24.0s - 29.0s)
+      // ==========================================
+      tl.set("#scene-5", { opacity: 1, pointerEvents: "auto" }, 24.0);
+      tl.fromTo("#cta-gem", { scale: 0.3, rotation: -40, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.45, ease: "back.out(1.8)" }, 24.05);
+      tl.fromTo("#cta-title", { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 24.15);
+      tl.fromTo("#cta-sub", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 24.25);
+
+      // Comment Magnet Action Box with elastic bounce
+      tl.fromTo("#cta-magnet", { scale: 0.85, opacity: 0, y: 35 }, { scale: 1, opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.5)" }, 24.35);
+      tl.fromTo("#cta-url", { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35 }, 24.6);
+      tl.fromTo("#cta-proof", { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.6)" }, 24.8);
+      tl.fromTo("#cta-urgency", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35 }, 25.0);
+
+      // Gentle pulsing celebration highlight
+      tl.to("#cta-magnet", { scale: 1.03, duration: 0.7, yoyo: true, repeat: 2, ease: "sine.inOut" }, 25.5);
+
+      // Steady hold until end of 29.0s
+      tl.to({}, { duration: 0.5 }, 28.5);
+
+      // Register timeline for HyperFrames deterministic engine
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

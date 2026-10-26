@@ -1,0 +1,215 @@
+{
+  "version": 1,
+  "historyId": "604b8c8b-4f7b-470b-8b62-b49c11932fa9",
+  "currentRevision": "aa8d16c1-77f1-4385-9fb8-eeaaa646aabf",
+  "pendingChanges": false,
+  "files": {
+    "AGENTS.md": {
+      "hash": "1b36171117cb7c18f4100a0db6a3782ff2e096115995733200445cc2e80a4060",
+      "content": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\1b\\1b36171117cb7c18f4100a0db6a3782ff2e096115995733200445cc2e80a4060"
+    },
+    "CLAUDE.md": {
+      "hash": "1b36171117cb7c18f4100a0db6a3782ff2e096115995733200445cc2e80a4060",
+      "content": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\1b\\1b36171117cb7c18f4100a0db6a3782ff2e096115995733200445cc2e80a4060"
+    },
+    "hyperframes.json": {
+      "hash": "53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50",
+      "content": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\53\\53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50"
+    },
+    "index.html": {
+      "hash": "dfbcb62e64efcf511711e8e17104e22257ce0ea569bb3b9c814a78fa6135f6c3",
+      "content": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\df\\dfbcb62e64efcf511711e8e17104e22257ce0ea569bb3b9c814a78fa6135f6c3"
+    },
+    "meta.json": {
+      "hash": "5afc5ae4c2ea3eeb600255baeec09e8e286b6f6a83702d2453e440b9ad43f64b",
+      "content": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\5a\\5afc5ae4c2ea3eeb600255baeec09e8e286b6f6a83702d2453e440b9ad43f64b"
+    },
+    "package.json": {
+      "hash": "b372df61b4176d4695d2e5131423341860016ea49e36dff4d867ee2c6960e096",
+      "content": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\b3\\b372df61b4176d4695d2e5131423341860016ea49e36dff4d867ee2c6960e096"
+    },
+    "master_audio.wav": {
+      "hash": "f7687a0bec565566bcf00e2d70e68d4ce0eb56639512de6693857068d87b2ee7",
+      "content": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\f7\\f7687a0bec565566bcf00e2d70e68d4ce0eb56639512de6693857068d87b2ee7"
+    }
+  },
+  "revisions": {
+    "ff5576e0-cbaa-4b28-aead-a5ef00312224": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1792906002471,
+      "endedAt": 1792906002508,
+      "files": {
+        "index.html": {
+          "before": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\32\\32a185e2a7d0f9075377bd0bf5e5cf3aa6594b34f78d85493757ce19e040de00",
+          "after": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\e4\\e424b978e955c2c57af1a11fd68c7fe22f2bde76b69c4c29d5ce2b5a8d12579d"
+        },
+        "master_audio.wav": {
+          "before": null,
+          "after": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\8c\\8ce26e9ec751d9199c581d1d132507868c5a6aafee3a2a11ac281e6e4fe736bf"
+        },
+        "meta.json": {
+          "before": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\23\\2382fb8fb022776d35f7d7bded501d0cb881360345064eaacc49e7f909b5dfd3",
+          "after": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\cd\\cdacf604f0fa0cf51d9a0ec81927bdb9ac9cd78f58f3b2f763e5eb87c7f5eab9"
+        }
+      }
+    },
+    "274d3c0e-4227-4a4c-842a-d94036a3e92e": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1792984512956,
+      "endedAt": 1792984512982,
+      "files": {
+        "index.html": {
+          "before": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\e4\\e424b978e955c2c57af1a11fd68c7fe22f2bde76b69c4c29d5ce2b5a8d12579d",
+          "after": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\59\\59f925aefc63787fe829651afd77e1b6a1e6c70d996c6f245cf8cf8077b56c73"
+        },
+        "master_audio.wav": {
+          "before": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\8c\\8ce26e9ec751d9199c581d1d132507868c5a6aafee3a2a11ac281e6e4fe736bf",
+          "after": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\f7\\f7687a0bec565566bcf00e2d70e68d4ce0eb56639512de6693857068d87b2ee7"
+        },
+        "meta.json": {
+          "before": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\cd\\cdacf604f0fa0cf51d9a0ec81927bdb9ac9cd78f58f3b2f763e5eb87c7f5eab9",
+          "after": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\5a\\5afc5ae4c2ea3eeb600255baeec09e8e286b6f6a83702d2453e440b9ad43f64b"
+        }
+      }
+    },
+    "aa8d16c1-77f1-4385-9fb8-eeaaa646aabf": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1792984614227,
+      "endedAt": 1792984614230,
+      "files": {
+        "index.html": {
+          "before": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\59\\59f925aefc63787fe829651afd77e1b6a1e6c70d996c6f245cf8cf8077b56c73",
+          "after": "C:\\Users\\9htru\\.cache\\hyperframes\\history\\604b8c8b-4f7b-470b-8b62-b49c11932fa9\\blobs\\df\\dfbcb62e64efcf511711e8e17104e22257ce0ea569bb3b9c814a78fa6135f6c3"
+        }
+      }
+    }
+  },
+  "checks": {
+    "latest": {
+      "revision": "aa8d16c1-77f1-4385-9fb8-eeaaa646aabf",
+      "id": "024a37fe-a571-44a0-8a3e-55fe0c31fb23"
+    },
+    "revisions": {
+      "ff5576e0-cbaa-4b28-aead-a5ef00312224": [
+        {
+          "id": "707fdb7a-7e04-4561-a6aa-980950dc5fdd",
+          "scope": "project",
+          "report": "c:\\Users\\9htru\\OneDrive\\Desktop\\Commercial_Projects_Archive\\ZeroPDF_Studio\\showcase_video\\.hyperframes\\artifacts\\checks\\707fdb7a-7e04-4561-a6aa-980950dc5fdd.json",
+          "metadata": {
+            "ok": false,
+            "browserSkipped": true,
+            "options": {
+              "samples": 9,
+              "atTransitions": false,
+              "maxIssues": 80,
+              "collapseStatic": true,
+              "tolerance": 2,
+              "timeout": 3000,
+              "contrast": true,
+              "strict": false,
+              "snapshots": false,
+              "browserGpuMode": "auto"
+            }
+          },
+          "createdAt": 1792984238245,
+          "contentHash": "453f3350933782a1c2af1af3309a8d698d03a5392da034b5005392a1703ea39c",
+          "revision": "ff5576e0-cbaa-4b28-aead-a5ef00312224",
+          "inputFingerprint": "826e0c1d7476935bf1a13732bcdaf298e396254c62190881e99baa213d94bdf1",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision"
+        }
+      ],
+      "274d3c0e-4227-4a4c-842a-d94036a3e92e": [
+        {
+          "id": "dfa3c654-692b-4192-a36e-03081a1afdba",
+          "scope": "project",
+          "metadata": {
+            "ok": true,
+            "browserSkipped": false,
+            "options": {
+              "samples": 9,
+              "atTransitions": false,
+              "maxIssues": 80,
+              "collapseStatic": true,
+              "tolerance": 2,
+              "timeout": 3000,
+              "contrast": true,
+              "strict": false,
+              "snapshots": false,
+              "browserGpuMode": "auto"
+            }
+          },
+          "createdAt": 1792984564625,
+          "contentHash": "2d3d4a49ffccabcf10ca5b8f711d58abe2a3bc62f48e1e29c788d7dd0e61fe6f",
+          "revision": "274d3c0e-4227-4a4c-842a-d94036a3e92e",
+          "inputFingerprint": "f4c9d02dcdc86cb1f8a304c333c56144cd26ae36cfa619bbf0b2877d3929274d",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision",
+          "status": "cleaned",
+          "cleanedAfterRender": "6418a36a-20c4-4af1-a27f-b973169dc649"
+        }
+      ],
+      "aa8d16c1-77f1-4385-9fb8-eeaaa646aabf": [
+        {
+          "id": "024a37fe-a571-44a0-8a3e-55fe0c31fb23",
+          "scope": "project",
+          "report": "C:\\Users\\9htru\\OneDrive\\Desktop\\Commercial_Projects_Archive\\ZeroPDF_Studio\\showcase_video\\.hyperframes\\artifacts\\checks\\024a37fe-a571-44a0-8a3e-55fe0c31fb23.json",
+          "metadata": {
+            "ok": true,
+            "browserSkipped": false,
+            "options": {
+              "samples": 9,
+              "atTransitions": false,
+              "maxIssues": 80,
+              "collapseStatic": true,
+              "tolerance": 2,
+              "timeout": 3000,
+              "contrast": true,
+              "strict": false,
+              "snapshots": false,
+              "browserGpuMode": "auto"
+            }
+          },
+          "createdAt": 1792984632431,
+          "contentHash": "9d64a0bbb9e170aa4eefba6bd89e4ed8981c2c3a9e96d445e9e25535436a3709",
+          "revision": "aa8d16c1-77f1-4385-9fb8-eeaaa646aabf",
+          "inputFingerprint": "d7ddeb936d2ad329459e5c37350097e801596e75f21835911689559bae8e14b0",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision"
+        }
+      ]
+    },
+    "unversioned": []
+  },
+  "snapshots": {
+    "latest": null,
+    "revisions": {},
+    "unversioned": []
+  },
+  "renders": {
+    "latest": {
+      "id": "6418a36a-20c4-4af1-a27f-b973169dc649",
+      "completedAt": 1792984778048,
+      "output": "c:\\Users\\9htru\\OneDrive\\Desktop\\Commercial_Projects_Archive\\ZeroPDF_Studio\\ZeroStudio_Showcase_9x16.mp4",
+      "status": "completed",
+      "revision": "aa8d16c1-77f1-4385-9fb8-eeaaa646aabf"
+    },
+    "retainedRevisions": [
+      "aa8d16c1-77f1-4385-9fb8-eeaaa646aabf",
+      "ff5576e0-cbaa-4b28-aead-a5ef00312224"
+    ]
+  },
+  "pendingArtifactCleanup": []
+}
