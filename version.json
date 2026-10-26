@@ -1,8 +1,12 @@
 {
-  "version": "2.7.0",
+  "version": "2.7.1",
   "release_date": "2026-10-26",
-  "title": "Bản Nâng Cấp V2.7.0: Bộ 5 Vũ Khí Hủy Diệt Đối Thủ, Mở Rộng 3-5 Giọng AI Quốc Gia & Kho SFX Vô Hạn",
+  "title": "Bản Nâng Cấp V2.7.1: Hộp Nhập Mã Giảm Giá Trực Tiếp, Bộ Lọc Link Video Thông Minh & Điều Hướng Local Bridge",
   "changelog": [
+    "Hộp nhập mã giảm giá & đối tác trực tiếp: Khách hàng có thể nhập mã giảm giá (VD: VIP10, MMO, BANBE) trực tiếp tại Bảng Giá và Màn Thanh Toán VietQR; giá tiền và mã QR tự động giảm 10% theo thời gian thực",
+    "Bộ lọc link video thông minh (Smart URL Sanitizer): Tự động bóc tách link gốc bằng Regex, loại bỏ hoàn toàn các đoạn văn bản kèm theo khi copy từ app di động TikTok/Douyin",
+    "Hệ thống điều hướng & Modal kích hoạt Local Video Bridge: Tự động hướng dẫn 3 bước kích hoạt BAT_DAU_STUDIO_VIDEO.bat khi người dùng dán link Douyin/Shorts trên bản Web, kèm nút tải Desktop ZIP 1 chạm",
+    "Cơ chế Key VIP Founder trải nghiệm không giới hạn thiết bị (Hardware-lock bypass) cho đối tác thẩm định",
     "Auto-Emoji Magic Engine: Tự động phát hiện 60+ từ khóa cảm xúc, chèn icon động nảy vào phụ đề MrBeast tăng giữ chân triệu view",
     "Smart Silence Remover: 1-Click tự động phát hiện và cắt sạch khoảng lặng >0.35s bằng FFmpeg silenceremove",
     "Dual-Layer Ambient Depth: Chuyển video ngang 16:9 sang 9:16 dọc điện ảnh không mất góc, không viền đen (Nền mờ quang học 25px)",
