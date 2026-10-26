@@ -87,7 +87,7 @@ const TRANSLATIONS = {
         aff_register_btn: "Đăng Ký STK Qua Zalo",
 
         // Modals & Pricing Header
-        pro_modal_title: "ZeroStudio Desktop Pro",
+        pro_modal_title: "ZeroStudio Pro & Ultra MMO Master",
         pro_modal_sub: "Khai phá 100% sức mạnh phần cứng máy tính • Batch Processing 500+ files • Không giới hạn",
 
         // Founder 100-Slot Tracker
@@ -118,9 +118,9 @@ const TRANSLATIONS = {
         pro_tier_price: "299.000đ",
         pro_tier_price_std: "599.000đ",
         pro_tier_old_price: "599.000đ",
-        pro_tier_period: "/ Năm đầu",
-        pro_tier_period_std: "/ Năm",
-        pro_tier_desc: "Sử dụng vĩnh viễn v2.5 trên 1 thiết bị + 365 ngày cập nhật OTA (Gia hạn 199k/năm).",
+        pro_tier_period: "/ Trọn đời (1 Máy)",
+        pro_tier_period_std: "/ Trọn đời (1 Máy)",
+        pro_tier_desc: "Bản quyền vĩnh viễn trên 1 thiết bị + 365 ngày cập nhật tính năng mới (Gia hạn chỉ 199k/năm).",
         pro_feat_1: "Tải video đơn lẻ không watermark không giới hạn",
         pro_feat_2: "<strong>Nén PDF 3 Preset:</strong> Giảm 88% dung lượng chuẩn in ấn & thuế",
         pro_feat_3: "<strong>Bóc tách phụ đề & dịch SRT:</strong> Trích xuất text đa ngôn ngữ",
@@ -136,9 +136,9 @@ const TRANSLATIONS = {
         ultra_tier_price: "699.000đ",
         ultra_tier_price_std: "1.490.000đ",
         ultra_tier_old_price: "1.490.000đ",
-        ultra_tier_period: "/ Năm đầu",
-        ultra_tier_period_std: "/ Năm",
-        ultra_tier_desc: "Dành riêng cho Dân Reup MMO & Studio Content cần kháng quét liên tục (Gia hạn 499k/năm).",
+        ultra_tier_period: "/ Trọn đời (2 Máy)",
+        ultra_tier_period_std: "/ Trọn đời (2 Máy)",
+        ultra_tier_desc: "Bản quyền vĩnh viễn trên 2 thiết bị cùng lúc + 365 ngày cập nhật vũ khí MMO (Gia hạn chỉ 499k/năm).",
         ultra_feat_1: "<strong>Bàn Làm Việc Hàng Loạt:</strong> Treo máy chạy 500 file, chuông báo xong",
         ultra_feat_2: "<strong>AI Auto-Crop 9:16 Dual-Layer:</strong> Biến 16:9 sang 9:16 nền mờ caustics",
         ultra_feat_3: "<strong>Audio Pitch & Speed Randomizer:</strong> Đổi vi tần số hỗ trợ kháng quét bản quyền",
@@ -337,7 +337,7 @@ const TRANSLATIONS = {
         aff_register_btn: "Register Payout via Zalo",
 
         // Modals & Pricing Header
-        pro_modal_title: "ZeroStudio Desktop Pro",
+        pro_modal_title: "ZeroStudio Pro & Ultra MMO Master",
         pro_modal_sub: "Unlock 100% raw hardware power • Batch Processing 500+ files • No limits",
 
         // Founder 100-Slot Tracker
@@ -368,8 +368,8 @@ const TRANSLATIONS = {
         pro_tier_price: "299.000đ (~$12)",
         pro_tier_price_std: "599.000đ (~$24)",
         pro_tier_old_price: "599.000đ",
-        pro_tier_period: "/ 1st Year",
-        pro_tier_period_std: "/ Year",
+        pro_tier_period: "/ Lifetime (1 Device)",
+        pro_tier_period_std: "/ Lifetime (1 Device)",
         pro_tier_desc: "Lifetime ownership of v2.5 on 1 device + 365 days of OTA updates (Renewal: 199k/year).",
         pro_feat_1: "Unlimited single video extraction without watermark",
         pro_feat_2: "<strong>Smart PDF 3-Preset:</strong> Reduce up to 88% size for print & tax",
@@ -386,8 +386,8 @@ const TRANSLATIONS = {
         ultra_tier_price: "699.000đ (~$28)",
         ultra_tier_price_std: "1.490.000đ (~$60)",
         ultra_tier_old_price: "1.490.000đ",
-        ultra_tier_period: "/ 1st Year",
-        ultra_tier_period_std: "/ Year",
+        ultra_tier_period: "/ Lifetime (2 Devices)",
+        ultra_tier_period_std: "/ Lifetime (2 Devices)",
         ultra_tier_desc: "Engineered for MMO Reup Creators & Content Studios needing continuous algorithm evasion (Renewal: 499k/year).",
         ultra_feat_1: "<strong>Batch Workbench:</strong> Run 500 files in background with sound chime",
         ultra_feat_2: "<strong>AI Auto-Crop 9:16 Dual-Layer:</strong> Transform 16:9 to 9:16 caustics blur",
@@ -619,8 +619,8 @@ const TRANSLATIONS = {
         pro_tier_price: "299.000đ (~88元)",
         pro_tier_price_std: "599.000đ (~175元)",
         pro_tier_old_price: "599.000đ",
-        pro_tier_period: "/ 首年",
-        pro_tier_period_std: "/ 年",
+        pro_tier_period: "/ 终身版 (1台设备)",
+        pro_tier_period_std: "/ 终身版 (1台设备)",
         pro_tier_desc: "永久拥有v2.5版单设备授权 + 赠送365天算法OTA云端升级 (续费仅199k/年)。",
         pro_feat_1: "单视频无水印无限次极速提取",
         pro_feat_2: "<strong>智能PDF 3档预设：</strong> 体积骤降88% 满足发票与印刷要求",
@@ -637,8 +637,8 @@ const TRANSLATIONS = {
         ultra_tier_price: "699.000đ (~200元)",
         ultra_tier_price_std: "1.490.000đ (~430元)",
         ultra_tier_old_price: "1.490.000đ",
-        ultra_tier_period: "/ 首年",
-        ultra_tier_period_std: "/ 年",
+        ultra_tier_period: "/ 终身版 (2台设备)",
+        ultra_tier_period_std: "/ 终身版 (2台设备)",
         ultra_tier_desc: "专为出海短视频矩阵、搬运MMO及批量创作工作室打造 (续费仅499k/年)。",
         ultra_feat_1: "<strong>批量流水线工作台：</strong> 后台自动排队运行500个视频 完工铃声提醒",
         ultra_feat_2: "<strong>AI 9:16双层智能裁切：</strong> 横屏秒变竖屏 边缘焦散微虚化",
@@ -838,7 +838,7 @@ const TRANSLATIONS = {
         aff_register_btn: "Zaloで振込先口座を登録",
 
         // Modals & Pricing Header
-        pro_modal_title: "ZeroStudio Desktop Pro",
+        pro_modal_title: "ZeroStudio Pro & Ultra MMO Master",
         pro_modal_sub: "ハードウェア性能を100%解放 • 500ファイル以上の高速バッチ処理 • 制限なし",
 
         // Founder 100-Slot Tracker
@@ -869,8 +869,8 @@ const TRANSLATIONS = {
         pro_tier_price: "299.000đ (~1,800円)",
         pro_tier_price_std: "599.000đ (~3,600円)",
         pro_tier_old_price: "599.000đ",
-        pro_tier_period: "/ 初年度",
-        pro_tier_period_std: "/ 年",
+        pro_tier_period: "/ 永久版 (1台)",
+        pro_tier_period_std: "/ 终身版 (1台设备)",
         pro_tier_desc: "1台の端末でv2.5を永久保有 + 365日間のアルゴリズムOTAアップデート付属 (更新は年199k)。",
         pro_feat_1: "透かしなし単一動画抽出（無制限）",
         pro_feat_2: "<strong>スマートPDF 3プリセット：</strong> 容量最大88%削減 印刷・電子申告対応",
@@ -887,8 +887,8 @@ const TRANSLATIONS = {
         ultra_tier_price: "699.000đ (~4,200円)",
         ultra_tier_price_std: "1.490.000đ (~9,000円)",
         ultra_tier_old_price: "1.490.000đ",
-        ultra_tier_period: "/ 初年度",
-        ultra_tier_period_std: "/ 年",
+        ultra_tier_period: "/ 永久版 (2台)",
+        ultra_tier_period_std: "/ 终身版 (2台设备)",
         ultra_tier_desc: "大量動画投稿クリエイター＆スタジオ向け（更新は年499k）。",
         ultra_feat_1: "<strong>一括バッチワークベンチ：</strong> 500本自動処理・完了通知音",
         ultra_feat_2: "<strong>AI 9:16デュアルレイヤー：</strong> 横動画を縦動画へ変換（背景ぼかし）",

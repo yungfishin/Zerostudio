@@ -3269,7 +3269,7 @@ function renderFounderSlotState() {
         }
         if (proPriceVal) proPriceVal.textContent = dict.pro_tier_price || "299.000đ";
         if (proOldPrice) { proOldPrice.textContent = dict.pro_tier_old_price || "599.000đ"; proOldPrice.style.display = "inline"; }
-        if (proPricePeriod) proPricePeriod.textContent = dict.pro_tier_period || "/ Năm đầu";
+        if (proPricePeriod) proPricePeriod.textContent = dict.pro_tier_period || "/ Trọn đời (1 Máy)";
         if (proBtnText) proBtnText.textContent = dict.btn_choose_pro || "Đăng Ký Gói Pro (299k)";
 
         // Ultra Card
@@ -3279,7 +3279,7 @@ function renderFounderSlotState() {
         }
         if (ultraPriceVal) ultraPriceVal.textContent = dict.ultra_tier_price || "699.000đ";
         if (ultraOldPrice) { ultraOldPrice.textContent = dict.ultra_tier_old_price || "1.490.000đ"; ultraOldPrice.style.display = "inline"; }
-        if (ultraPricePeriod) ultraPricePeriod.textContent = dict.ultra_tier_period || "/ Năm đầu";
+        if (ultraPricePeriod) ultraPricePeriod.textContent = dict.ultra_tier_period || "/ Trọn đời (2 Máy)";
         if (ultraBtnText) ultraBtnText.textContent = dict.btn_choose_ultra || "Đăng Ký Gói Ultra (699k)";
     } else {
         // STATE 2: POST-FOUNDER STANDARD (slots >= 100)
@@ -3295,7 +3295,7 @@ function renderFounderSlotState() {
         }
         if (proPriceVal) proPriceVal.textContent = dict.pro_tier_price_std || "599.000đ";
         if (proOldPrice) proOldPrice.style.display = "none";
-        if (proPricePeriod) proPricePeriod.textContent = dict.pro_tier_period_std || "/ Năm";
+        if (proPricePeriod) proPricePeriod.textContent = dict.pro_tier_period_std || "/ Trọn đời (1 Máy)";
         if (proBtnText) proBtnText.textContent = dict.btn_choose_pro_std || "Đăng Ký Gói Pro (599k)";
 
         // Ultra Card -> Standard
@@ -3305,7 +3305,7 @@ function renderFounderSlotState() {
         }
         if (ultraPriceVal) ultraPriceVal.textContent = dict.ultra_tier_price_std || "1.490.000đ";
         if (ultraOldPrice) ultraOldPrice.style.display = "none";
-        if (ultraPricePeriod) ultraPricePeriod.textContent = dict.ultra_tier_period_std || "/ Năm";
+        if (ultraPricePeriod) ultraPricePeriod.textContent = dict.ultra_tier_period_std || "/ Trọn đời (2 Máy)";
         if (ultraBtnText) ultraBtnText.textContent = dict.btn_choose_ultra_std || "Đăng Ký Gói Ultra (1.490k)";
     }
 }
@@ -3331,11 +3331,50 @@ window.openProModal = function(reason, targetTier = 'pro') {
         modal.style.display = 'flex';
 
         const noticeEl = document.getElementById('pro-modal-trigger-notice');
+        const titleEl = document.getElementById('pro-trigger-title');
         const featureEl = document.getElementById('pro-trigger-feature-name');
-        if (noticeEl && featureEl) {
+        const tierNameEl = document.getElementById('pro-trigger-tier-name');
+        const iconBox = document.getElementById('pro-trigger-icon-box');
+        const iconEl = document.getElementById('pro-trigger-icon');
+
+        // Clear previous card glow pulse
+        document.querySelectorAll('.pricing-card').forEach(c => {
+            c.classList.remove('pulse-ultra');
+            c.classList.remove('pulse-pro');
+        });
+
+        if (noticeEl) {
             if (reason) {
-                featureEl.textContent = reason;
+                const isUltra = (targetTier === 'ultra');
+                if (titleEl) {
+                    titleEl.textContent = isUltra ? "👑 YÊU CẦU ĐĂNG KÝ GÓI ULTRA MMO MASTER" : "💎 YÊU CẦU ĐĂNG KÝ GÓI DESKTOP PRO";
+                    titleEl.style.color = isUltra ? "#fbbf24" : "#e879f9";
+                }
+                if (iconEl) {
+                    iconEl.textContent = isUltra ? "👑" : "💎";
+                }
+                if (iconBox) {
+                    iconBox.style.background = isUltra ? "rgba(245, 158, 11, 0.25)" : "rgba(168, 85, 247, 0.25)";
+                    iconBox.style.border = isUltra ? "1px solid rgba(245, 158, 11, 0.6)" : "1px solid rgba(168, 85, 247, 0.6)";
+                }
+                if (featureEl) {
+                    featureEl.textContent = reason;
+                    featureEl.style.color = isUltra ? "#fbbf24" : "#e879f9";
+                    featureEl.style.textShadow = isUltra ? "0 0 10px rgba(251, 191, 36, 0.5)" : "0 0 10px rgba(232, 121, 249, 0.5)";
+                }
+                if (tierNameEl) {
+                    tierNameEl.textContent = isUltra ? "ZeroStudio Ultra MMO Master (699.000đ trọn đời - Dùng 2 Thiết Bị)" : "ZeroStudio Desktop Pro (299.000đ trọn đời - Dùng 1 Thiết Bị)";
+                    tierNameEl.style.color = isUltra ? "#fbbf24" : "#e879f9";
+                }
+                noticeEl.style.background = isUltra ? "rgba(245, 158, 11, 0.15)" : "rgba(168, 85, 247, 0.15)";
+                noticeEl.style.border = isUltra ? "1px solid rgba(245, 158, 11, 0.55)" : "1px solid rgba(168, 85, 247, 0.55)";
                 noticeEl.style.display = 'block';
+
+                // Highlight and pulse the matching card
+                const targetCard = isUltra ? document.querySelector('.card-ultra') : document.querySelector('.card-pro');
+                if (targetCard) {
+                    targetCard.classList.add(isUltra ? 'pulse-ultra' : 'pulse-pro');
+                }
             } else {
                 noticeEl.style.display = 'none';
             }
