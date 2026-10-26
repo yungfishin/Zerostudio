@@ -15294,10 +15294,29 @@
 
                         </div>
 
-                        <span style="padding: 4px 10px; background: rgba(236, 72, 153, 0.2); border: 1px solid #ec4899; color: #f472b6; border-radius: 999px; font-size: 0.75rem; font-weight: 800;">-10% TỰ ĐỘNG</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+
+                            <span style="padding: 4px 10px; background: rgba(236, 72, 153, 0.2); border: 1px solid #ec4899; color: #f472b6; border-radius: 999px; font-size: 0.75rem; font-weight: 800;">-10% TỰ ĐỘNG</span>
+
+                            <button type="button" onclick="window.removePromoCode()" style="background: transparent; border: 1px solid rgba(239, 68, 68, 0.5); color: #f87171; border-radius: 999px; font-size: 0.75rem; padding: 3px 8px; cursor: pointer;">✕ Bỏ mã</button>
+
+                        </div>
 
                     </div>
 
+                </div>
+
+                <!-- Inline Promo Trigger on Pricing View -->
+                <div id="pricing-promo-trigger" style="margin-bottom: 1.15rem; text-align: center;">
+                    <div id="pricing-promo-prompt" style="font-size: 0.84rem; color: #94a3b8;">
+                        🎟️ Bạn có mã giảm giá đối tác hoặc KOC? 
+                        <a href="javascript:void(0)" onclick="window.togglePricingPromoBox(true)" style="color: #38bdf8; font-weight: 700; text-decoration: underline; margin-left: 4px;">Nhập mã tại đây</a>
+                    </div>
+                    <div id="pricing-promo-input-box" style="display: none; max-width: 380px; margin: 8px auto 0; gap: 8px; justify-content: center;">
+                        <input type="text" id="pricing-promo-input" placeholder="Nhập mã (VD: VIP10, MMO, BANBE)..." style="flex: 1; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 7px 12px; color: #fff; font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase;" />
+                        <button type="button" onclick="window.applyPricingPromoCode()" style="background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff; border: none; border-radius: 8px; padding: 7px 14px; font-weight: 700; font-size: 0.82rem; cursor: pointer; white-space: nowrap;">Áp Dụng</button>
+                        <button type="button" onclick="window.togglePricingPromoBox(false)" style="background: rgba(255,255,255,0.08); color: #94a3b8; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 7px 10px; font-size: 0.8rem; cursor: pointer;">✕</button>
+                    </div>
                 </div>
 
 
@@ -15584,6 +15603,25 @@
 
                             🎁 Đã áp dụng mã đối tác <span id="checkout-ref-tag" style="font-weight: 800; color: #fbbf24; font-family: 'JetBrains Mono', monospace;">...</span>: Giảm ngay 10%!
 
+                        </div>
+
+                        <!-- PROMO CODE INPUT BOX IN CHECKOUT -->
+                        <div class="checkout-promo-box" style="margin-bottom: 12px; background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 10px 12px; text-align: left;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #cbd5e1; display: flex; align-items: center; gap: 6px;">
+                                    <span>🎟️</span> Mã Giảm Giá / Mã Đối Tác:
+                                </span>
+                                <span id="promo-status-hint" style="font-size: 0.75rem; color: #f472b6; font-weight: 700; display: none;">-10% TỰ ĐỘNG</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="checkout-promo-input" placeholder="Nhập mã (VD: VIP10, MMO, BANBE)..." style="flex: 1; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 7px 10px; color: #fff; font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase;" />
+                                <button type="button" id="btn-apply-promo" onclick="window.applyPromoCode()" style="background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff; border: none; border-radius: 8px; padding: 7px 14px; font-weight: 700; font-size: 0.82rem; cursor: pointer; white-space: nowrap;">
+                                    Áp Dụng
+                                </button>
+                                <button type="button" id="btn-remove-promo" onclick="window.removePromoCode()" style="display: none; background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; padding: 7px 10px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;">
+                                    ✕ Bỏ mã
+                                </button>
+                            </div>
                         </div>
 
 

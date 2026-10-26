@@ -3437,6 +3437,28 @@ window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
         if (discountPill) discountPill.style.display = 'none';
     }
 
+    // Sync Promo Code Input State in Checkout Modal
+    const promoInput = document.getElementById('checkout-promo-input');
+    const btnRemovePromo = document.getElementById('btn-remove-promo');
+    const btnApplyPromo = document.getElementById('btn-apply-promo');
+    const promoHint = document.getElementById('promo-status-hint');
+
+    if (promoInput) {
+        if (activeRef) {
+            promoInput.value = activeRef;
+            promoInput.disabled = true;
+            if (btnApplyPromo) btnApplyPromo.style.display = 'none';
+            if (btnRemovePromo) btnRemovePromo.style.display = 'inline-block';
+            if (promoHint) promoHint.style.display = 'inline-block';
+        } else {
+            promoInput.value = '';
+            promoInput.disabled = false;
+            if (btnApplyPromo) btnApplyPromo.style.display = 'inline-block';
+            if (btnRemovePromo) btnRemovePromo.style.display = 'none';
+            if (promoHint) promoHint.style.display = 'none';
+        }
+    }
+
     const memoValEl = document.getElementById('order-memo-val');
     if (memoValEl) memoValEl.textContent = memo;
 
@@ -6679,9 +6701,16 @@ window.initAffiliateSystem = function() {
         const banner = document.getElementById('affiliate-discount-banner');
         const codeEl = document.getElementById('affiliate-active-code');
 
+        const pricingPromoTrigger = document.getElementById('pricing-promo-trigger');
+        const proPriceEl = document.getElementById('pro-current-price');
+        const ultraPriceEl = document.getElementById('ultra-current-price');
+
         if (activeRef) {
             if (banner) banner.style.display = 'block';
             if (codeEl) codeEl.textContent = activeRef;
+            if (pricingPromoTrigger) pricingPromoTrigger.style.display = 'none';
+            if (proPriceEl) proPriceEl.innerHTML = '269.000đ <span style="font-size: 0.78rem; color: #f472b6; font-weight: 700;">(-10%)</span>';
+            if (ultraPriceEl) ultraPriceEl.innerHTML = '629.000đ <span style="font-size: 0.78rem; color: #f472b6; font-weight: 700;">(-10%)</span>';
             if (refParam) {
                 setTimeout(() => {
                     showToast(`🎉 Đã kích hoạt mã ưu đãi ${activeRef}: Giảm 10% toàn bộ gói!`, 'success');
@@ -6689,10 +6718,76 @@ window.initAffiliateSystem = function() {
             }
         } else {
             if (banner) banner.style.display = 'none';
+            if (pricingPromoTrigger) pricingPromoTrigger.style.display = 'block';
+            if (proPriceEl) proPriceEl.textContent = '299.000đ';
+            if (ultraPriceEl) ultraPriceEl.textContent = '699.000đ';
         }
     } catch (e) {
         console.warn('[AFFILIATE] Init error:', e);
     }
+};
+
+window.applyPromoCode = function() {
+    const input = document.getElementById('checkout-promo-input');
+    const rawCode = input ? input.value.trim().toUpperCase() : '';
+    if (!rawCode) {
+        showToast('Vui lòng nhập mã giảm giá hoặc mã đối tác!', 'warning');
+        return;
+    }
+    const cleanCode = rawCode.replace(/[^A-Z0-9_-]/g, '').slice(0, 20);
+    if (!cleanCode) {
+        showToast('Mã giảm giá không hợp lệ!', 'error');
+        return;
+    }
+    localStorage.setItem('zerostudio_ref', cleanCode);
+    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay 10%!`, 'success');
+    if (typeof launchGoldConfetti === 'function') launchGoldConfetti();
+    if (typeof initAffiliateSystem === 'function') initAffiliateSystem();
+    window.openVietQrCheckout(window.selectedTier || 'pro', !!window.isCurrentOrderRenewal);
+};
+
+window.removePromoCode = function() {
+    localStorage.removeItem('zerostudio_ref');
+    const input = document.getElementById('checkout-promo-input');
+    if (input) input.value = '';
+    showToast('Đã hủy áp dụng mã giảm giá.', 'info');
+    if (typeof initAffiliateSystem === 'function') initAffiliateSystem();
+    const pricingView = document.getElementById('pro-view-pricing');
+    if (pricingView && pricingView.style.display === 'block') {
+        // stay in pricing view
+    } else {
+        window.openVietQrCheckout(window.selectedTier || 'pro', !!window.isCurrentOrderRenewal);
+    }
+};
+
+window.togglePricingPromoBox = function(show) {
+    const box = document.getElementById('pricing-promo-input-box');
+    const prompt = document.getElementById('pricing-promo-prompt');
+    if (box) box.style.display = show ? 'flex' : 'none';
+    if (prompt) prompt.style.display = show ? 'none' : 'block';
+    if (show) {
+        const inp = document.getElementById('pricing-promo-input');
+        if (inp) inp.focus();
+    }
+};
+
+window.applyPricingPromoCode = function() {
+    const input = document.getElementById('pricing-promo-input');
+    const rawCode = input ? input.value.trim().toUpperCase() : '';
+    if (!rawCode) {
+        showToast('Vui lòng nhập mã giảm giá hoặc mã đối tác!', 'warning');
+        return;
+    }
+    const cleanCode = rawCode.replace(/[^A-Z0-9_-]/g, '').slice(0, 20);
+    if (!cleanCode) {
+        showToast('Mã giảm giá không hợp lệ!', 'error');
+        return;
+    }
+    localStorage.setItem('zerostudio_ref', cleanCode);
+    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay 10%!`, 'success');
+    if (typeof launchGoldConfetti === 'function') launchGoldConfetti();
+    if (typeof initAffiliateSystem === 'function') initAffiliateSystem();
+    window.togglePricingPromoBox(false);
 };
 
 window.openAffiliateModal = function() {
