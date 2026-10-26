@@ -14878,7 +14878,7 @@
 
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px; color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
 
-                    BẢO CHỨNG CHẤT LƯỢNG • 1,480+ ĐÁNH GIÁ 5 SAO
+                    TRẢI NGHIỆM THẬT • ĐÁNH GIÁ TỪ KHÁCH HÀNG THỰC TẾ
 
                 </div>
 
@@ -14896,13 +14896,13 @@
 
                 <div class="reviews-score-block">
 
-                    <div class="reviews-big-number">4.9</div>
+                    <div class="reviews-big-number" id="reviews-big-number">5.0</div>
 
                     <div class="reviews-score-meta">
 
-                        <div class="reviews-stars-row">★★★★★</div>
+                        <div class="reviews-stars-row" id="reviews-stars-row">★★★★★</div>
 
-                        <div class="reviews-count-text" data-i18n="reviews_count_text">1,482+ Đánh Giá Hài Lòng • 98.6% Khuyên Dùng</div>
+                        <div class="reviews-count-text" id="reviews-count-text" data-i18n="reviews_count_text">0 Đánh Giá • 100% Khách Hàng Trải Nghiệm Thật</div>
 
                     </div>
 
@@ -14916,7 +14916,7 @@
 
                         <span>5★</span>
 
-                        <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 94%;"></div></div>
+                        <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 0%;"></div></div>
 
                         <span>94%</span>
 
@@ -14926,7 +14926,7 @@
 
                         <span>4★</span>
 
-                        <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 5%;"></div></div>
+                        <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 0%;"></div></div>
 
                         <span>5%</span>
 
@@ -14936,7 +14936,7 @@
 
                         <span>3★</span>
 
-                        <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 1%;"></div></div>
+                        <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 0%;"></div></div>
 
                         <span>1%</span>
 
@@ -14962,11 +14962,67 @@
 
 
 
+            
+            <!-- 100% REAL INLINE CUSTOMER REVIEW & STAR VOTING DECK -->
+            <div class="inline-review-deck" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 18px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); backdrop-filter: blur(14px);">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 1.15rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 0.95rem;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.6rem;">✍️</span>
+                        <div>
+                            <div style="font-weight: 800; color: #fff; font-size: 1.05rem; letter-spacing: -0.01em;">Bình Luận & Vote Sao Trải Nghiệm Thật</div>
+                            <div style="font-size: 0.8rem; color: #94a3b8;">Ý kiến của bạn sẽ được hiển thị công khai ngay lập tức không qua kiểm duyệt ảo</div>
+                        </div>
+                    </div>
+                    <!-- Live Star Rating Selector -->
+                    <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                        <div class="review-star-picker" id="inline-star-picker" style="display: flex; gap: 4px;">
+                            <button type="button" class="star-pick-btn active" data-star="1" onclick="setInlineReviewStars(1)" style="background: none; border: none; font-size: 1.55rem; color: #f59e0b; cursor: pointer; padding: 0 2px;">★</button>
+                            <button type="button" class="star-pick-btn active" data-star="2" onclick="setInlineReviewStars(2)" style="background: none; border: none; font-size: 1.55rem; color: #f59e0b; cursor: pointer; padding: 0 2px;">★</button>
+                            <button type="button" class="star-pick-btn active" data-star="3" onclick="setInlineReviewStars(3)" style="background: none; border: none; font-size: 1.55rem; color: #f59e0b; cursor: pointer; padding: 0 2px;">★</button>
+                            <button type="button" class="star-pick-btn active" data-star="4" onclick="setInlineReviewStars(4)" style="background: none; border: none; font-size: 1.55rem; color: #f59e0b; cursor: pointer; padding: 0 2px;">★</button>
+                            <button type="button" class="star-pick-btn active" data-star="5" onclick="setInlineReviewStars(5)" style="background: none; border: none; font-size: 1.55rem; color: #f59e0b; cursor: pointer; padding: 0 2px;">★</button>
+                        </div>
+                        <span id="inline-star-sentiment" style="font-size: 0.84rem; font-weight: 700; color: #fbbf24; min-width: 140px;">5★ Cực kỳ xuất sắc! 🔥</span>
+                    </div>
+                </div>
+
+                <form onsubmit="submitInlineCustomerReview(event)" style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+                        <div>
+                            <label style="font-size: 0.8rem; color: #cbd5e1; display: block; margin-bottom: 5px; font-weight: 600;">Họ tên hoặc Biệt danh *</label>
+                            <input type="text" id="inline-review-name" placeholder="Ví dụ: Hoàng Long, Chị Lan Kế Toán..." style="width: 100%; box-sizing: border-box; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 9px 14px; color: #fff; font-size: 0.88rem; outline: none;" required />
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: #cbd5e1; display: block; margin-bottom: 5px; font-weight: 600;">Vai trò / Lĩnh vực công việc</label>
+                            <select id="inline-review-role" style="width: 100%; box-sizing: border-box; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 9px 14px; color: #fff; font-size: 0.88rem; outline: none;">
+                                <option value="mmo" selected>Dân Video MMO & Reup Douyin</option>
+                                <option value="office">Kế Toán & Nhân Viên Văn Phòng</option>
+                                <option value="student">Học Sinh & Sinh Viên</option>
+                                <option value="freelance">Designer / Freelancer</option>
+                                <option value="business">Chủ Doanh Nghiệp / Studio</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 0.8rem; color: #cbd5e1; display: block; margin-bottom: 5px; font-weight: 600;">Ô bình luận & chia sẻ trải nghiệm thực tế *</label>
+                        <textarea id="inline-review-comment" rows="3" placeholder="Chia sẻ cảm nhận, hiệu quả sử dụng tính năng hoặc ý kiến đóng góp của bạn để chúng mình hoàn thiện sản phẩm hơn nhé..." style="width: 100%; box-sizing: border-box; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 0.88rem; line-height: 1.5; resize: vertical; outline: none;" required></textarea>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 4px;">
+                        <span style="font-size: 0.78rem; color: #64748b;">🔒 Đánh giá thật 100% • Khách hàng thật • Không seeding ảo</span>
+                        <button type="submit" class="btn-glow-action" style="border-radius: 10px; padding: 10px 24px; font-size: 0.88rem; font-weight: 700; background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);">
+                            <span>🚀 Gửi Đánh Giá Ngay</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             <!-- Filter Pills -->
 
             <div class="reviews-filter-deck">
 
-                <button class="review-filter-pill active" onclick="filterReviews('all', this)" data-i18n="filter_all">Tất Cả (1,480+)</button>
+                <button class="review-filter-pill active" onclick="filterReviews('all', this)" data-i18n="filter_all">Tất Cả Đánh Giá</button>
 
                 <button class="review-filter-pill" onclick="filterReviews('5star', this)" data-i18n="filter_5star">5 Sao ⭐</button>
 
@@ -14984,7 +15040,9 @@
 
             <div class="reviews-grid" id="reviews-cards-grid">
 
-                <!-- Dynamically rendered via app.js?v=2.7.0"reviews-load-more-wrap" style="text-align: center; margin-top: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <!-- Dynamically rendered via app.js -->
+            </div>
+            <div id="reviews-load-more-wrap" style="text-align: center; margin-top: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 8px;">
 
                 <button id="btn-load-more-reviews" class="btn-outline" onclick="loadMoreReviews()" style="border-radius: 999px; padding: 10px 28px; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; background: rgba(245, 158, 11, 0.08); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15);">
 
@@ -15339,7 +15397,7 @@
 
                         <div id="tracker-counter-pill" class="tracker-counter-pill">
 
-                            <span id="tracker-slots-remaining-text">Chỉ còn <strong>12</strong> / 100 suất</span>
+                            <span id="tracker-slots-remaining-text">Còn lại <strong>100</strong> / 100 suất ưu đãi</span>
 
                         </div>
 
@@ -15349,7 +15407,7 @@
 
                     <div class="tracker-progress-track">
 
-                        <div id="tracker-progress-fill" class="tracker-progress-fill" style="width: 88%;"></div>
+                        <div id="tracker-progress-fill" class="tracker-progress-fill" style="width: 0%;"></div>
 
                     </div>
 
@@ -15359,7 +15417,7 @@
 
                         <span id="tracker-explain-text" class="tracker-explain-text">
 
-                            🔥 Đã đăng ký <strong>88/100</strong> suất ưu đãi. Khi đủ 100 suất, hệ thống tự động khóa cổng ưu đãi và chuyển về giá niêm yết chính thức.
+                            🔥 Đã đăng ký <strong>0/100</strong> suất ưu đãi thật. Số lượng suất giảm thực tế theo từng giao dịch thanh toán thành công.
 
                         </span>
 

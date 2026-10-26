@@ -3198,11 +3198,11 @@ function fallbackCopyText(text) {
 function getFounderSlotsClaimed() {
     let stored = localStorage.getItem('zerostudio_founder_slots_claimed');
     if (!stored) {
-        // Natural realistic starting counter: 88 claimed slots
-        stored = '88';
+        // Sòng phẳng & 100% Khách hàng thật: Bắt đầu từ 0 suất
+        stored = '0';
         localStorage.setItem('zerostudio_founder_slots_claimed', stored);
     }
-    return Math.min(100, Math.max(0, parseInt(stored, 10) || 88));
+    return Math.min(100, Math.max(0, parseInt(stored, 10) || 0));
 }
 
 function renderFounderSlotState() {
@@ -3244,7 +3244,7 @@ function renderFounderSlotState() {
             pill.innerHTML = `${prefix} <strong>${slotsRemaining}</strong> / 100 ${suffix}`;
         }
         if (subtext) {
-            const tmpl = dict.tracker_explain_founder || "🔥 Đã đăng ký {slots}/100 suất ưu đãi. Khi đủ 100 suất, hệ thống sẽ tự động chuyển về giá niêm yết chính thức.";
+            const tmpl = dict.tracker_explain_founder || "🔥 Đã đăng ký {slots}/100 suất ưu đãi thật. Số lượng suất giảm thực tế theo từng giao dịch thanh toán thành công.";
             subtext.innerHTML = tmpl.replace('{slots}', `<strong>${slots}</strong>`);
         }
 
@@ -3396,22 +3396,120 @@ window.showProPricingView = function() {
 
 window.selectedTier = 'pro';
 
-// Dynamic Promo / Discount Rate Calculator (Multi-Tier Marketing Engine)
-function getPromoDiscountRate(code) {
-    if (!code) return 0;
-    const c = String(code).trim().toUpperCase();
-    // 30% Flash Sale / Black Friday
-    if (c === 'VIP30' || c === 'SALE30' || c === 'BLACK30' || c.endsWith('30')) {
-        return 0.30;
+// Dynamic Promo Campaign Quota & Discount Engine (Chỉ mất hiệu lực khi thanh toán thật)
+const DEFAULT_PROMO_CAMPAIGNS = {
+    'VIP20': { total: 50, rate: 0.20, name: 'VIP 20% Ưu Đãi Đặc Biệt' },
+    'SALE20': { total: 50, rate: 0.20, name: 'Flash Sale 20%' },
+    'FOUNDER20': { total: 50, rate: 0.20, name: 'Founder Edition 20%' },
+    'HIEU20': { total: 50, rate: 0.20, name: 'Tri Ân Nhà Sáng Lập 20%' },
+    'VIP30': { total: 30, rate: 0.30, name: 'Flash Sale Siêu Cấp 30%' },
+    'SALE30': { total: 30, rate: 0.30, name: 'Mega Sale 30%' },
+    'BLACK30': { total: 30, rate: 0.30, name: 'Black Friday 30%' }
+};
+
+function getPromoQuotas() {
+    try {
+        return JSON.parse(localStorage.getItem('zerostudio_promo_quotas') || '{}');
+    } catch (_) {
+        return {};
     }
-    // 20% VIP / Founder Special
-    if (c === 'VIP20' || c === 'SALE20' || c === 'FOUNDER20' || c === 'HIEU20' || c.endsWith('20')) {
-        return 0.20;
-    }
-    // Default Partner / Affiliate Discount: 10%
-    return 0.10;
 }
+
+function savePromoQuotas(quotas) {
+    try {
+        localStorage.setItem('zerostudio_promo_quotas', JSON.stringify(quotas));
+    } catch (_) {}
+}
+
+function getPromoDetails(code) {
+    if (!code) return { valid: false, rate: 0, reason: 'Chưa nhập mã ưu đãi' };
+    const c = String(code).trim().toUpperCase();
+    const quotas = getPromoQuotas();
+
+    let campaign = DEFAULT_PROMO_CAMPAIGNS[c];
+    if (!campaign) {
+        if (c.endsWith('20')) {
+            campaign = { total: 50, rate: 0.20, name: `Ưu Đãi ${c} (-20%)` };
+        } else if (c.endsWith('30')) {
+            campaign = { total: 30, rate: 0.30, name: `Ưu Đãi ${c} (-30%)` };
+        } else {
+            campaign = { total: 100, rate: 0.10, name: `Đối Tác Giới Thiệu ${c} (-10%)` };
+        }
+    }
+
+    const quotaInfo = quotas[c] || { used: 0, total: campaign.total };
+    const total = quotaInfo.total || campaign.total;
+    const used = quotaInfo.used || 0;
+    const remaining = Math.max(0, total - used);
+
+    if (remaining <= 0) {
+        return {
+            valid: false,
+            code: c,
+            rate: 0,
+            total: total,
+            used: used,
+            remaining: 0,
+            reason: `Mã ${c} đã hết lượt sử dụng (Đã dùng hết ${total}/${total} suất)!`
+        };
+    }
+
+    return {
+        valid: true,
+        code: c,
+        rate: campaign.rate,
+        total: total,
+        used: used,
+        remaining: remaining,
+        name: campaign.name
+    };
+}
+
+function getPromoDiscountRate(code) {
+    const details = getPromoDetails(code);
+    return details.valid ? details.rate : 0;
+}
+
+// CHỈ GỌI KHI THANH TOÁN ĐÃ ĐƯỢC XÁC THỰC THÀNH CÔNG (MB Bank thật 100%)
+function consumePromoCode(code) {
+    if (!code) return null;
+    const c = String(code).trim().toUpperCase();
+    const details = getPromoDetails(c);
+    if (!details.valid) return null;
+
+    const quotas = getPromoQuotas();
+    const curUsed = (quotas[c] && typeof quotas[c].used === 'number') ? quotas[c].used : 0;
+    const newUsed = curUsed + 1;
+    const total = details.total;
+
+    quotas[c] = {
+        total: total,
+        used: newUsed,
+        rate: details.rate,
+        lastUsedAt: new Date().toISOString()
+    };
+    savePromoQuotas(quotas);
+
+    // Sync to disk if bridge is active
+    try {
+        fetch('http://127.0.0.1:8900/api/promo-consume', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: c, used: newUsed, total: total, remaining: Math.max(0, total - newUsed) })
+        }).catch(() => {});
+    } catch (_) {}
+
+    return {
+        code: c,
+        total: total,
+        used: newUsed,
+        remaining: Math.max(0, total - newUsed)
+    };
+}
+
+window.getPromoDetails = getPromoDetails;
 window.getPromoDiscountRate = getPromoDiscountRate;
+window.consumePromoCode = consumePromoCode;
 
 window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
     window.selectedTier = tier;
@@ -3423,7 +3521,7 @@ window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
     if (extraInputs) extraInputs.style.display = 'none';
     currentOrderCode = Math.floor(1000 + Math.random() * 9000).toString();
     const isUltra = (tier === 'ultra');
-    const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 88;
+    const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 0;
     const isSoldOut = (slotsClaimed >= 100);
     let baseAmount = 299000;
     if (isRenewal) {
@@ -3451,8 +3549,10 @@ window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
         amount = Math.floor((baseAmount * (1 - discountRate)) / 1000) * 1000;
         memo = `${memo} REF-${activeRef.toUpperCase()}`;
         if (discountPill) {
+            const pDet = getPromoDetails(activeRef);
+            const quotaTxt = pDet.valid ? ` • Còn <strong>${pDet.remaining}/${pDet.total}</strong> suất (chỉ trừ khi thanh toán)` : '';
             discountPill.style.display = 'block';
-            discountPill.innerHTML = `🎁 Đã áp dụng mã đối tác <span id="checkout-ref-tag" style="font-weight: 800; color: #fbbf24; font-family: 'JetBrains Mono', monospace;">${activeRef.toUpperCase()}</span>: Giảm ngay ${discountPercent}%!`;
+            discountPill.innerHTML = `🎁 Đã áp dụng mã ưu đãi <span id="checkout-ref-tag" style="font-weight: 800; color: #fbbf24; font-family: 'JetBrains Mono', monospace;">${activeRef.toUpperCase()}</span>: Giảm ngay ${discountPercent}%${quotaTxt}!`;
         }
     } else {
         if (discountPill) discountPill.style.display = 'none';
@@ -3571,7 +3671,7 @@ async function checkBankPaymentStatus(isManualClick) {
         const isUltra = (window.selectedTier === 'ultra');
         const activeRef = localStorage.getItem('zerostudio_ref') || '';
         const isRenewal = !!window.isCurrentOrderRenewal;
-        const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 88;
+        const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 0;
         const isSoldOut = (slotsClaimed >= 100);
         let expectedAmount = 299000;
         if (isRenewal) {
@@ -3642,14 +3742,26 @@ function onPaymentVerifiedSuccess(licenseKey, txInfo) {
         return;
     }
 
+    // 1. Increment founder slots claimed (Sòng phẳng 100% Real trên từng thanh toán thật)
+    const curSlots = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 0;
+    if (curSlots < 100) {
+        localStorage.setItem('zerostudio_founder_slots_claimed', (curSlots + 1).toString());
+        if (typeof renderFounderSlotState === 'function') renderFounderSlotState();
+    }
+
+    // 2. Trừ 1 suất ưu đãi của mã giảm giá ONLY khi khách hàng thanh toán thành công
+    const activeRef = localStorage.getItem('zerostudio_ref');
+    if (activeRef && typeof consumePromoCode === 'function') {
+        const consumed = consumePromoCode(activeRef);
+        if (consumed) {
+            console.log(`[PROMO ENGINE] Đã trừ 1 suất ưu đãi mã ${consumed.code}. Còn lại: ${consumed.remaining}/${consumed.total}`);
+            showToast(`🎉 Thanh toán thành công! Trừ 1 suất ưu đãi mã ${consumed.code} (Còn ${consumed.remaining}/${consumed.total} suất).`, 'success');
+        }
+    }
+
     // Standard purchase for current device:
     // Save authorized license to localStorage
     localStorage.setItem('zerostudio_pro_license', licenseKey);
-    // Increment founder slots claimed
-    const curSlots = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 88;
-    if (curSlots < 100) {
-        localStorage.setItem('zerostudio_founder_slots_claimed', (curSlots + 1).toString());
-    }
 
     // Sync permanently to disk
     syncLicenseWithDisk(licenseKey);
@@ -3887,7 +3999,7 @@ window.confirmPaidAndGetLicense = function() {
     const memo = memoValEl ? memoValEl.textContent.trim() : `ZERO PRO ${currentOrderCode}`;
     const activeRef = localStorage.getItem('zerostudio_ref') || '';
     const isUltra = (window.selectedTier === 'ultra');
-    const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 88;
+    const slotsClaimed = (typeof getFounderSlotsClaimed === 'function') ? getFounderSlotsClaimed() : 0;
     const isSoldOut = (slotsClaimed >= 100);
     let amount = 299000;
     if (window.isCurrentOrderRenewal) {
@@ -5991,224 +6103,7 @@ window.downloadAppZip = function() {
 // ========================================================
 // 15. CUSTOMER REVIEWS & 5-STAR FEEDBACK ENGINE
 // ========================================================
-const DEFAULT_CUSTOMER_REVIEWS = [
-    {
-        id: 'rev_1',
-        name: 'Minh Quân',
-        role: 'Creator MMO • Kênh Shorts 450k Sub',
-        avatarBg: 'linear-gradient(135deg, #f59e0b, #ef4444)',
-        stars: 5,
-        tier: 'ultra',
-        category: 'mmo',
-        time: 'Hôm nay, 08:45',
-        likes: 68,
-        comment: 'Trước đây reup clip Douyin cứ bị dính Content ID 0 view suốt. Dùng tính năng Auto-Crop 9:16 Dual-Layer kết hợp xáo vân âm thanh Pitch của ZeroStudio, clip cắn đề xuất 720k view ngay tuần đầu! Quá xứng đáng gói Ultra 699k vĩnh viễn.'
-    },
-    {
-        id: 'rev_2',
-        name: 'Chị Thu Hương',
-        role: 'Kế Toán Trưởng • Cty Vận Tải Quốc Tế',
-        avatarBg: 'linear-gradient(135deg, #38bdf8, #2563eb)',
-        stars: 5,
-        tier: 'ultra',
-        category: 'office',
-        time: 'Hôm qua, 16:20',
-        likes: 54,
-        comment: 'Nén PDF chuẩn nộp thuế điện tử cứu tôi mấy bàn thua trông thấy trước 24h đêm. File báo cáo tài chính 48MB nén vèo cái xuống 3.8MB mà con dấu đỏ và chữ ký số vẫn nét căng. Đỡ hẳn công đoạn scan lại!'
-    },
-    {
-        id: 'rev_3',
-        name: 'Trần Đức Nam',
-        role: 'Dropship & TikTok Shop Master',
-        avatarBg: 'linear-gradient(135deg, #10b981, #059669)',
-        stars: 5,
-        tier: 'ultra',
-        category: 'mmo',
-        time: 'Hôm qua, 11:15',
-        likes: 49,
-        comment: 'Bàn làm việc hàng loạt cày 200 video Douyin cùng lúc, treo máy đi uống cafe về là xuất xong sạch watermark, đổi hash MD5 từng file. Chuông báo xong nghe rất chuyên nghiệp. Đã kích hoạt 2 máy PC và Laptop.'
-    },
-    {
-        id: 'rev_4',
-        name: 'Nguyễn Hoàng Long',
-        role: 'Chủ Doanh Nghiệp Thời Trang & Visa',
-        avatarBg: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
-        stars: 5,
-        tier: 'pro',
-        category: 'office',
-        time: '2 ngày trước',
-        likes: 42,
-        comment: 'AI Tách nền ảnh thẻ vi mô nhận dạng chuẩn đến từng sợi tóc tơ và nếp cổ áo. Khách làm hồ sơ visa cần nền trắng công vụ hay nền xanh CCCD chỉ mất 1 giây là xong mà không cần bật Photoshop nặng nề.'
-    },
-    {
-        id: 'rev_5',
-        name: 'Đặng Mỹ Linh',
-        role: 'Biên Tập Viên & Content Freelancer',
-        avatarBg: 'linear-gradient(135deg, #06b6d4, #0284c7)',
-        stars: 5,
-        tier: 'pro',
-        category: 'office',
-        time: '3 ngày trước',
-        likes: 38,
-        comment: 'OCR tiếng Việt quét ảnh xuất thẳng Word .doc chuẩn 99%, hợp đồng scan mờ cũ vẫn bóc tách đủ dấu thanh tiếng Việt. Tiết kiệm cho mình cả chục tiếng ngồi gõ lại văn bản mỗi tuần.'
-    },
-    {
-        id: 'rev_6',
-        name: 'Lê Văn Tiến',
-        role: 'Kỹ Sư Dự Án & Hồ Sơ Đấu Thầu',
-        avatarBg: 'linear-gradient(135deg, #f97316, #ea580c)',
-        stars: 5,
-        tier: 'pro',
-        category: 'office',
-        time: '4 ngày trước',
-        likes: 31,
-        comment: 'Tuyệt vời nhất là tính năng Zero-Knowledge xử lý 100% tại RAM máy tính, 0 Byte gửi ra ngoài. Hồ sơ thầu tiền tỷ hoàn toàn yên tâm về bảo mật bí mật kinh doanh. Đội ngũ support Zalo rất nhiệt tình!'
-    },
-    {
-        id: 'rev_7',
-        name: 'Phạm Văn Hùng',
-        role: 'TikTok Shop Top Seller & Douyin Live',
-        avatarBg: 'linear-gradient(135deg, #ec4899, #f43f5e)',
-        stars: 5,
-        tier: 'ultra',
-        category: 'mmo',
-        time: '4 ngày trước',
-        likes: 29,
-        comment: 'Tải cả kênh Douyin của đối thủ về nghiên cứu kịch bản trong 2 phút. Video tải về nét căng 1080p, không một vết mờ logo hay phụ đề gốc. Quá đỉnh cho dân buôn hàng!'
-    },
-    {
-        id: 'rev_8',
-        name: 'Thanh Tùng',
-        role: 'Video Editor • Kênh 1M Follower',
-        avatarBg: 'linear-gradient(135deg, #6366f1, #a855f7)',
-        stars: 5,
-        tier: 'ultra',
-        category: 'mmo',
-        time: '5 ngày trước',
-        likes: 26,
-        comment: 'Thuật toán Audio Randomizer đổi pitch +2.4% thần thánh thật sự, check bằng phần mềm quét âm thanh không thể nhận ra bản gốc. Đỡ mất công chỉnh tay từng track trên Premiere.'
-    },
-    {
-        id: 'rev_9',
-        name: 'Vũ Mai Phương',
-        role: 'Kế Toán Tổng Hợp • Cty Xây Dựng',
-        avatarBg: 'linear-gradient(135deg, #14b8a6, #0d9488)',
-        stars: 5,
-        tier: 'pro',
-        category: 'office',
-        time: '5 ngày trước',
-        likes: 24,
-        comment: 'Hóa đơn đỏ điện tử bị lỗi font khi chuyển sang Word, qua AI OCR của ZeroStudio nhận diện chuẩn 100% không sót số tiền hay mã số thuế nào. Tuyệt vời!'
-    },
-    {
-        id: 'rev_10',
-        name: 'Đỗ Gia Huy',
-        role: 'Du Học Sinh Nhật Bản • Làm Hồ Sơ COE',
-        avatarBg: 'linear-gradient(135deg, #f59e0b, #eab308)',
-        stars: 5,
-        tier: 'pro',
-        category: 'office',
-        time: '6 ngày trước',
-        likes: 22,
-        comment: 'Ảnh thẻ chụp bằng điện thoại mà qua app tách nền trắng chuẩn form Đại sứ quán Nhật Bản trong 1 click. Không tốn 200k ra tiệm chụp lại.'
-    },
-    {
-        id: 'rev_11',
-        name: 'Chị Bích Ngọc',
-        role: 'Trưởng Phòng Hành Chính Nhân Sự',
-        avatarBg: 'linear-gradient(135deg, #a855f7, #9333ea)',
-        stars: 5,
-        tier: 'pro',
-        category: 'office',
-        time: '1 tuần trước',
-        likes: 20,
-        comment: 'Gộp 50 file PDF hồ sơ ứng viên thành 1 tài liệu duy nhất trong 0.3 giây ngay trên trình duyệt. Tiết kiệm bao nhiêu thời gian gửi ban giám đốc duyệt.'
-    },
-    {
-        id: 'rev_12',
-        name: 'Quốc Bảo',
-        role: 'Shorts & Reels MMO Master',
-        avatarBg: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
-        stars: 5,
-        tier: 'ultra',
-        category: 'mmo',
-        time: '1 tuần trước',
-        likes: 19,
-        comment: 'Lách gậy bản quyền xong video lên xu hướng đều đều 300k - 500k view. Bản quyền Ultra 2 máy dùng cả PC ở nhà và Macbook làm việc rất tiện lợi.'
-    },
-    {
-        id: 'rev_13',
-        name: 'Nguyễn Tiến Dũng',
-        role: 'Luật Sư • Văn Phòng Công Chứng',
-        avatarBg: 'linear-gradient(135deg, #64748b, #475569)',
-        stars: 5,
-        tier: 'ultra',
-        category: 'office',
-        time: '1 tuần trước',
-        likes: 18,
-        comment: 'Khách hàng gửi tài liệu mật qua đây xử lý an tâm 100% vì dữ liệu không gửi lên server trung gian. Đúng chuẩn Zero-Knowledge bảo mật tuyệt đối.'
-    },
-    {
-        id: 'rev_14',
-        name: 'Hoàng Yến',
-        role: 'KOL & Affiliate Marketing Creator',
-        avatarBg: 'linear-gradient(135deg, #f43f5e, #e11d48)',
-        stars: 5,
-        tier: 'pro',
-        category: 'mmo',
-        time: '2 tuần trước',
-        likes: 17,
-        comment: 'Giao diện Obsidian Cyberpunk đẹp mắt mê ly, dùng sướng hơn hẳn mấy web nước ngoài đầy quảng cáo rác. Ủng hộ phần mềm Việt Nam chất lượng cao!'
-    },
-    {
-        id: 'rev_15',
-        name: 'Trần Khắc Viện',
-        role: 'Kế Toán Trưởng Bệnh Viện Đa Khoa',
-        avatarBg: 'linear-gradient(135deg, #10b981, #047857)',
-        stars: 5,
-        tier: 'ultra',
-        category: 'office',
-        time: '2 tuần trước',
-        likes: 16,
-        comment: 'Báo cáo y tế hàng ngàn trang nén mượt mà, lưu trữ trên hệ thống bệnh viện giảm được 70% dung lượng ổ cứng hàng tháng.'
-    },
-    {
-        id: 'rev_16',
-        name: 'Bùi Đức Thắng',
-        role: 'Chủ Studio Ảnh Cưới & Kỷ Yếu',
-        avatarBg: 'linear-gradient(135deg, #fbbf24, #d97706)',
-        stars: 5,
-        tier: 'pro',
-        category: 'office',
-        time: '2 tuần trước',
-        likes: 15,
-        comment: 'Khử phông ảnh thẻ hàng loạt cực nhanh. Tóc bay, voan cưới mỏng vẫn giữ được chi tiết trong suốt tự nhiên không lẹm viền.'
-    },
-    {
-        id: 'rev_17',
-        name: 'Khánh Linh',
-        role: 'Sinh Viên Năm 4 ĐH Ngoại Thương',
-        avatarBg: 'linear-gradient(135deg, #38bdf8, #0369a1)',
-        stars: 5,
-        tier: 'pro',
-        category: 'office',
-        time: '3 tuần trước',
-        likes: 14,
-        comment: 'Tách và cắt trang tài liệu tiểu luận, nén file nộp cổng đào tạo của trường không bị báo lỗi dung lượng vượt quá 10MB.'
-    },
-    {
-        id: 'rev_18',
-        name: 'Đặng Tuấn Anh',
-        role: 'MMO POD & E-Commerce Global',
-        avatarBg: 'linear-gradient(135deg, #a855f7, #6b21a8)',
-        stars: 5,
-        tier: 'ultra',
-        category: 'mmo',
-        time: '3 tuần trước',
-        likes: 13,
-        comment: 'Cào kênh video triệu view từ nước ngoài về bóc tách phụ đề và dịch tự động cực nhàn. Doanh thu POD tăng gấp đôi nhờ nguồn video chất lượng.'
-    }
-];
+const DEFAULT_CUSTOMER_REVIEWS = [];
 
 let allCustomerReviews = [...DEFAULT_CUSTOMER_REVIEWS];
 let currentReviewFilter = 'all';
@@ -6223,6 +6118,178 @@ const STAR_SENTIMENTS = {
     4: '4★ Rất tốt & hài lòng 👍',
     5: '5★ Cực kỳ xuất sắc! 🔥'
 };
+
+
+// ==============================================================================
+// 100% REAL CUSTOMER REVIEWS & INLINE STAR VOTING ENGINE
+// ==============================================================================
+let inlineSelectedStars = 5;
+
+window.setInlineReviewStars = function(count) {
+    inlineSelectedStars = count;
+    const btns = document.querySelectorAll('#inline-star-picker .star-pick-btn');
+    btns.forEach((btn, idx) => {
+        if (idx < count) {
+            btn.style.color = '#f59e0b';
+            btn.classList.add('active');
+        } else {
+            btn.style.color = 'rgba(255, 255, 255, 0.2)';
+            btn.classList.remove('active');
+        }
+    });
+
+    const sentiment = document.getElementById('inline-star-sentiment');
+    if (sentiment) {
+        sentiment.textContent = STAR_SENTIMENTS[count] || '5★ Cực kỳ xuất sắc! 🔥';
+    }
+};
+
+window.submitInlineCustomerReview = async function(event) {
+    if (event) event.preventDefault();
+
+    const nameInput = document.getElementById('inline-review-name');
+    const roleSelect = document.getElementById('inline-review-role');
+    const commentInput = document.getElementById('inline-review-comment');
+
+    const name = nameInput ? nameInput.value.trim() : '';
+    const comment = commentInput ? commentInput.value.trim() : '';
+    const roleVal = roleSelect ? roleSelect.value : 'mmo';
+
+    if (!name || !comment) {
+        showToast('Vui lòng điền họ tên và nội dung đánh giá!', 'error');
+        return;
+    }
+
+    const roleMap = {
+        mmo: 'Dân Video MMO & Reup Douyin',
+        office: 'Kế Toán & Nhân Viên Văn Phòng',
+        student: 'Học Sinh & Sinh Viên',
+        freelance: 'Designer / Freelancer',
+        business: 'Chủ Doanh Nghiệp / Studio'
+    };
+    const roleTitle = roleMap[roleVal] || 'Khách Hàng ZeroStudio';
+    const activeTier = (typeof isUltraActive === 'function' && isUltraActive()) ? 'ultra' : ((typeof isProActive === 'function' && isProActive()) ? 'pro' : 'free');
+
+    const newReview = {
+        id: 'rev_usr_' + Date.now(),
+        name: name,
+        role: roleTitle,
+        avatarBg: 'linear-gradient(135deg, #f59e0b, #10b981)',
+        stars: inlineSelectedStars,
+        tier: activeTier,
+        category: roleVal === 'mmo' ? 'mmo' : 'office',
+        time: 'Vừa xong',
+        likes: 1,
+        comment: comment,
+        isMine: true
+    };
+
+    // 1. Save to local storage
+    try {
+        const stored = JSON.parse(localStorage.getItem('zerostudio_user_reviews') || '[]');
+        stored.unshift(newReview);
+        localStorage.setItem('zerostudio_user_reviews', JSON.stringify(stored.slice(0, 100)));
+    } catch (_) {}
+
+    // 2. Prepend to in-memory reviews
+    allCustomerReviews.unshift(newReview);
+
+    // 3. Post to Video Bridge for permanent local disk storage
+    try {
+        fetch('http://127.0.0.1:8900/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: name,
+                role: roleTitle,
+                stars: inlineSelectedStars,
+                comment: comment,
+                tier: activeTier
+            })
+        }).catch(() => {});
+    } catch (_) {}
+
+    // 4. Trigger Webhook notification if available
+    if (typeof sendInstantNotification === 'function') {
+        sendInstantNotification({
+            eventType: 'REVIEW_SUBMITTED',
+            data: {
+                name: name,
+                role: roleTitle,
+                stars: inlineSelectedStars,
+                comment: comment,
+                tier: activeTier
+            }
+        });
+    }
+
+    // Reset inputs
+    if (nameInput) nameInput.value = '';
+    if (commentInput) commentInput.value = '';
+    setInlineReviewStars(5);
+
+    // Re-render reviews
+    renderCustomerReviews();
+
+    showToast('🎉 Cảm ơn bạn đã gửi đánh giá! Ý kiến của bạn đã xuất hiện trên hệ thống.', 'success');
+    if (typeof launchGoldConfetti === 'function') launchGoldConfetti();
+};
+
+function updateReviewsDynamicStats() {
+    const totalCount = allCustomerReviews.length;
+    const bigNumEl = document.getElementById('reviews-big-number');
+    const starsRowEl = document.getElementById('reviews-stars-row');
+    const countTextEl = document.getElementById('reviews-count-text');
+    const badgeTagEl = document.querySelector('.reviews-headline-wrap .section-tagline-pill');
+
+    if (totalCount === 0) {
+        if (bigNumEl) bigNumEl.textContent = "5.0";
+        if (starsRowEl) starsRowEl.textContent = "★★★★★";
+        if (countTextEl) countTextEl.textContent = "0 Đánh Giá • 100% Khách Hàng Trải Nghiệm Thật";
+        if (badgeTagEl) {
+            badgeTagEl.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px; color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg> TRẢI NGHIỆM THẬT • ĐÁNH GIÁ TỪ NGƯỜI DÙNG THỰC TẾ';
+        }
+        const fills = document.querySelectorAll('.reviews-breakdown-block .rating-bar-fill');
+        if (fills.length >= 3) {
+            fills[0].style.width = '0%';
+            fills[1].style.width = '0%';
+            fills[2].style.width = '0%';
+        }
+        return;
+    }
+
+    const sumStars = allCustomerReviews.reduce((acc, r) => acc + (r.stars || 5), 0);
+    const avg = (sumStars / totalCount).toFixed(1);
+
+    if (bigNumEl) bigNumEl.textContent = avg;
+    if (starsRowEl) {
+        const fullStars = Math.round(Number(avg));
+        starsRowEl.textContent = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+    }
+    if (countTextEl) {
+        countTextEl.textContent = totalCount + ' Đánh Giá Thực Tế • 100% Khách Hàng Thật';
+    }
+    if (badgeTagEl) {
+        badgeTagEl.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px; color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg> BẢO CHỨNG THỰC TẾ • ' + totalCount + ' ĐÁNH GIÁ THẬT';
+    }
+
+    // Breakdown bars
+    const count5 = allCustomerReviews.filter(r => r.stars === 5).length;
+    const count4 = allCustomerReviews.filter(r => r.stars === 4).length;
+    const count3 = allCustomerReviews.filter(r => r.stars <= 3).length;
+
+    const p5 = Math.round((count5 / totalCount) * 100);
+    const p4 = Math.round((count4 / totalCount) * 100);
+    const p3 = Math.round((count3 / totalCount) * 100);
+
+    const fills = document.querySelectorAll('.reviews-breakdown-block .rating-bar-fill');
+    if (fills.length >= 3) {
+        fills[0].style.width = p5 + '%';
+        fills[1].style.width = p4 + '%';
+        fills[2].style.width = p3 + '%';
+    }
+}
+window.updateReviewsDynamicStats = updateReviewsDynamicStats;
 
 window.initCustomerReviews = async function() {
     allCustomerReviews = [...DEFAULT_CUSTOMER_REVIEWS];
@@ -6266,6 +6333,7 @@ window.initCustomerReviews = async function() {
 };
 
 window.renderCustomerReviews = function() {
+    if (typeof updateReviewsDynamicStats === 'function') updateReviewsDynamicStats();
     const grid = document.getElementById('reviews-cards-grid');
     const loadMoreWrap = document.getElementById('reviews-load-more-wrap');
     const loadMoreBtn = document.getElementById('btn-load-more-reviews');
@@ -6286,11 +6354,10 @@ window.renderCustomerReviews = function() {
 
     if (filtered.length === 0) {
         grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: #94a3b8;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✍</div>
-                <div style="font-size: 1rem; font-weight: 600; color: #cbd5e1;">Chưa có đánh giá nào trong mục này.</div>
-                <p style="font-size: 0.85rem; margin-top: 4px;">Hãy là người đầu tiên chia sẻ cảm nhận của bạn về ZeroStudio nhé!</p>
-                <button class="btn-write-review" onclick="openReviewModal()" style="margin-top: 1rem;">Viết Đánh Giá Ngay</button>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: rgba(15, 23, 42, 0.4); border: 1px dashed rgba(255,255,255,0.15); border-radius: 16px;">
+                <div style="font-size: 2.8rem; margin-bottom: 0.5rem;">✨ ⭐ ✍️</div>
+                <div style="font-size: 1.1rem; font-weight: 700; color: #fff;">Chưa Có Đánh Giá Nào Trong Mục Này</div>
+                <p style="font-size: 0.85rem; color: #94a3b8; max-width: 460px; margin: 6px auto 14px;">Toàn bộ đánh giá tại ZeroStudio đều là khách hàng trải nghiệm thật 100%. Hãy là người đầu tiên để lại nhận xét và vote sao ở khung bên trên!</p>
             </div>
         `;
         if (loadMoreWrap) loadMoreWrap.style.display = 'none';
@@ -6737,7 +6804,9 @@ window.initAffiliateSystem = function() {
             if (banner) {
                 banner.style.display = 'block';
                 const titleEl = banner.querySelector('div[style*="font-weight: 800"]');
-                if (titleEl) titleEl.textContent = `ƯU ĐÃI ĐỐI TÁC: GIẢM ${dPct}% TOÀN BỘ CÁC GÓI!`;
+                const pDet = (typeof getPromoDetails === 'function') ? getPromoDetails(activeRef) : null;
+                const quotaTxt = (pDet && pDet.valid) ? ` (Còn ${pDet.remaining}/${pDet.total} suất • Chỉ tính khi thanh toán)` : '';
+                if (titleEl) titleEl.textContent = `ƯU ĐÃI ĐỐI TÁC: GIẢM ${dPct}% TOÀN BỘ CÁC GÓI!${quotaTxt}`;
                 const badgeEl = banner.querySelector('span[style*="padding: 4px 10px"]');
                 if (badgeEl) badgeEl.textContent = `-${dPct}% TỰ ĐỘNG`;
             }
@@ -6779,9 +6848,14 @@ window.applyPromoCode = function() {
         showToast('Mã giảm giá không hợp lệ!', 'error');
         return;
     }
+    const promoDetails = getPromoDetails(cleanCode);
+    if (!promoDetails.valid) {
+        showToast(promoDetails.reason || `Mã ${cleanCode} đã hết lượt sử dụng!`, 'warning');
+        return;
+    }
     localStorage.setItem('zerostudio_ref', cleanCode);
-    const discPct = Math.round(getPromoDiscountRate(cleanCode) * 100);
-    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay ${discPct}%!`, 'success');
+    const discPct = Math.round(promoDetails.rate * 100);
+    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay ${discPct}% (Còn ${promoDetails.remaining}/${promoDetails.total} suất)!`, 'success');
     if (typeof launchGoldConfetti === 'function') launchGoldConfetti();
     if (typeof initAffiliateSystem === 'function') initAffiliateSystem();
     window.openVietQrCheckout(window.selectedTier || 'pro', !!window.isCurrentOrderRenewal);
@@ -6824,9 +6898,14 @@ window.applyPricingPromoCode = function() {
         showToast('Mã giảm giá không hợp lệ!', 'error');
         return;
     }
+    const promoDetails = getPromoDetails(cleanCode);
+    if (!promoDetails.valid) {
+        showToast(promoDetails.reason || `Mã ${cleanCode} đã hết lượt sử dụng!`, 'warning');
+        return;
+    }
     localStorage.setItem('zerostudio_ref', cleanCode);
-    const discPct = Math.round(getPromoDiscountRate(cleanCode) * 100);
-    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay ${discPct}%!`, 'success');
+    const discPct = Math.round(promoDetails.rate * 100);
+    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay ${discPct}% (Còn ${promoDetails.remaining}/${promoDetails.total} suất)!`, 'success');
     if (typeof launchGoldConfetti === 'function') launchGoldConfetti();
     if (typeof initAffiliateSystem === 'function') initAffiliateSystem();
     window.togglePricingPromoBox(false);
