@@ -20,6 +20,7 @@
 | **v2.5.3** | 2026-10-25 | **Đồng bộ hóa 100% Đa Ngôn Ngữ (vi, en, zh, ja)** trên toàn bộ giao diện, bảng giá, bộ đếm, form thanh toán và công cụ; sửa triệt để lỗi chữ Trung hiển thị nhầm. |
 | **v2.5.4** | 2026-10-25 | **Thu hồi & Kick vĩnh viễn key khai thác trái phép (`ZERO-ULTRA-8899-VIP-DEV`)**, cơ chế Auto-Purge Revoked Keys; sửa lỗi thẻ Antiban Video và vượt qua 100% 7 bộ kiểm thử Playwright. |
 | **v2.5.5** | 2026-10-25 | **Cơ chế Đối Tác CPA Thanh Toán Thực & Cấp Bậc Hoa Hồng Đa Tầng**: Chỉ trích thưởng khi MB Bank nổ tiền (Pro 30% ~80k, Ultra 35% ~220k), Thang cấp bậc tích lũy (Bronze, Silver, Gold Master thưởng 1.000.000đ); đồng bộ 4 ngôn ngữ và bảo mật Zero-Bypass tuyệt đối. |
+| **v2.7.0** | 2026-10-26 | **BỘ 5 VŨ KHÍ HỦY DIỆT ĐỐI THỦ, MỞ RỘNG 3-5 GIỌNG AI & KHO SFX VÔ HẠN**: Tự động bắn icon động Submagic (Auto-Emoji Magic), Cắt sạch khoảng lặng >0.35s tăng retention >75% (Smart Silence Remover), Chuyển 16:9 sang 9:16 mờ Bokeh 25px không viền đen (Dual-Layer Ambient Depth), Bơm mã Apple iPhone 16 Pro Max iOS 18.2 lách 100% quét Reup (Camera EXIF Spoofer), Auto-Ducking BGM né giọng nói, Thư viện Studio 34+ Foley master và Bộ tạo âm thanh tham số Web Audio DSP Synth, Mở rộng 5 giọng AI cho Việt Nam và các thị trường quốc tế, Video showcase thương mại HyperFrames 9:16 60fps chuẩn quốc tế -12.3 LUFS. |
 | **v2.6.0** | 2026-10-26 | **Hoàn Thành Giai Đoạn 1 - Vũ Khí MMO Đỉnh Cao**: AI Edge-TTS 0đ lồng tiếng tiếng Việt tự nhiên chuẩn phòng thu (Hoài My & Nam Minh), Đốt phụ đề nảy chữ vàng neon MrBeast 100% giữ chân, AI Trend Optimizer gợi ý 5 tiêu đề giật tít & 10 hashtag viral triệu view, ZeroAI Specialist intent và đồng bộ 4 ngôn ngữ. |
 | **v2.5.6** | 2026-10-26 | **Khung Đề Xuất Nâng Cấp Ultra & Cơ Chế Mua Tặng Quà Điện Tử Độc Lập**: Khung Upsell Ultra 1-chạm trong giao diện Pro; Chế độ "Mua làm quà tặng" không chiếm slot máy người mua, tạo Thẻ Quà Tặng Điện Tử (Digital Gift Card) kèm link nhận quà `?gift=KEY` tự động kích hoạt; Dọn sạch file bản quyền ngầm trên ổ cứng khi reset về Free; Nâng cấp ZeroAI nhận diện ý định thông minh và đồng bộ 4 ngôn ngữ (vi, en, zh, ja). |
 
@@ -30,10 +31,11 @@
 ```mermaid
 timeline
     title Lộ Trình Phát Triển ZeroStudio (2026 - 2027)
-    section Giai Đoạn 1 (Hoàn thành v2.6.0)<br>Vũ Khí MMO Đỉnh Cao
-        AI Edge-TTS 0d : Tự động lồng tiếng tiếng Việt tự nhiên chuẩn nhịp reup
-        MrBeast Style Auto-Captions : Phụ đề nảy chữ neon highlight theo âm thanh
-        AI Trend Optimizer : Gợi ý 5 tiêu đề giật tít và 10 hashtag viral triệu view
+    section Giai Đoạn 1 (Hoàn thành v2.7.0)<br>Vũ Khí MMO Đỉnh Cao & Hủy Diệt
+        AI Edge-TTS 322 Giong : Tự động lồng tiếng 3-5 giọng mỗi quốc gia
+        5 Vu Khi Huy Diet : Auto-Emoji, Silence Remover, Dual-Layer 9:16, EXIF Spoofer, Auto-Ducking
+        Unlimited SFX Suite : 34+ Studio Foley & Web Audio DSP Synth vô hạn
+        HyperFrames 9:16 60fps : Video quảng cáo thương mại chuẩn phát sóng quốc tế
     section Giai Đoạn 2 (Q1/2027)<br>Doanh Nghiệp & Kế Toán
         Anti-Fraud CCCD Watermark : Phủ chìm dấu chống vay app không thể xóa
         AI Table PDF to Excel : Xuất bảng biểu hóa đơn sang .xlsx chuẩn công thức

@@ -1,35 +1,52 @@
-# 🛡️ ZeroStudio - 100% Client-Side Private Media & PDF Suite
+# 🛡️ ZeroStudio Pro & Ultra (v2.7.0)
+## 100% Client-Side Private Media, AI Office & Competitor-Crushing MMO Video Suite
 
-> **Trạm xử lý PDF, Hình ảnh & Video chuẩn an ninh Zero-Knowledge:** 100% tác vụ được thực thi trực tiếp trong bộ nhớ RAM/GPU trình duyệt của người dùng qua WebAssembly và Canvas. Không gửi bất kỳ byte dữ liệu tài liệu cá nhân nào lên máy chủ. Miễn phí vĩnh viễn, bảo mật tuyệt đối, không quảng cáo bẩn.
-
----
-
-## 🚀 TÍNH NĂNG HOÀN THIỆN TRONG BẢN V1.3:
-1. **🎬 Cybernetic Optical Intro Sequence:** Màn mở đầu điện ảnh bằng GSAP 60fps mượt mà, tia laser quét, khối ngọc 3D và bộ đếm telemetry.
-2. **🧩 Gộp PDF (Merge PDF):** Kéo thả nhiều file PDF, sắp xếp thứ tự linh hoạt, gộp siêu tốc chỉ trong 1-2 giây.
-3. **✂️ Tách & Trích xuất trang (Split & Extract):** Hiển thị thumbnail từng trang dạng lưới bằng PDF.js, xoay 90° và trích xuất trang tùy biến.
-4. **🖼️ Chuyển hình ảnh sang PDF (Images to PDF):** Đóng gói hàng loạt ảnh JPG/PNG thành file PDF đúng tỷ lệ.
-5. **✨ AI Phóng To Ảnh 4K (Super-Resolution Studio):** Thuật toán Lanczos + High-Pass Convolution nội suy 2X (2K) / 4X (4K UHD) trực tiếp trong RAM.
-6. **🎬 Tải Video Gỡ Logo (TikTok, Douyin, Reels, Shorts):** Tự động nhận diện link, gỡ sạch 100% watermark, tải video HD và âm thanh MP3.
-7. **⚡ Studio Nâng Cấp Video 4K (GPU Canvas Remaster):** So sánh video song song thời gian thực, khử nhiễu, tăng chi tiết vi mô và xuất video 4K 60fps.
-8. **🛡️ Kiểm tra An ninh Trực quan (Zero-Knowledge Audit):** Bấm huy hiệu góc phải để kiểm tra luồng mạng (0 byte rò rỉ).
+> **Siêu Trạm Tiện Ích Văn Phòng, AI Studio & Lách Bản Quyền Video MMO 4K Chuẩn An Ninh Zero-Knowledge:**  
+> 100% tác vụ được thực thi trực tiếp trong bộ nhớ RAM/GPU trình duyệt và Local Micro-Bridge qua WebAssembly, Canvas và FFmpeg cục bộ. Không bao giờ tải bất kỳ byte tài liệu cá nhân nào lên máy chủ. Miễn phí trọn đời, bảo mật tuyệt đối, 0 byte rò rỉ dữ liệu.
 
 ---
 
-## 🌐 HƯỚNG DẪN PUBLIC LÊN INTERNET (MIỄN PHÍ 100%):
+## 🌐 KÊNH TRUY CẬP CHÍNH THỨC:
+- **Website Toàn Cầu:** [https://zerostu.netlify.app](https://zerostu.netlify.app)
+- **Gói Cài Đặt Desktop:** `ZeroStudio-Pro-Desktop.zip` (4.35 MB)
+- **Hotline Hỗ Trợ 24/7:** Zalo `0962.876.139`
 
-### Cách 1: Đẩy lên GitHub & Bật GitHub Pages (Domain vĩnh viễn)
-1. Mở [github.com/new](https://github.com/new) -> Đặt tên Repository là `zerostudio` -> Chọn **Public** -> Bấm **Create repository**.
-2. Mở PowerShell trong thư mục này và chạy 2 lệnh:
-   ```bash
-   git remote add origin https://github.com/yungfishin/zerostudio.git
-   git push -u origin main
-   ```
-3. Trên GitHub, vào **Settings -> Pages**:
-   - Tại mục **Branch**: Chọn `main` -> Thư mục `/ (root)` -> Bấm **Save**.
-4. Website sẽ online toàn cầu tại: **`https://yungfishin.github.io/zerostudio/`**
+---
 
-### Cách 2: Kéo thả lên Vercel / Netlify (Có link sau 10 giây)
-1. Truy cập [app.netlify.com/drop](https://app.netlify.com/drop) hoặc [vercel.com/new](https://vercel.com/new).
-2. Kéo toàn bộ thư mục `ZeroPDF_Studio` thả vào trình duyệt.
-3. Nhận ngay đường link HTTPS toàn cầu như `https://zerostudio.vercel.app`.
+## ⚔️ BỘ 5 VŨ KHÍ HỦY DIỆT ĐỐI THỦ (V2.7.0 RELEASE):
+1. **🎭 Auto-Emoji Magic Engine:** Tự động nhận diện 60+ từ khóa cảm xúc (tiền tài 💰, cảnh báo ⚠️, bí mật 🤫, bứt phá 🚀, bùng nổ 🔥), chèn emoji động nảy (bounce) trực tiếp vào chữ phụ đề MrBeast để tăng giữ chân người xem.
+2. **✂️ Smart Silence Remover:** 1-Click tự động quét sóng âm và cắt sạch khoảng lặng >0.35s bằng thuật toán FFmpeg, đẩy thời gian xem trung bình (AVD) lên >75%.
+3. **🖼️ Dual-Layer Ambient Depth (16:9 -> 9:16):** Chuyển video ngang 16:9 sang 9:16 dọc điện ảnh không mất góc, không viền đen (Nền mờ quang học Bokeh 25px + Lớp trước 16:9 viền sáng sắc nét).
+4. **🕵️ Camera EXIF Spoofer & Deep Stealth:** Xóa 100% mã cũ, bơm siêu dữ liệu Apple iPhone 16 Pro Max, iOS 18.2 kèm vi điều biến màu sắc (Micro-color LUT) và tốc độ $1.015\times$ bypass 100% AI kiểm duyệt.
+5. **🎚️ Dynamic Auto-Ducking BGM Engine:** Nhạc nền tự động né giọng nói khi có tiếng nói AI và nổi lên mượt mà khi ngắt câu.
+
+---
+
+## 🎧 HỆ THỐNG ÂM THANH ĐA TẦNG VÔ HẠN (UNLIMITED SFX SUITE):
+- **Tầng 1 - Thư viện 34+ Studio Foley Master:** Whoosh chuyển cảnh, Sub-bass 40Hz drop, Tiếng "Keng" máy tính tiền (Ka-ching), Riser dâng trào, Record scratch đĩa than, Meme air-horn, Tiếng gõ bàn phím...
+- **Tầng 2 - Bộ tạo âm thanh tham số (Procedural Web Audio Synth):** Tự chế hàng triệu âm thanh vô hạn với thanh trượt tần số (30Hz - 4000Hz), độ ngân (0.05s - 2.0s) và dạng sóng (Sine, Triangle, Square, Noise) bằng Web Audio API với 0 MB dung lượng ổ cứng.
+- **Tầng 3 - Kéo thả âm thanh tùy biến (Custom SFX Importer):** Tự động chuẩn hóa âm lượng theo chuẩn phát sóng quốc tế (-14 LUFS).
+
+---
+
+## 🎙️ BẢNG GIỌNG ĐỌC AI MỞ RỘNG (3 - 5 GIỌNG / QUỐC GIA):
+- 🇻🇳 **Việt Nam (5 Giọng):** Hoài My (Nữ miền Bắc), Nam Minh (Nam miền Bắc), Ava AI (Nữ Vlog), Andrew AI (Nam Review), Brian AI (Nam Trailer điện ảnh).
+- 🇯🇵 **Nhật Bản (5 Giọng), 🇰🇷 Hàn Quốc (5 Giọng), 🇹🇭 Thái Lan (5 Giọng), 🇨🇳 Trung Quốc (6 Giọng), 🇺🇸 Mỹ (17 Giọng)**.
+
+---
+
+## 🛡️ HỆ THỐNG AN NINH MẠNG 7 LỚP & KHÓA BẢN QUYỀN HYBRID:
+- Ký số RSA-2048 & lõi nhị phân WebAssembly C++ chống vá mã RAM.
+- Khóa Anti-Debug Trap tự đóng băng tab khi bật F12 soi mã.
+- Quét và phong tỏa tức thì các tiến trình dịch ngược (x64dbg, IDA Pro, Cheat Engine).
+- Bảo vệ nghiêm ngặt Zero-Bypass: Chỉ cấp bản quyền khi ngân hàng MB Bank xác nhận có biến động số dư thực tế.
+
+---
+
+## 🚀 HƯỚNG DẪN CẬP NHẬT LÊN NETLIFY (10 GIÂY):
+1. Truy cập [app.netlify.com/sites/zerostu/deploys](https://app.netlify.com/sites/zerostu/deploys).
+2. Kéo toàn bộ thư mục `Commercial_Projects_Archive/ZeroPDF_Studio` thả vào ô nét đứt ở mục Deploys.
+3. Chờ 3-5 giây trạng thái chuyển sang **Published** là web đã online phiên bản v2.7.0 mới nhất!
+
+---
+*Tài liệu tra cứu chính thức của ZeroStudio Suite - Cập nhật ngày 26/10/2026.*
