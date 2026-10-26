@@ -19,7 +19,8 @@
 10. [X. BỐN CHUYỂN DỊCH ĐỊA CHẤN & TRIẾT LÝ CUỘC NỔI DẬY CỦA SIÊU CÁ THỂ (THE FOUR TECTONIC SHIFTS & THE SOVEREIGN INDIVIDUAL REVOLUTION)](#x-bốn-chuyển-dịch-địa-chấn--triết-lý-cuộc-nổi-dậy-của-siêu-cá-thể-the-four-tectonic-shifts--the-sovereign-individual-revolution)
 11. [XI. BỘ BA VŨ KHÍ ĐẾ CHẾ TOÀN CẦU 2027: NEURO-PACING, ZEROSYNC & ZEROESCROW](#xi-bộ-ba-vũ-khí-đế-chế-toàn-cầu-2027-neuro-pacing-zerosync--zeroescrow)
 12. [XII. CHIẾN LƯỢC MỞ RỘNG ĐA NGÀNH: PHÁP LÝ, Y TẾ, PHÁP Y SỐ & GIÁO DỤC TỰ TRỊ (THE MULTI-INDUSTRY SOVEREIGN EXPANSION)](#xii-chiến-lược-mở-rộng-đa-ngành-pháp-lý-y-tế-pháp-y-số--giáo-dục-tự-trị-the-multi-industry-sovereign-expansion)
-13. [XIII. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#xiii-cẩm-nang-vận-hành-dành-cho-admin-runbook)
+13. [XIII. CHIẾN LƯỢC PHẦN CỨNG 0 ĐỒNG VỐN & PHÒNG THÍ NGHIỆM ĐỘC LẬP SKUNKWORKS (ZERO-CAPITAL HARDWARE STRATEGY & THE ISOLATED R&D LAB PROTOCOL)](#xiii-chiến-lược-phần-cứng-0-đồng-vốn--phòng-thí-nghiệm-độc-lập-skunkworks-zero-capital-hardware-strategy--the-isolated-rd-lab-protocol)
+14. [XIV. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#xiv-cẩm-nang-vận-hành-dành-cho-admin-runbook)
 
 ---
 
@@ -653,7 +654,109 @@ ightarrow$ ZeroStudio tự động giải mã lớp lưới quang học ngay tro
 
 ---
 
-## XIII. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
+## XIII. CHIẾN LƯỢC PHẦN CỨNG 0 ĐỒNG VỐN & PHÒNG THÍ NGHIỆM ĐỘC LẬP SKUNKWORKS
+*(ZERO-CAPITAL HARDWARE STRATEGY & THE ISOLATED R&D LAB PROTOCOL)*
+
+> [!IMPORTANT]
+> **THÁO GỠ NGHỊCH LÝ PHẦN CỨNG BẰNG TƯ DUY KHỞI NGUYÊN (FIRST PRINCIPLES):**
+> Sản xuất phần cứng truyền thống là "mồ chôn" của 95% startup vì cạm bẫy chi phí cố định khổng lồ (khuôn đúc Tooling $50k-$100k, chứng nhận FCC/CE $30k, hàng tồn kho chết đọng vốn). 
+> ZeroStudio áp dụng **Chiến lược Tinh gọn 3 Bước 0 Đồng Vốn** kết hợp **Giao thức Thí nghiệm Độc lập Skunkworks** nhằm đưa thiết bị vật lý ra thị trường toàn cầu với biên lợi nhuận ròng >60% mà không cần vay mượn 1 đồng hay bán cổ phần cho bất kỳ quỹ đầu tư nào.
+
+```
+=============================================================================================================
+                      CHIẾN LƯỢC PHẦN CỨNG 0 ĐỒNG VỐN & QUY TRÌNH SKUNKWORKS LAB
+=============================================================================================================
+                                     ┌─────────────────────────────┐
+                                     │   THIẾT KẾ & THỬ NGHIỆM     │
+                                     │   PHÒNG LAB ĐỘC LẬP (PoC)   │
+                                     │   1 File / 1 Tính Năng Độc  │
+                                     └──────────────┬──────────────┘
+                                                    │
+         ┌──────────────────────────────────────────┼──────────────────────────────────────────┐
+         ▼                                          ▼                                          ▼
+  [BƯỚC 1: SOFTWARE-DEFINED]                [BƯỚC 2: PRE-ORDER CROWD]                  [BƯỚC 3: ODM SHENZHEN]
+  ZeroKey USB / NVMe Bootable               1,000 Suất Founder Edition                 Minisforum/Beelink White-Label
+  Tận dụng 100% PC/GPU có sẵn               Thu trước $299,000 (7.5 tỷ VNĐ)            Khắc laser logo, ROM nạp sẵn
+  Vốn đầu tư: 0 ĐỒNG                        Khách hàng trả tiền trước                  Lợi nhuận ròng 60%, 0 tồn kho
+=============================================================================================================
+```
+
+### 1. Chiến Lược Phần Cứng 0 Đồng Vốn 3 Giai Đoạn (The 3-Stage Zero-Capital Hardware Playbook)
+
+#### Giai đoạn 1: Phần Cứng Định Nghĩa Bằng Phần Mềm (Software-Defined Hardware - ZeroKey USB/NVMe)
+* **Bản chất cốt lõi:** Thay vì chế tạo cả một cỗ máy vật lý từ số 0, ta biến bất kỳ cỗ máy tính PC, laptop hoặc máy chủ sẵn có nào của người dùng thành một trạm máy chủ **ZeroBox Sovereign Appliance** chỉ bằng một chiếc USB 3.2 Gen 2 (hoặc ổ di động NVMe Type-C tốc độ 2000MB/s).
+* **Cơ chế triển khai:**
+  - Build một bản phân phối hệ điều hành siêu tối giản (ZeroOS Linux Live Kernel chỉ 64MB) nạp trực tiếp vào RAM.
+  - Khi cắm ZeroKey vào cổng USB và bật máy, PC tự động boot vào ZeroOS: Tận dụng 100% sức mạnh chip đa nhân Intel Core / AMD Ryzen và card đồ họa rời NVIDIA RTX của người dùng để render video, nén mô hình SLM và giải mã mật mã học.
+  - Ổ cứng Windows/Mac của máy tính bị cô lập 100% (không thể bị virus xâm nhập, không để lại bất kỳ dấu vết cache nào trên máy). Rút USB ra là chiếc máy trở lại bình thường không để lại 1 bit lịch sử.
+  - **Chi phí vốn sản xuất:** **0 ĐỒNG**. Người dùng tự trả tiền mua chiếc USB của họ hoặc ZeroStudio bán kèm license với chi phí phôi USB chỉ 100.000 VNĐ.
+
+#### Giai đoạn 2: Huy Động Vốn Đặt Hàng Trước 100% Khách Trả Tiền (Pre-Order Crowdfunding - Mô Hình Flipper Zero & Framework)
+* **Bản chất cốt lõi:** "Bán sản phẩm trước khi sản xuất" - Tuyệt đối không bao giờ dùng tiền túi tự tích trữ linh kiện khi chưa có người mua.
+* **Cơ chế triển khai:**
+  - Xây dựng một video Landing Page thực chiến: Trình diễn cảnh một cỗ máy mini bỏ túi cắm nguồn là tự động cào 1.000 video TikTok, tự lách bản quyền đa tầng bằng ZeroGhost & Warp Engine, render 100 video/giờ và kiếm tiền MMO hoàn toàn tự động ngoại tuyến không cần internet.
+  - Mở cổng đặt hàng trước độc quyền: **Founder Edition ZeroBox Hardware Node** (Giới hạn đúng 1,000 máy với giá ưu đãi $299 ~ 7.500.000 VNĐ, cam kết giao hàng sau 60 ngày).
+  - Thu về ngay lập tức: **$299,000 (~7.5 tỷ VNĐ tiền mặt trả trước 100%)** từ chính người dùng khao khát sở hữu. Toàn bộ tiền này được dùng để đặt hàng sản xuất mà không phải chịu bất kỳ áp lực nợ nần tài chính nào.
+
+#### Giai đoạn 3: Gia Công Trọn Gói White-Label ODM Thâm Quyến (Turn-Key Shenzhen ODM Dropshipping)
+* **Bản chất cốt lõi:** Đứng trên vai những gã khổng lồ sản xuất phần cứng của thế giới tại Thâm Quyến (Shenzhen, Trung Quốc).
+* **Cơ chế triển khai:**
+  - Hợp tác trực tiếp với các nhà sản xuất thiết bị gốc (ODM) hàng đầu thế giới (như Minisforum, Beelink, Radxa, Topton) - những đơn vị đã có sẵn dây chuyền sản xuất bo mạch chip Intel N100 hoặc AMD Ryzen 7 Mini PC đạt chuẩn kiểm định an toàn quốc tế FCC, CE, RoHS.
+  - Ký hợp đồng gia công White-label OEM: Vỏ hợp kim nhôm Anodized nguyên khối màu đen nhám (Stealth Matte Black), khắc laser logo ZeroStudio và mã số Serial mật mã học cá nhân hóa cho từng khách hàng.
+  - Xưởng ODM nạp sẵn bản ROM ZeroOS đã ký số mật mã Ed25519 trực tiếp vào chip lưu trữ eMMC/NVMe trước khi đóng gói hộp seal sang trọng.
+  - Nhà máy Thâm Quyến dán tem vận chuyển quốc tế và giao thẳng tới địa chỉ từng khách hàng toàn cầu qua DHL/FedEx (Direct-to-Customer Dropshipping).
+  - **Kinh tế học đơn hàng:** Giá vốn ODM sản xuất trọn gói bao gồm vỏ hộp: $120. Bán ra $299. **Lợi nhuận ròng đút túi: $179/máy (~60% biên lợi nhuận ròng)**.
+
+---
+
+### 2. Giao Thức Phòng Thí Nghiệm Độc Lập Skunkworks (The Isolated R&D Skunkworks Protocol)
+
+> [!TIP]
+> **TRIẾT LÝ VÀNG: "ISOLATE FIRST, STRESS-TEST IN SILO, MERGE LATER" (CÔ LẬP TRƯỚC, TEST CỰC HẠN RIÊNG, HÒA MẠNG SAU)**
+> Ý tưởng xuất sắc của Founder về việc: **Mỗi phát minh được tách thành một file kiểm thử hoàn toàn độc lập** trước khi đưa ra công chúng chính là phương pháp luận kinh điển của các phòng thí nghiệm bí mật lừng lẫy nhất lịch sử (Lockheed Martin Skunkworks chế tạo SR-71 Blackbird, Google X, Bell Labs).
+
+```
+┌───────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                           BẢN ĐỒ PHÒNG THÍ NGHIỆM ĐỘC LẬP SKUNKWORKS (LAB ARCHITECTURE)                  │
+├───────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                           │
+│   [PRODUCTION CORE: STABLE & PROTECTED]                        [ISOLATED SKUNKWORKS LAB: NO-RISK ZONE]    │
+│   ┌───────────────────────────────────┐                        ┌──────────────────────────────────────┐   │
+│   │ index.html (UI v2.7.1)            │                        │ Commercial_Projects_Archive/         │   │
+│   │ app.js (15-Layer Defense Active)  │      ◄─── MERGE ────   │ ZeroPDF_Studio/lab/                  │   │
+│   │ video_bridge.py (FastAPI 8900)    │       (Sau khi audit)  │ 01_guilloche_matrix_cccd.html        │   │
+│   │ Bán gói PRO/ULTRA bình thường     │                        │ 02_nonlinear_warping_dsp.py          │   │
+│   │ 0% nguy cơ crash hệ thống         │                        │ 03_ultrasound_steganography.py       │   │
+│   └───────────────────────────────────┘                        │ 04_neuro_hook_autosplicer.py         │   │
+│                                                                │ 05_lmp_p2p_checkout_kernel.html      │   │
+│                                                                │ 06_zbox_airgap_patch_packager.py     │   │
+│                                                                └──────────────────────────────────────┘   │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Vì Sao Chiến Lược "Mỗi Phát Minh Một File Riêng" Là Nước Đi Chiến Lược Vô Giá?
+1. **Triệt Tiêu 100% Rủi Ro Đổ Vỡ Hệ Thống Sản Xuất (Zero Production Downtime):**
+   - Bộ mã nguồn `app.js` và `video_bridge.py` hiện tại đã hoàn thiện 100%, bảo vệ bằng 15 tầng an ninh và phục vụ giao dịch nạp tiền mua license trơn tru.
+   - Các công nghệ đột phá thế kỷ (WASM sub-pixel injection, thuật toán co giãn thời gian vi phân, phân tích ma trận quang học) đòi hỏi tinh chỉnh sâu vào bộ nhớ RAM và WebGPU. Nếu viết trực tiếp vào file chính, nguy cơ xung đột mã, crash trình duyệt hoặc rò rỉ lỗi bộ nhớ (memory leak) sẽ làm hỏng trải nghiệm người dùng hiện tại.
+   - Thử nghiệm độc lập trong thư mục `lab/` giữ cho hệ thống sản xuất luôn vững như bàn thạch.
+2. **Tuyệt Mật Sở Hữu Trí Tuệ & Chế Độ Tàng Hình (Stealth R&D Mode):**
+   - Mỗi file kiểm thử là một PoC (Proof-of-Concept) độc lập, có thể mã hóa hoặc xóa bỏ mà không ảnh hưởng bất kỳ dòng mã nào khác.
+   - Khi chưa sẵn sàng công bố, ta có thể chạy benchmark nội bộ, đối chiếu độ chính xác của thuật toán trước khi đối thủ kịp nhận ra điều gì đang diễn ra.
+3. **Đo Lường Hiệu Năng Vi Thể (Micro-Benchmarking Từng Miligiây):**
+   - Khi đứng độc lập, ta có thể đo chính xác tuyệt đối: Thuật toán ngốn bao nhiêu MB RAM? Chạy trên GPU mất bao nhiêu mili-giây? Tần số âm thanh 19.2kHz có bị thuật toán YouTube nén mất không?
+   - Chỉ khi file PoC đạt điểm số kiểm toán xuất sắc (100% Pass) mới được biên dịch sang WebAssembly và tích hợp vào bản phát hành thương mại.
+
+#### Lộ Trình 6 File Thí Nghiệm Độc Lập Thiết Lập Ngay Tại Thư Mục `lab/`:
+* **`lab/01_guilloche_matrix_cccd.html`:** Trình tạo và phân tích ma trận hoa văn quang học Guilloche bảo vệ eKYC CCCD/Hộ chiếu trực tiếp trên Canvas 4K không dùng thư viện ngoài.
+* **`lab/02_nonlinear_warping_dsp.py`:** Thử nghiệm thuật toán co giãn thời gian vi phân (Non-Linear Time Warping) biến đổi tốc độ theo hàm Cosine vi phân, đánh lừa thuật toán băm Content ID của YouTube/TikTok.
+* **`lab/03_ultrasound_steganography.py`:** Thử nghiệm nhúng và trích xuất chữ ký bản quyền số vào dải tần siêu âm 19.2kHz bằng bộ biến đổi Fourier nhanh (FFT), kiểm tra độ bền vững qua 3 lần nén MP3/AAC.
+* **`lab/04_neuro_hook_autosplicer.py`:** Thử nghiệm nhận diện đỉnh cao trào tâm lý (Neuro-Hook Cadence) tự động cắt ghép 3 giây mở đầu giữ chân người xem đạt >65% AVD.
+* **`lab/05_lmp_p2p_checkout_kernel.html`:** Thử nghiệm nhúng vi nhân WASM vào sub-pixel của video HTML5, tự động kích hoạt mã QR VietQR NAPAS 24/7 trực tiếp trên màn hình video không cần website trung gian.
+* **`lab/06_zbox_airgap_patch_packager.py`:** Thử nghiệm đóng gói bản cập nhật hệ thống ngoại tuyến `.zup` có chữ ký số mật mã bất đối xứng Ed25519 cho các thiết bị ZeroBox hoàn toàn cách ly internet.
+
+---
+
+## XIV. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
 
 ### 1. Cập Nhật Trang Web Online (Netlify):
 - **Trang quản lý:** [https://app.netlify.com/sites/zerostu/deploys](https://app.netlify.com/sites/zerostu/deploys).
