@@ -52,12 +52,12 @@ const TRANSLATIONS = {
         hud_after_title: "SAU ZEROSTUDIO (1-CLICK)",
 
         // Customer Reviews
-        reviews_badge: "BẢO CHỨNG CHẤT LƯỢNG • 1,480+ ĐÁNH GIÁ 5 SAO",
+        reviews_badge: "TRẢI NGHIỆM THẬT • ĐÁNH GIÁ TỪ KHÁCH HÀNG THỰC TẾ",
         reviews_title: "Khách Hàng Nói Gì Về ZeroStudio?",
         reviews_sub: "Đánh giá và đóng góp ý kiến thực tế từ các Creator MMO, Kế toán trưởng, Studio Content và Doanh nghiệp trên toàn quốc.",
-        reviews_count_text: "1,482+ Đánh Giá Hài Lòng • 98.6% Khuyên Dùng",
+        reviews_count_text: "0 Đánh Giá • 100% Khách Hàng Trải Nghiệm Thật",
         btn_write_review: "Viết Đánh Giá Của Bạn",
-        filter_all: "Tất Cả (1,480+)",
+        filter_all: "Tất Cả Đánh Giá",
         filter_5star: "5 Sao ⭐",
         filter_mmo: "Dân Video MMO 🔥",
         filter_office: "Văn Phòng & Kế Toán 📑",
@@ -93,10 +93,10 @@ const TRANSLATIONS = {
         // Founder 100-Slot Tracker
         tracker_status_founder: "ƯU ĐÃI FOUNDER EDITION • GIỚI HẠN 100 SUẤT ĐẦU",
         tracker_status_soldout: "🔒 ĐÃ ĐỦ 100 SUẤT FOUNDER • ĐANG ÁP DỤNG GIÁ NIÊM YẾT CHÍNH THỨC",
-        tracker_slots_prefix: "Chỉ còn",
+        tracker_slots_prefix: "Còn lại",
         tracker_slots_suffix: "suất",
         tracker_slots_full: "Đã hết 100/100 suất",
-        tracker_explain_founder: "🔥 Đã đăng ký {slots}/100 suất ưu đãi. Khi đủ 100 suất, hệ thống sẽ tự động chuyển về giá niêm yết chính thức.",
+        tracker_explain_founder: "🔥 Đã đăng ký {slots}/100 suất ưu đãi thật. Số lượng suất giảm thực tế theo từng giao dịch thanh toán thành công.",
         tracker_explain_soldout: "⚠️ Chương trình ưu đãi 100 suất Founder Edition đã kết thúc. Hiện đang áp dụng mức giá niêm yết chính thức trên toàn hệ thống.",
 
         // Pricing Cards - Free
@@ -302,12 +302,12 @@ const TRANSLATIONS = {
         hud_after_title: "AFTER ZEROSTUDIO (1-CLICK)",
 
         // Customer Reviews
-        reviews_badge: "PROVEN QUALITY • 1,480+ 5-STAR RATINGS",
+        reviews_badge: "REAL EXPERIENCES • VERIFIED COMMUNITY FEEDBACK",
         reviews_title: "What Creators Say About ZeroStudio?",
         reviews_sub: "Real testimonials and feature requests from global MMO creators, accounting leads, content studios, and enterprise teams.",
-        reviews_count_text: "1,482+ Satisfied Reviews • 98.6% Recommend",
+        reviews_count_text: "0 Reviews • 100% Real Community Testimonials",
         btn_write_review: "Write Your Review",
-        filter_all: "All Reviews (1,480+)",
+        filter_all: "All Reviews",
         filter_5star: "5 Stars ⭐",
         filter_mmo: "MMO Video Creators 🔥",
         filter_office: "Office & Finance 📑",
@@ -343,7 +343,7 @@ const TRANSLATIONS = {
         // Founder 100-Slot Tracker
         tracker_status_founder: "FOUNDER EDITION OFFER • LIMITED 100 SLOTS",
         tracker_status_soldout: "🔒 100 FOUNDER SLOTS FILLED • STANDARD PRICING APPLIED",
-        tracker_slots_prefix: "Only",
+        tracker_slots_prefix: "Remaining",
         tracker_slots_suffix: "slots left",
         tracker_slots_full: "Sold Out 100/100",
         tracker_explain_founder: "🔥 Claimed {slots}/100 slots. Automatically switches to standard price when 100 slots are reached.",
@@ -553,12 +553,12 @@ const TRANSLATIONS = {
         hud_after_title: "ZeroStudio处理后 (一键生成)",
 
         // Customer Reviews
-        reviews_badge: "品质保障 • 1,480+ 五星好评",
+        reviews_badge: "真实体验 • 来自真实用户的评价",
         reviews_title: "创作者与用户如何评价ZeroStudio？",
         reviews_sub: "来自全球短视频出海创作者、财务主管、设计工作室与企业团队的真实评价与建议。",
-        reviews_count_text: "1,482+ 满意评价 • 98.6% 推荐率",
+        reviews_count_text: "0条评价 • 100% 真实用户体验",
         btn_write_review: "撰写您的评价",
-        filter_all: "全部评价 (1,480+)",
+        filter_all: "全部评价",
         filter_5star: "5星好评 ⭐",
         filter_mmo: "短视频MMO创作者 🔥",
         filter_office: "办公与财务 📑",
@@ -594,10 +594,10 @@ const TRANSLATIONS = {
         // Founder 100-Slot Tracker
         tracker_status_founder: "创世者版特惠 • 限量首发100席",
         tracker_status_soldout: "🔒 100席创世者版已满额 • 现已启用官方标准价格",
-        tracker_slots_prefix: "仅剩",
+        tracker_slots_prefix: "剩余",
         tracker_slots_suffix: "席",
         tracker_slots_full: "已满额 100/100",
-        tracker_explain_founder: "🔥 已认领 {slots}/100 席特惠。满100席后，系统将自动切换为官方标准价格。",
+        tracker_explain_founder: "🔥 已认领 {slots}/100 真实席位。仅在确认付款后实时扣减。",
         tracker_explain_soldout: "⚠️ 100席创世者版优惠活动已截止，全平台现已恢复官方标准零售价。",
 
         // Pricing Cards - Free
@@ -803,12 +803,12 @@ const TRANSLATIONS = {
         hud_after_title: "ZEROSTUDIO処理後 (1クリック)",
 
         // Customer Reviews
-        reviews_badge: "実績と信頼 • 1,480件以上の高評価",
+        reviews_badge: "リアルな声 • 実際のユーザーレビュー",
         reviews_title: "ZeroStudioをご利用中のお客様の声",
         reviews_sub: "世界中の動画クリエイター、経理責任者、制作スタジオからの実際のレビューをご紹介します。",
-        reviews_count_text: "1,482件以上の満足レビュー • 推奨度 98.6%",
+        reviews_count_text: "0件のレビュー • 100% 実際のユーザーの声",
         btn_write_review: "レビューを投稿する",
-        filter_all: "すべてのレビュー (1,480+)",
+        filter_all: "すべてのレビュー",
         filter_5star: "★5つ評価 ⭐",
         filter_mmo: "動画クリエイター 🔥",
         filter_office: "オフィス・経理業務 📑",
@@ -847,7 +847,7 @@ const TRANSLATIONS = {
         tracker_slots_prefix: "残り",
         tracker_slots_suffix: "枠",
         tracker_slots_full: "完売 100/100",
-        tracker_explain_founder: "🔥 登録済み {slots}/100 枠。100枠満了後、自動的に通常価格へ切り替わります。",
+        tracker_explain_founder: "🔥 登録済み {slots}/100 枠。実際の決済完了に伴いリアルタイムで更新されます。",
         tracker_explain_soldout: "⚠️ 先着100枠の創設者優待枠は終了しました。現在は正規通常価格が適用されています。",
 
         // Pricing Cards - Free
@@ -1082,6 +1082,9 @@ function setAppLanguage(lang, silent = false) {
     // 7. Re-render dynamic components in the new language
     if (typeof window.renderFounderSlotState === 'function') {
         window.renderFounderSlotState();
+    }
+    if (typeof window.updateReviewsDynamicStats === 'function') {
+        window.updateReviewsDynamicStats();
     }
 
     // 8. Dispatch Event for external listeners

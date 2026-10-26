@@ -3193,14 +3193,28 @@ function fallbackCopyText(text) {
 }
 
 // ==============================================================================
+// Immediate auto-reset for legacy browser localStorage
+(function() {
+    try {
+        if (localStorage.getItem('zerostudio_founder_real_v2') !== 'true' || localStorage.getItem('zerostudio_founder_slots_claimed') === '88') {
+            localStorage.setItem('zerostudio_founder_slots_claimed', '0');
+            localStorage.setItem('zerostudio_founder_real_v2', 'true');
+        }
+    } catch (_) {}
+})();
+
 // FOUNDER 100-SLOT LIVE COUNTDOWN & STATE TRANSITION ENGINE
 // ==============================================================================
 function getFounderSlotsClaimed() {
+    // FORCE AUTO-MIGRATION: Reset any legacy mock '88' to 0 for all visitors
+    if (localStorage.getItem('zerostudio_founder_real_v2') !== 'true' || localStorage.getItem('zerostudio_founder_slots_claimed') === '88') {
+        localStorage.setItem('zerostudio_founder_slots_claimed', '0');
+        localStorage.setItem('zerostudio_founder_real_v2', 'true');
+    }
     let stored = localStorage.getItem('zerostudio_founder_slots_claimed');
     if (!stored) {
-        // Sòng phẳng & 100% Khách hàng thật: Bắt đầu từ 0 suất
         stored = '0';
-        localStorage.setItem('zerostudio_founder_slots_claimed', stored);
+        localStorage.setItem('zerostudio_founder_slots_claimed', '0');
     }
     return Math.min(100, Math.max(0, parseInt(stored, 10) || 0));
 }
@@ -6241,6 +6255,11 @@ function updateReviewsDynamicStats() {
     const starsRowEl = document.getElementById('reviews-stars-row');
     const countTextEl = document.getElementById('reviews-count-text');
     const badgeTagEl = document.querySelector('.reviews-headline-wrap .section-tagline-pill');
+
+    const allFilterBtn = document.querySelector('.review-filter-pill[data-i18n="filter_all"]');
+    if (allFilterBtn) {
+        allFilterBtn.textContent = totalCount === 0 ? "Tất Cả Đánh Giá" : `Tất Cả (${totalCount})`;
+    }
 
     if (totalCount === 0) {
         if (bigNumEl) bigNumEl.textContent = "5.0";
