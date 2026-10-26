@@ -16,7 +16,8 @@
 7. [VII. BỘ TỨ PHÁT MINH CÔNG NGHỆ NGUYÊN BẢN (PROPRIETARY PATENTS)](#vii-bộ-tứ-phát-minh-công-nghệ-nguyên-bản-proprietary-patents)
 8. [VIII. PHÁT MINH VĨ ĐẠI THẾ KỶ: LIVING MEDIA PROTOCOL (LMP) - GIAO THỨC TRUYỀN THÔNG TỰ TRỊ SINH HỌC](#viii-phát-minh-vĩ-đại-thế-kỷ-living-media-protocol-lmp---giao-thức-truyền-thông-tự-trị-sinh-học)
 9. [IX. ĐỈNH CAO THỜI ĐẠI: HỆ ĐIỀU HÀNH CHỦ QUYỀN SỐ NHÂN LOẠI (THE SOVEREIGN HUMAN OS)](#ix-đỉnh-cao-thời-đại-hệ-điều-hành-chủ-quyền-số-nhân-loại-the-sovereign-human-os)
-10. [X. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#x-cẩm-nang-vận-hành-dành-cho-admin-runbook)
+10. [X. BỐN CHUYỂN DỊCH ĐỊA CHẤN & TRIẾT LÝ CUỘC NỔI DẬY CỦA SIÊU CÁ THỂ (THE FOUR TECTONIC SHIFTS & THE SOVEREIGN INDIVIDUAL REVOLUTION)](#x-bốn-chuyển-dịch-địa-chấn--triết-lý-cuộc-nổi-dậy-của-siêu-cá-thể-the-four-tectonic-shifts--the-sovereign-individual-revolution)
+11. [XI. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#xi-cẩm-nang-vận-hành-dành-cho-admin-runbook)
 
 ---
 
@@ -462,7 +463,8 @@ ightarrow$ Giao diện thanh toán bung ra ngay trong trình phát video nội b
 * **Đột phá độc quyền của ZeroStudio:**
   - Thuật toán quét quang phổ vi mạch máu dưới da (Remote Photoplethysmography - rPPG): Người thật khi nói chuyện luôn có nhịp đập tim vi mô làm thay đổi sắc độ pixel da mặt mà AI hiện tại không thể tổng hợp được.
   - Phân tích vi sóng hài âm vô thức của vòm họng và dây thanh quản người.
-  - **1-Click phán quyết tức thì:** Đưa video/file ghi âm vào $ightarrow$ ZeroStudio đưa ra báo cáo pháp y số (Digital Forensic Attestation): *Xác suất người thật 100%* hay *99.9% là video giả mạo Deepfake*. Bảo vệ tài sản và tính mạng của mọi gia đình.
+  - **1-Click phán quyết tức thì:** Đưa video/file ghi âm vào $
+ightarrow$ ZeroStudio đưa ra báo cáo pháp y số (Digital Forensic Attestation): *Xác suất người thật 100%* hay *99.9% là video giả mạo Deepfake*. Bảo vệ tài sản và tính mạng của mọi gia đình.
 
 ### 2. Trụ Cột 2: "ZK-Identity Masking" (Mặt Nạ Định Danh Bằng Chứng Không Kiến Thức)
 * **Thảm họa nhân loại đối mặt:** Người dân bắt buộc phải eKYC khắp nơi: thuê nhà, mở thẻ, ký hợp đồng, mua hàng online. Mỗi lần gửi ảnh CCCD/hộ chiếu là một lần đánh cược với số phận khi dữ liệu bị nhân viên xấu đem bán cho các đường dây tín dụng đen hoặc app vay nợ lừa đảo.
@@ -479,12 +481,62 @@ ightarrow$ Giao diện thanh toán bung ra ngay trong trình phát video nội b
   - Biến bất kỳ ổ cứng di động hay chiếc USB cá nhân nào thành một **Két Sắt Ký Ức Vĩnh Cửu (Immortal Offline Vault)**.
   - Tự động nạp, nén WebAssembly lượng tử và lập chỉ mục (Private Vector Embeddings) cho toàn bộ 20 năm dữ liệu cuộc đời (ảnh chụp, hóa đơn, giấy khai sinh, nhật ký, email, hợp đồng).
   - Tích hợp một **Mô hình AI Tri Thức Cục Bộ (Local Small Language Model)** chạy 100% bằng CPU/GPU cá nhân: **0 byte dữ liệu rời khỏi máy tính**.
-  - Người dùng đàm thoại trực tiếp với cuộc đời mình: *"Tìm cho tôi bức ảnh sinh nhật con gái 3 tuổi ở Vũng Tàu"* hay *"Hợp đồng mua chung cư năm 2021 ai là người làm chứng"* $ightarrow$ AI trả lời chính xác từng mili-giây.
+  - Người dùng đàm thoại trực tiếp với cuộc đời mình: *"Tìm cho tôi bức ảnh sinh nhật con gái 3 tuổi ở Vũng Tàu"* hay *"Hợp đồng mua chung cư năm 2021 ai là người làm chứng"* $
+ightarrow$ AI trả lời chính xác từng mili-giây.
   - **Ý nghĩa tối thượng:** Trả lại cho con người **quyền sở hữu vĩnh viễn cuộc đời mình**. Mua một lần — Sở hữu trọn đời — Truyền lại cho con cháu như một di sản gia đình không thể bị bất kỳ tập đoàn công nghệ nào tước đoạt!
 
 ---
 
-## X. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
+## X. BỐN CHUYỂN DỊCH ĐỊA CHẤN & TRIẾT LÝ CUỘC NỔI DẬY CỦA SIÊU CÁ THỂ
+*(THE FOUR TECTONIC SHIFTS & THE SOVEREIGN INDIVIDUAL REVOLUTION)*
+
+> [!IMPORTANT]
+> **BẢN TUYÊN NGÔN TỰ DO CỦA ZEROSTUDIO:** Công nghệ sinh ra vốn là để giải phóng con người, nhưng suốt 20 năm qua, các đế chế Big Tech đã biến nó thành chiếc lồng vô hình để nhốt con người lại, biến họ thành công cụ tạo dữ liệu và tiêu thụ quảng cáo. ZeroStudio chọn một con đường khác: **Một cuộc nổi dậy thầm lặng (A Quiet Counter-Revolution) nhằm trao lại công cụ sản xuất, dữ liệu, tiền bạc và sự tự do về đúng nơi nó thuộc về: TỪNG CÁ THỂ CON NGƯỜI.**
+
+```
+=============================================================================================================
+                               BỐN CHUYỂN DỊCH ĐỊA CHẤN THỜI ĐẠI CỦA THẾ GIỚI SỐ
+=============================================================================================================
+  1. SỰ SỤP ĐỔ CỦA WEB CÔNG CỘNG   ==>  95% MXH biến thành bãi rác AI Slop; con người rút lui vào "Khu Rừng Đen"
+     (The Dark Forest Web)              (Dark Forest) & ốc đảo số kín P2P. ZeroStudio là hạ tầng cho ốc đảo đó.
+                                         │
+  2. BỨC TƯỜNG NHIỆT ĐỘNG LỰC HỌC  ==>  Cloud chạm trần năng lượng điện & nước; chi phí máy chủ AI phát nổ.
+     (The Cloud Energy Wall)            Mô hình Local-First RAM 0đ của ZeroStudio là quy luật tất yếu của vật lý.
+                                         │
+  3. SỰ TAN RÃ CỦA BẢN QUYỀN CŨ    ==>  DMCA 1998 đã chết trước văn hóa Remix AI. ZeroStudio tiên phong cơ chế
+     (Death of Legacy Copyright)        Cây Phả Hệ Tác Quyền Vi Mô: Biến kẻ reup thành đại lý kiếm tiền tự nguyện.
+                                         │
+  4. SỰ TRỖI DẬY CỦA SIÊU CÁ THỂ   ==>  1 người sở hữu "Bộ Giáp Iron Man" ZeroStudio = Doanh nghiệp 50 nhân sự.
+     (One-Person Sovereign Unicorn)     Tạo ra đế chế triệu đô độc lập không cần gọi vốn, không phụ thuộc ai.
+=============================================================================================================
+```
+
+### 1. Chuyển Dịch 1: Sự Sụp Đổ Của Internet Công Cộng & "Thuyết Khu Rừng Đen" (The Dark Forest Web)
+* **Hiện tượng khách quan:** Hơn 50% lưu lượng mạng hiện tại là bot. Đến năm 2027, ước tính **95% nội dung trên TikTok, Facebook, X, YouTube Shorts sẽ là AI rác (AI Slop)** tự tạo ra để phục vụ cho các con bot khác cày view quảng cáo. Mạng xã hội công cộng đang biến thành "bãi rác phóng xạ số".
+* **Phản ứng của nhân loại:** Con người thật sẽ **di cư hàng loạt khỏi internet công cộng**, rút lui vào "Khu Rừng Đen" (Dark Forest): Các nhóm kín 10-50 người, kênh Telegram riêng, máy chủ gia đình, mạng lưới P2P bí mật giữa những người thật tin tưởng nhau.
+* **Sứ mệnh ZeroStudio:** Trở thành **Hạ Tầng Giao Tiếp & Giao Thương Cho Các Ốc Đảo Số Kín**. Nơi người thật trao đổi nội dung chất lượng cao, ký hợp đồng, thanh toán tiền cho nhau mà không một con bot hay thuật toán quảng cáo nào có thể dòm ngó.
+
+### 2. Chuyển Dịch 2: Bức Tường Nhiệt Động Lực Học Của Big Tech (The Cloud Energy Wall)
+* **Khủng hoảng năng lượng của đám mây:** Google, Microsoft, OpenAI đang phải mua lại cả các nhà máy điện hạt nhân chỉ để nuôi cụm máy chủ AI ngốn điện và nước làm mát. Điện toán đám mây (Cloud) sẽ không thể rẻ mãi; khi chi phí chạm trần, Big Tech bắt buộc phải tăng giá API và siết chặt hạn mức.
+* **Nghịch lý phần cứng cá nhân:** Hàng tỷ chip Apple Silicon M-series, Snapdragon X, Intel Ultra và card đồ họa RTX đang nằm im lìm trên bàn làm việc của người dùng 18-20 tiếng mỗi ngày mà không được khai thác hết công suất.
+* **Chiến lược ZeroStudio:** Kiến trúc **100% Cục Bộ (Local-First RAM / CPU / GPU)** của ZeroStudio không phải là giải pháp tạm thời, mà là **Quy luật tiến hóa tất yếu của nhiệt động lực học**. Phần mềm chạy cục bộ trên máy khách sẽ đè bẹp mọi dịch vụ Cloud về tốc độ, chi phí (0 đồng) và tính bền vững khi khủng hoảng năng lượng toàn cầu nổ ra.
+
+### 3. Chuyển Dịch 3: Sự Tan Rã Của Luật Bản Quyền Thế Kỷ 20 (Death of Legacy Copyright)
+* **Cái chết của luật cũ:** Luật bản quyền truyền thống (DMCA, Content ID) được viết từ năm 1998 cho đĩa CD/DVD đã hoàn toàn tê liệt trước kỷ nguyên AI phối lại (Remix / Diffusion Culture). Mọi nội dung ngày nay đều là sự lai ghép từ hàng nghìn nguồn khác nhau.
+* **Đột phá ZeroStudio - "Autonomous Lineage Royalties" (Cây Phả Hệ Tác Quyền Tự Động):**
+  - Thay vì kiện tụng hay đánh gậy cấm đoán (vốn chỉ làm nghẽn dòng chảy sáng tạo):
+  - ZeroStudio nhúng cơ chế phân chia dòng tiền vi mô (Micro-revenue Split): Một video khi reup kiếm được tiền $ightarrow$ Tự động trích 10% gửi về ví tác giả clip gốc, 10% gửi về người tạo âm thanh, 80% cho người biên tập.
+  - **Biến người reup thành đại lý kiếm tiền tự nguyện cho tác giả gốc.** Không còn kiện tụng, chỉ có sự cộng sinh tài chính thịnh vượng!
+
+### 4. Chuyển Dịch 4: Sự Ra Đời Của "Siêu Cá Thể" (The One-Person Sovereign Unicorn)
+* **Quy luật tổ chức mới:** Thay vì cần bộ máy 20-50 nhân sự cồng kềnh để vận hành một công ty triệu đô, một con người duy nhất nắm trong tay "Bộ Khung Xương Cơ Học Trí Tuệ" có thể đảm đương toàn bộ chuỗi giá trị.
+* **ZeroStudio là Bộ Giáp Iron Man cho Siêu Cá Thể:**
+  - Tự động bóc tách trend $ightarrow$ Tự động lồng tiếng $ightarrow$ Tự động dựng video $ightarrow$ Tự động bảo vệ danh tính $ightarrow$ Tự động thu tiền P2P $ightarrow$ Tự động quản lý sổ sách 100% bảo mật.
+  - Một bạn trẻ ngồi trong phòng trọ với ZeroStudio có thể điều hành một đế chế nội dung toàn cầu, tạo ra dòng tiền độc lập mà **không cần gọi vốn, không cần thuê nhân viên, không chịu sự chi phối của bất kỳ ông chủ hay nền tảng nào**.
+
+---
+
+## XI. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
 
 ### 1. Cập Nhật Trang Web Online (Netlify):
 - **Trang quản lý:** [https://app.netlify.com/sites/zerostu/deploys](https://app.netlify.com/sites/zerostu/deploys).
