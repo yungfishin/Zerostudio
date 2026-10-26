@@ -12457,11 +12457,13 @@
 
                     <!-- Bridge Connection Status Indicator -->
 
-                    <div class="bridge-status-indicator" id="bridge-status-pill">
+                    <div class="bridge-status-indicator" id="bridge-status-pill" onclick="openBridgeHelpModal()" style="cursor: pointer;" title="Bấm để xem hướng dẫn kết nối Local Video Bridge (Douyin, Shorts, Reels)">
 
                         <span class="bridge-pulse-dot" id="bridge-dot"></span>
 
                         <span id="bridge-status-text">Đang đồng bộ Local Video Bridge (Zero-Log)...</span>
+
+                        <span style="font-size: 0.72rem; opacity: 0.75; margin-left: 0.35rem; color: #38bdf8;">[Hướng Dẫn]</span>
 
                     </div>
 
@@ -16546,6 +16548,50 @@
                     <span data-i18n="claim_btn_action">🚀 Kích Hoạt Quà Tặng Vào Máy Này Ngay</span>
                 </button>
                 <button type="button" class="btn-outline" onclick="closeClaimGiftModal()" data-i18n="claim_btn_later">Để Sau</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: BRIDGE LAUNCHER GUIDE MODAL (Khi người dùng chưa bật bridge) -->
+    <div class="laser-modal" id="bridge-help-modal" style="display: none; align-items: center; justify-content: center; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 99999;">
+        <div class="pro-hud-card" style="max-width: 580px; width: 92%; text-align: left; position: relative; background: #0f172a; border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 16px; padding: 1.75rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 35px rgba(56, 189, 248, 0.2);">
+            <button class="modal-close-btn" onclick="closeBridgeHelpModal()" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 0.25rem;">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="22" height="22"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <div style="font-size: 2rem;">⚡</div>
+                <div>
+                    <h2 style="font-size: 1.35rem; font-weight: 800; color: #ffffff; margin: 0;">KÍCH HOẠT ĐỘNG CƠ DESKTOP (LOCAL BRIDGE)</h2>
+                    <p id="bridge-help-platform-tag" style="color: #38bdf8; font-size: 0.85rem; margin: 0.2rem 0 0 0; font-weight: 600;">Mở khóa tốc độ cao cho Douyin, Shorts, Reels & 5 Vũ Khí MMO</p>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.1rem;">
+                Do chính sách tường lửa chống tải của <strong>Douyin (抖音)</strong>, <strong>YouTube Shorts</strong> và <strong>Facebook Reels</strong>, các nền tảng này cần bộ xử lý <strong>ZeroStudio Desktop</strong> trên máy tính để tải tốc độ cao, khử logo 4K và áp dụng 5 vũ khí lách bản quyền MMO:
+            </p>
+
+            <div style="background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1rem; margin-bottom: 1.25rem;">
+                <div style="margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 0.75rem;">
+                    <span style="background: #38bdf8; color: #020617; font-weight: 800; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">1</span>
+                    <span style="color: #f1f5f9; font-size: 0.88rem;">Mở thư mục <strong>ZeroStudio</strong> trên máy tính của bạn (hoặc tải gói ZIP bên dưới nếu chưa có).</span>
+                </div>
+                <div style="margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 0.75rem;">
+                    <span style="background: #10b981; color: #020617; font-weight: 800; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">2</span>
+                    <span style="color: #f1f5f9; font-size: 0.88rem;">Bấm đúp vào file <strong>BAT_DAU_STUDIO_VIDEO.bat</strong> (hoặc <strong>ZeroStudio.exe</strong>).</span>
+                </div>
+                <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                    <span style="background: #a855f7; color: #ffffff; font-weight: 800; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">3</span>
+                    <span style="color: #34d399; font-size: 0.88rem; font-weight: 600;">Đèn trạng thái sẽ tự động chuyển sang Xanh Lá 🟢 và sẵn sàng cào mọi video lập tức!</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <a href="/ZeroStudio-Pro-Desktop.zip" download class="btn-glow-action" style="flex: 1; text-align: center; text-decoration: none; padding: 0.75rem 1rem; font-size: 0.9rem; background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: #fff; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;">
+                    📥 Tải Gói Desktop (.ZIP)
+                </a>
+                <button type="button" onclick="closeBridgeHelpModal()" class="btn-secondary" style="flex: 1; padding: 0.75rem 1rem; font-size: 0.9rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #e2e8f0; cursor: pointer; font-weight: 600;">
+                    Đã Hiểu & Đóng
+                </button>
             </div>
         </div>
     </div>

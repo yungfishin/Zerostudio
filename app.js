@@ -1804,12 +1804,16 @@ window.pasteVideoClipboard = async function() {
 
 window.resolveVideo = async function() {
     const input = document.getElementById('video-url-input');
-    const url = input ? input.value.trim() : '';
+    const rawInput = input ? input.value.trim() : '';
 
-    if (!url) {
-        showToast('Vui lòng dán liên kết video!', 'error');
+    if (!rawInput) {
+        showToast('Vui lòng nhập hoặc dán liên kết video!', 'error');
         return;
     }
+
+    // Auto-extract exact URL from messy copied text (e.g. TikTok / Douyin share text with description)
+    const urlMatch = rawInput.match(/https?:\/\/[^\s]+/i);
+    const url = urlMatch ? urlMatch[0] : rawInput;
 
     if (!window.isProActive()) {
         const todayKey = 'zerostu_free_dl_' + new Date().toISOString().slice(0, 10);
@@ -1826,7 +1830,7 @@ window.resolveVideo = async function() {
     try {
         let videoData = null;
 
-        // Try local high-speed bridge first
+        // Priority 1: Try local high-speed Desktop bridge first (Fastest & Unrestricted)
         try {
             const bridgeUrl = await getBridgeBaseUrl();
             const bridgeRes = await fetch(`${bridgeUrl}/api/resolve?url=${encodeURIComponent(url)}`, { mode: 'cors' });
@@ -1846,22 +1850,24 @@ window.resolveVideo = async function() {
             // Local bridge not running or error, proceed to fallback
         }
 
-        // Fallback: Online resolvers (e.g. TikWM for TikTok)
+        // Priority 2: Online client-side resolvers (e.g. TikWM for TikTok)
         if (!videoData) {
             if (url.includes('tiktok.com')) {
-                const tikwmRes = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}&hd=1`);
-                const tikwmData = await tikwmRes.json();
-                if (tikwmData.code === 0 && tikwmData.data) {
-                    videoData = {
-                        success: true,
-                        title: tikwmData.data.title || 'TikTok Video Không Logo',
-                        uploader: tikwmData.data.author ? tikwmData.data.author.nickname : 'TikTok Creator',
-                        duration: tikwmData.data.duration || 0,
-                        video_url: tikwmData.data.hdplay || tikwmData.data.play,
-                        audio_url: tikwmData.data.music,
-                        platform: 'TikTok'
-                    };
-                }
+                try {
+                    const tikwmRes = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}&hd=1`);
+                    const tikwmData = await tikwmRes.json();
+                    if (tikwmData.code === 0 && tikwmData.data) {
+                        videoData = {
+                            success: true,
+                            title: tikwmData.data.title || 'TikTok Video Không Logo',
+                            uploader: tikwmData.data.author ? tikwmData.data.author.nickname : 'TikTok Creator',
+                            duration: tikwmData.data.duration || 0,
+                            video_url: tikwmData.data.hdplay || tikwmData.data.play,
+                            audio_url: tikwmData.data.music,
+                            platform: 'TikTok'
+                        };
+                    }
+                } catch (_) {}
             }
         }
 
@@ -1881,7 +1887,22 @@ window.resolveVideo = async function() {
                 showToast('Đã gỡ logo thành công! Video sẵn sàng để xem & tải về.', 'success');
             }
         } else {
-            showToast('Không thể trích xuất video. Vui lòng kiểm tra lại đường link hoặc khởi động BAT_DAU_STUDIO_VIDEO.bat!', 'error');
+            const isDouyin = url.includes('douyin.com') || url.includes('iesdouyin.com');
+            const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
+            const isFacebook = url.includes('facebook.com') || url.includes('fb.watch');
+
+            if (isDouyin || isYoutube || isFacebook) {
+                const platformName = isDouyin ? 'Douyin' : (isYoutube ? 'YouTube Shorts' : 'Facebook Reels');
+                showToast(`⚠️ Nền tảng ${platformName} yêu cầu mở file BAT_DAU_STUDIO_VIDEO.bat trên máy tính để vượt tường lửa bản quyền!`, 'warning', 7000);
+                if (typeof window.openBridgeHelpModal === 'function') {
+                    window.openBridgeHelpModal(platformName);
+                }
+            } else {
+                showToast('Không thể kết nối máy chủ phân tích video. Nếu dùng trên máy tính, vui lòng mở file BAT_DAU_STUDIO_VIDEO.bat!', 'error', 6000);
+                if (typeof window.openBridgeHelpModal === 'function') {
+                    window.openBridgeHelpModal('Video');
+                }
+            }
         }
 
     } catch (err) {
@@ -1889,6 +1910,22 @@ window.resolveVideo = async function() {
         console.error('Lỗi khi tải video:', err);
         showToast('Lỗi khi phân tích video: ' + err.message, 'error');
     }
+};
+
+window.openBridgeHelpModal = function(platformName) {
+    const modal = document.getElementById('bridge-help-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        const tagEl = document.getElementById('bridge-help-platform-tag');
+        if (tagEl && platformName) {
+            tagEl.textContent = `Nền tảng yêu cầu: ${platformName}`;
+        }
+    }
+};
+
+window.closeBridgeHelpModal = function() {
+    const modal = document.getElementById('bridge-help-modal');
+    if (modal) modal.style.display = 'none';
 };
 
 function renderResolvedVideo(data) {
