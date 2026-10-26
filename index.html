@@ -13320,28 +13320,83 @@
                             </div>
                         </div>
 
-                        <!-- Voice & Speed Controls -->
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
-                            <div>
-                                <label style="display: block; font-size: 0.76rem; color: #94a3b8; font-weight: 600; margin-bottom: 0.35rem;">Giọng đọc AI:</label>
-                                <select id="tts-voice-select" style="width: 100%; box-sizing: border-box; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; color: #f8fafc; padding: 0.5rem; font-size: 0.8rem; outline: none;">
-                                    <option value="vi-VN-HoaiMyNeural" selected>🇻🇳 Hoài My (Nữ - Ngọt ngào, Review)</option>
-                                    <option value="vi-VN-NamMinhNeural">🇻🇳 Nam Minh (Nam - Trầm ấm, Tài liệu)</option>
-                                    <option value="en-US-JennyNeural">🇺🇸 Jenny (Nữ - US English)</option>
-                                    <option value="en-US-GuyNeural">🇺🇸 Guy (Nam - US English)</option>
-                                    <option value="zh-CN-XiaoxiaoNeural">🇨🇳 Xiaoxiao (Nữ - Douyin Trung)</option>
-                                    <option value="ja-JP-NanamiNeural">🇯🇵 Nanami (Nữ - Nhật Bản)</option>
-                                </select>
+                        <!-- TẦNG 1: GLOBAL VOICE HUB (142 QUỐC GIA & 322 GIỌNG ĐỌC) -->
+                        <div style="margin-bottom: 1.1rem;">
+                            <!-- Quick Region Switcher -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                                <label style="font-size: 0.76rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🌍 Quốc Gia & Giọng Đọc (322 Giọng Neural):</label>
+                                <span id="tts-voices-total-badge" style="font-size: 0.7rem; color: #38bdf8; background: rgba(56, 189, 248, 0.15); padding: 0.15rem 0.5rem; border-radius: 9999px;">142 Quốc Gia</span>
                             </div>
-                            <div>
-                                <label style="display: block; font-size: 0.76rem; color: #94a3b8; font-weight: 600; margin-bottom: 0.35rem;">Tốc độ đọc:</label>
-                                <select id="tts-rate-select" style="width: 100%; box-sizing: border-box; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; color: #f8fafc; padding: 0.5rem; font-size: 0.8rem; outline: none;">
-                                    <option value="-15%">Chậm rãi (-15%)</option>
-                                    <option value="+0%" selected>Chuẩn phòng thu (0%)</option>
-                                    <option value="+10%">Reup TikTok (+10%)</option>
-                                    <option value="+25%">Gấp gáp / Fast (+25%)</option>
-                                </select>
+
+                            <!-- Quick Region Pills -->
+                            <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
+                                <button type="button" class="limit-pill-btn active" id="pill-loc-vi-VN" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterTtsCountry('vi-VN')">🇻🇳 Việt Nam</button>
+                                <button type="button" class="limit-pill-btn" id="pill-loc-en-US" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterTtsCountry('en-US')">🇺🇸 US (Mỹ)</button>
+                                <button type="button" class="limit-pill-btn" id="pill-loc-en-GB" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterTtsCountry('en-GB')">🇬🇧 UK (Anh)</button>
+                                <button type="button" class="limit-pill-btn" id="pill-loc-zh-CN" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterTtsCountry('zh-CN')">🇨🇳 Trung Quốc</button>
+                                <button type="button" class="limit-pill-btn" id="pill-loc-ja-JP" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterTtsCountry('ja-JP')">🇯🇵 Nhật Bản</button>
+                                <button type="button" class="limit-pill-btn" id="pill-loc-ko-KR" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterTtsCountry('ko-KR')">🇰🇷 Hàn Quốc</button>
+                                <button type="button" class="limit-pill-btn" id="pill-loc-th-TH" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterTtsCountry('th-TH')">🇹🇭 Thái Lan</button>
                             </div>
+
+                            <!-- 2-Tier Selectors -->
+                            <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 0.5rem; margin-bottom: 0.6rem;">
+                                <div>
+                                    <label style="display: block; font-size: 0.72rem; color: #64748b; font-weight: 600; margin-bottom: 0.25rem;">Quốc gia:</label>
+                                    <select id="tts-country-select" style="width: 100%; box-sizing: border-box; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; color: #f8fafc; padding: 0.45rem; font-size: 0.78rem; outline: none;" onchange="onTtsCountryChange(this.value)">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display: block; font-size: 0.72rem; color: #64748b; font-weight: 600; margin-bottom: 0.25rem;">Giọng đọc nhân vật:</label>
+                                    <select id="tts-voice-select" style="width: 100%; box-sizing: border-box; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; color: #f8fafc; padding: 0.45rem; font-size: 0.78rem; outline: none;">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TẦNG 2: BỘ HIỆU ỨNG BIẾN ÂM DSP 1 CHẠM (VOICE FX PRESETS) -->
+                        <div style="margin-bottom: 1.1rem; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.75rem;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                                <label style="font-size: 0.75rem; color: #e879f9; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🎛️ Hiệu Ứng Biến Âm (Voice FX DSP):</label>
+                                <span style="font-size: 0.68rem; color: #a855f7;">Lọc Tần Số Thời Gian Thực</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem;">
+                                <button type="button" class="limit-pill-btn active" id="btn-fx-normal" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; text-align: center;" onclick="setVoiceFx('normal')">
+                                    <div style="font-weight: 700;">🎙️ Gốc Chuẩn</div>
+                                    <div style="font-size: 0.62rem; color: #94a3b8;">Mộc Studio</div>
+                                </button>
+                                <button type="button" class="limit-pill-btn" id="btn-fx-studio_warm" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; text-align: center;" onclick="setVoiceFx('studio_warm')">
+                                    <div style="font-weight: 700; color: #fbbf24;">🔥 Trầm Ấm</div>
+                                    <div style="font-size: 0.62rem; color: #94a3b8;">Podcast Bass</div>
+                                </button>
+                                <button type="button" class="limit-pill-btn" id="btn-fx-horror" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; text-align: center;" onclick="setVoiceFx('horror')">
+                                    <div style="font-weight: 700; color: #f43f5e;">👻 Kinh Dị</div>
+                                    <div style="font-size: 0.62rem; color: #94a3b8;">Rùng Rợn Hall</div>
+                                </button>
+                                <button type="button" class="limit-pill-btn" id="btn-fx-vintage_radio" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; text-align: center;" onclick="setVoiceFx('vintage_radio')">
+                                    <div style="font-weight: 700; color: #38bdf8;">📻 Radio Cổ</div>
+                                    <div style="font-size: 0.62rem; color: #94a3b8;">Thập Niên 90</div>
+                                </button>
+                                <button type="button" class="limit-pill-btn" id="btn-fx-chipmunk" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; text-align: center;" onclick="setVoiceFx('chipmunk')">
+                                    <div style="font-weight: 700; color: #34d399;">🐿️ Sóc Chuột</div>
+                                    <div style="font-size: 0.62rem; color: #94a3b8;">Tấu Hài Meme</div>
+                                </button>
+                                <button type="button" class="limit-pill-btn" id="btn-fx-cyberpunk" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; text-align: center;" onclick="setVoiceFx('cyberpunk')">
+                                    <div style="font-weight: 700; color: #a855f7;">🤖 Robot AI</div>
+                                    <div style="font-size: 0.62rem; color: #94a3b8;">Sci-Fi Vocoder</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tốc Độ Đọc -->
+                        <div style="margin-bottom: 1.1rem;">
+                            <label style="display: block; font-size: 0.74rem; color: #94a3b8; font-weight: 600; margin-bottom: 0.3rem;">Tốc độ đọc (Tempo):</label>
+                            <select id="tts-rate-select" style="width: 100%; box-sizing: border-box; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; color: #f8fafc; padding: 0.45rem; font-size: 0.8rem; outline: none;">
+                                <option value="-15%">Chậm rãi (-15%) - Tâm sự, Kể chuyện buồn</option>
+                                <option value="+0%" selected>Chuẩn phòng thu (0%) - Mặc định tự nhiên</option>
+                                <option value="+10%">Reup TikTok (+10%) - Giữ nhịp cuốn hút</option>
+                                <option value="+25%">Gấp gáp / Fast (+25%) - Dành cho video ngắn kịch tính</option>
+                            </select>
                         </div>
 
                         <!-- Action buttons -->
@@ -16314,7 +16369,8 @@
 
 
 
-    <script src="./libs/i18n.js?v=2.6.0"></script>
+    <script src="./libs/voices_catalog.js?v=2.6.0"></script>
+<script src="./libs/i18n.js?v=2.6.0"></script>
 
     <script src="./app.js?v=2.6.0"></script>
 

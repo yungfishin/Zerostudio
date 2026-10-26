@@ -6788,6 +6788,82 @@ if (typeof checkAndRenderLicenseRenewal === 'function') {
 // GIAI ĐOẠN 1: VŨ KHÍ MMO ĐỈNH CAO (EDGE-TTS 0Đ, PHỤ ĐỀ MRBEAST, TREND OPTIMIZER)
 // =========================================================================
 
+
+window.CURRENT_VOICE_FX = 'normal';
+
+window.initGlobalVoiceHub = function() {
+    const countrySelect = document.getElementById('tts-country-select');
+    const voiceSelect = document.getElementById('tts-voice-select');
+    if (!countrySelect || !voiceSelect) return;
+
+    const catalog = window.ZEROSTUDIO_GLOBAL_VOICES || [];
+    if (!catalog.length) return;
+
+    // Populate country select
+    countrySelect.innerHTML = catalog.map(c => `
+        <option value="${c.locale}" ${c.locale === 'vi-VN' ? 'selected' : ''}>${c.flag} ${c.country} (${c.voices.length})</option>
+    `).join('');
+
+    // Populate default voices for vi-VN
+    window.onTtsCountryChange('vi-VN');
+};
+
+window.onTtsCountryChange = function(locale) {
+    const voiceSelect = document.getElementById('tts-voice-select');
+    if (!voiceSelect) return;
+
+    const catalog = window.ZEROSTUDIO_GLOBAL_VOICES || [];
+    const country = catalog.find(c => c.locale === locale) || catalog[0];
+    if (!country) return;
+
+    voiceSelect.innerHTML = country.voices.map((v, i) => `
+        <option value="${v.id}" ${i === 0 ? 'selected' : ''}>${v.label}</option>
+    `).join('');
+
+    // Update quick pill active state
+    const quickLocales = ['vi-VN', 'en-US', 'en-GB', 'zh-CN', 'ja-JP', 'ko-KR', 'th-TH'];
+    quickLocales.forEach(loc => {
+        const pill = document.getElementById(`pill-loc-${loc}`);
+        if (pill) {
+            if (loc === locale) pill.classList.add('active');
+            else pill.classList.remove('active');
+        }
+    });
+
+    // Sync country select value if changed from outside
+    const countrySelect = document.getElementById('tts-country-select');
+    if (countrySelect && countrySelect.value !== locale) {
+        countrySelect.value = locale;
+    }
+};
+
+window.filterTtsCountry = function(locale) {
+    window.onTtsCountryChange(locale);
+    const countrySelect = document.getElementById('tts-country-select');
+    if (countrySelect) countrySelect.value = locale;
+};
+
+window.setVoiceFx = function(fx) {
+    window.CURRENT_VOICE_FX = fx;
+    const allFx = ['normal', 'studio_warm', 'horror', 'vintage_radio', 'chipmunk', 'cyberpunk'];
+    allFx.forEach(f => {
+        const btn = document.getElementById(`btn-fx-${f}`);
+        if (btn) {
+            if (f === fx) btn.classList.add('active');
+            else btn.classList.remove('active');
+        }
+    });
+};
+
+// Initialize Voice Hub on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (typeof window.initGlobalVoiceHub === 'function') {
+            window.initGlobalVoiceHub();
+        }
+    }, 200);
+});
+
 window.CURRENT_TTS_AUDIO_PATH = '';
 window.CURRENT_TTS_SRT = '';
 window.CURRENT_BURN_STYLE = 'mrbeast';
@@ -6858,7 +6934,7 @@ window.generateTtsAudio = async function() {
                 const res = await fetch(`http://127.0.0.1:${p}/api/tts`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text, voice, rate })
+                    body: JSON.stringify({ text, voice, rate, fx: window.CURRENT_VOICE_FX || 'normal' })
                 });
                 if (res.ok) {
                     resp = await res.json();

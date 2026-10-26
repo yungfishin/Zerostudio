@@ -2526,16 +2526,18 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
 
 
                 # ----------------------------------------------------
-        # GIAI ĐOẠN 1: AI EDGE-TTS 0Đ STUDIO VOICE GENERATOR
+        # GIAI ĐOẠN 1: AI EDGE-TTS 0Đ STUDIO VOICE GENERATOR (GLOBAL 322 VOICES & VOICE FX)
         # ----------------------------------------------------
         if parsed.path == '/api/tts':
             try:
                 data = json.loads(post_data.decode('utf-8'))
                 text = (data.get('text') or '').strip()
-                voice = data.get('voice') or 'vi-VN-HoaiMyNeural'
-                rate = data.get('rate') or '+0%'
-                pitch = data.get('pitch') or '+0Hz'
+                voice = (data.get('voice') or 'vi-VN-HoaiMyNeural').strip()
+                rate = (data.get('rate') or '+0%').strip()
+                pitch = (data.get('pitch') or '+0Hz').strip()
+                fx = (data.get('fx') or 'normal').strip().lower()
 
+                # --- MAXIMUM SECURITY SANITIZATION ---
                 if not text:
                     self.send_response(400)
                     self._send_cors_headers()
@@ -2543,6 +2545,27 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                     self.end_headers()
                     self.wfile.write(json.dumps({'success': False, 'error': 'Văn bản không được để trống'}).encode())
                     return
+
+                # Strict regex check on voice name to prevent command injection
+                if not re.match(r'^[a-zA-Z0-9_\-]+$', voice):
+                    voice = 'vi-VN-HoaiMyNeural'
+
+                # Rate and pitch format validation
+                if not re.match(r'^[+\-]?[0-9]{1,3}%$', rate):
+                    rate = '+0%'
+                if not re.match(r'^[+\-]?[0-9]{1,3}Hz$', pitch):
+                    pitch = '+0Hz'
+
+                ALLOWED_FX = {
+                    'normal': None,
+                    'studio_warm': 'equalizer=f=180:t=q:w=1.2:g=3.2,compand=attacks=0.02:decays=0.2:points=-80/-80|-24/-20|0/-6',
+                    'horror': 'asetrate=48000*0.88,aresample=48000,aecho=0.8:0.85:40|70:0.4|0.3',
+                    'vintage_radio': 'highpass=f=400,lowpass=f=3400,volume=1.25',
+                    'chipmunk': 'asetrate=48000*1.38,aresample=48000,atempo=0.9',
+                    'cyberpunk': 'flanger=delay=8:depth=4:regen=50:width=80:speed=0.6'
+                }
+                if fx not in ALLOWED_FX:
+                    fx = 'normal'
 
                 if not HAS_EDGE_TTS:
                     self.send_response(500)
@@ -2568,9 +2591,28 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                 out_dir = Path.home() / 'Downloads' / 'ZeroStudio_TTS_Output'
                 out_dir.mkdir(parents=True, exist_ok=True)
                 timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-                voice_tag = voice.split('-')[1] if '-' in voice else 'voice'
-                audio_file = out_dir / f"tts_{voice_tag}_{timestamp_str}.mp3"
-                audio_file.write_bytes(audio_bytes)
+                voice_tag = voice.split('-')[-1].replace('Neural', '')
+                
+                raw_audio_file = out_dir / f"tts_raw_{voice_tag}_{timestamp_str}.mp3"
+                raw_audio_file.write_bytes(audio_bytes)
+
+                final_audio_file = raw_audio_file
+                # Apply Voice FX via FFmpeg if requested
+                af_filter = ALLOWED_FX.get(fx)
+                if af_filter:
+                    fx_audio_file = out_dir / f"tts_fx_{fx}_{voice_tag}_{timestamp_str}.mp3"
+                    fx_cmd = [
+                        "ffmpeg", "-y", "-i", str(raw_audio_file),
+                        "-af", af_filter,
+                        "-c:a", "libmp3lame", "-b:a", "192k",
+                        str(fx_audio_file)
+                    ]
+                    fx_res = subprocess.run(fx_cmd, capture_output=True)
+                    if fx_res.returncode == 0 and fx_audio_file.exists():
+                        final_audio_file = fx_audio_file
+                        audio_bytes = fx_audio_file.read_bytes()
+                        try: raw_audio_file.unlink()
+                        except Exception: pass
                 
                 srt_file = out_dir / f"tts_{voice_tag}_{timestamp_str}.srt"
                 srt_file.write_text(srt_content, encoding='utf-8')
@@ -2586,10 +2628,11 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
                     'success': True,
                     'audio_data_uri': data_uri,
                     'srt': srt_content,
-                    'audio_path': str(audio_file),
+                    'audio_path': str(final_audio_file),
                     'srt_path': str(srt_file),
                     'size_bytes': len(audio_bytes),
-                    'voice': voice
+                    'voice': voice,
+                    'fx': fx
                 }).encode())
                 return
             except Exception as e:
