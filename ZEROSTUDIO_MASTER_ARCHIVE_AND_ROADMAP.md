@@ -14,7 +14,8 @@
 5. [V. LỊCH SỬ TIẾN HÓA PHIÊN BẢN (VERSION CHANGELOG)](#v-lịch-sử-tiến-hóa-phiên-bản-version-changelog)
 6. [VI. BẢN ĐỒ NÂNG CẤP CHIẾN LƯỢC TƯƠNG LAI (ROADMAP 2026 - 2027)](#vi-bản-đồ-nâng-cấp-chiến-lược-tương-lai-roadmap-2026---2027)
 7. [VII. BỘ TỨ PHÁT MINH CÔNG NGHỆ NGUYÊN BẢN (PROPRIETARY PATENTS)](#vii-bộ-tứ-phát-minh-công-nghệ-nguyên-bản-proprietary-patents)
-8. [VIII. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#viii-cẩm-nang-vận-hành-dành-cho-admin-runbook)
+8. [VIII. PHÁT MINH VĨ ĐẠI THẾ KỶ: LIVING MEDIA PROTOCOL (LMP) - GIAO THỨC TRUYỀN THÔNG TỰ TRỊ SINH HỌC](#viii-phát-minh-vĩ-đại-thế-kỷ-living-media-protocol-lmp---giao-thức-truyền-thông-tự-trị-sinh-học)
+9. [IX. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#ix-cẩm-nang-vận-hành-dành-cho-admin-runbook)
 
 ---
 
@@ -295,6 +296,9 @@ gantt
     section Giai Đoạn 4 (Q3/2027)<br>Bùng Nổ Doanh Số
         Affiliate Marketing 1-Click Loop  :des11, 2027-06, 2027-08
         Automated Telegram/Zalo Bot       :des12, 2027-07, 2027-09
+    section Giai Đoạn 5 (Q4/2027)<br>Kỷ Nguyên Living Media (LMP)
+        Sub-Pixel Cellular Micro-Kernel   :des13, 2027-09, 2027-11
+        Autonomous Traveling Storefront   :des14, 2027-10, 2027-12
 ```
 
 ### Chi Tiết Từng Giai Đoạn Chiến Lược Tiếp Theo:
@@ -357,7 +361,61 @@ gantt
 
 ---
 
-## VIII. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
+## VIII. PHÁT MINH VĨ ĐẠI THẾ KỶ: LIVING MEDIA PROTOCOL (LMP) - GIAO THỨC TRUYỀN THÔNG TỰ TRỊ SINH HỌC
+*(THE SELF-SOVEREIGN POLYMORPHIC MEDIA GENOME)*
+
+> [!IMPORTANT]
+> **TẦM NHÌN ĐỘT PHÁ CỦA NHÀ SÁNG LẬP:** Đây là phát minh vượt thời đại ở cả **tầng vi mô (sub-pixel bitstream)** và **tầng vĩ mô (decentralized attention economy)** nhằm giải phóng toàn bộ giới sáng tạo nội dung, doanh nghiệp và người dùng khỏi sự kiểm duyệt, bóp nghẹt phân phối và chính sách thu thuế độc quyền của các tập đoàn công nghệ khổng lồ (Apple, ByteDance, Google, Meta).
+
+```
+=============================================================================================================
+                           KIẾN TRÚC LIVING MEDIA PROTOCOL (LMP) HAI CỰC VI MÔ - VĨ MÔ
+=============================================================================================================
+             [TẦNG VI MÔ: HẠT NHÂN VI TẾ BÀO ĐIỂM ẢNH]          [TẦNG VĨ MÔ: CỖ MÁY KINH TẾ TỰ HÀNH]
+           Sub-Pixel WASM Kernel nhúng vào LSB & Sóng Hài      Mỗi video mang theo toàn bộ logic giao dịch
+                                   │                                                │
+                                   ▼                                                ▼
+                   ┌───────────────────────────────┐               ┌─────────────────────────────────┐
+                   │ TỰ BIẾN HÌNH THEO THỜI GIAN   │               │ CỬA HÀNG TỰ HÀNH DI ĐỘNG        │
+                   │ Tự động vi chỉnh sắc độ và vi │               │ Trôi nổi trên Telegram, Zalo,   │
+                   │ dịch pha âm thanh -> Vô hiệu  │               │ USB; chạm vào là bung checkout  │
+                   │ hóa mọi bot quét Content ID   │               │ thanh toán tức thời 0đ phí sàn  │
+                   └───────────────────────────────┘               └─────────────────────────────────┘
+                                   │                                                │
+                                   ▼                                                ▼
+                   ┌───────────────────────────────┐               ┌─────────────────────────────────┐
+                   │ HỆ MIỄN DỊCH QUANG HỌC NỘI TẠI│               │ TRIỆT TIÊU THUẾ TRUNG GIAN      │
+                   │ Phát hiện quay lén màn hình,  │               │ Xóa sổ 30% App Store, 20% sàn;  │
+                   │ tự phóng thích vi nhiễu Moiré │               │ tiền nổ 100% thẳng về tài khoản │
+                   │ phá hủy cảm biến camera lén   │               │ ngân hàng của Creator tức thì   │
+                   └───────────────────────────────┘               └─────────────────────────────────┘
+=============================================================================================================
+```
+
+### 1. Ở Tầng Vi Mô (Micro Level): "The Cellular Sub-Pixel Micro-Kernel"
+* **Bản chất truyền thống của Big Tech:** Mọi công ty đều coi tệp tin đa phương tiện (MP4, PDF, PNG) là các khối byte chết thụ động (Passive Inert Bytes). Sau khi xuất file, tệp tin trở nên câm lặng, trơ lì, mất hoàn toàn khả năng nhận thức và phòng vệ trước máy quét kiểm duyệt của nền tảng.
+* **Đột phá Vi Mô của ZeroStudio:** Biến mỗi khung hình video thành một **Màng Tế Bào Kỹ Thuật Số (Digital Cell Membrane)** mang theo hạt nhân thực thi **Zero-Footprint WebAssembly Micro-Kernel** ẩn sâu trong các bit có trọng số thấp nhất (LSB) và dải sóng hài tần số cao:
+  1. **Khả Năng Tự Tiến Hóa Biến Hình (Self-Mutating Polymorphism):** Tệp tin tự cảm biến môi trường phần cứng và thuật toán đang đọc nó. Khi bị bot kiểm duyệt Content ID quét, hạt nhân vi tế bào tự động kích hoạt vi dao động sắc độ (Micro-chroma drift 0.001%) và vi dịch pha âm thanh (Phase shift) ở thời gian thực. Mắt người xem thấy video nguyên bản 100%, nhưng máy quét AI mỗi lần đọc lại nhận diện ra một vân tay toán học hoàn toàn mới $ightarrow$ **Video trở thành thực thể bất tử trước mọi hệ sinh thái kiểm duyệt**.
+  2. **Hệ Miễn Dịch Số Cục Bộ (In-File Optical Immune System):** Khi phát hiện tần số quét màn hình bị đồng bộ bất thường (hành vi quay lén màn hình - screen recording), hạt nhân vi tế bào lập tức phát ra các dải tần số moiré gây nhiễu cảm biến camera điện thoại, bảo vệ trọn vẹn chất xám và tài sản trí tuệ của tác giả.
+
+### 2. Ở Tầng Vĩ Mô (Macro Level): "The Autonomous Traveling Storefront"
+* **Bản chất truyền thống của Big Tech:** Xây dựng các "Trạm thu phí độc quyền" (Tollbooth Rent-Seekers): Apple thu 30% App Store, TikTok thu 15-20% phí sàn và giam tiền 14 ngày, YouTube ăn 45% doanh thu quảng cáo. Creator bị biến thành nông nô kỹ thuật số, quỳ lụy thuật toán để xin từng lượt phân phối.
+* **Đột phá Vĩ Mô của ZeroStudio:** Biến mỗi video thành một **Cỗ Máy Kinh Tế Tự Hành Độc Lập (Autonomous Traveling Storefront)**:
+  1. **Thương Mại Không Rào Cản (Zero-Middleman Frictionless Commerce):** Toàn bộ logic giao dịch, hợp đồng số và cổng thanh toán P2P/VietQR được nhúng trực tiếp vào bên trong cấu trúc file video. Video có thể trôi nổi trên kênh Telegram, gửi qua Bluetooth, xem trong Zalo, hay một file MP4 copy qua USB giữa hai người bạn.
+  2. **Thanh Toán Tức Thời 0 Đồng Phí Sàn:** Người xem chạm thẳng vào video $ightarrow$ Giao diện thanh toán bung ra ngay trong trình phát video nội bộ mà không cần chuyển hướng sang trình duyệt hay qua App Store. Tiền nổ **ngay lập tức** về tài khoản ngân hàng của Creator. Video tự động mở khóa nội dung độc quyền tiếp theo hoặc tự động trích hoa hồng 35% cho người bạn vừa chia sẻ file đó.
+
+### 3. Bảng So Sánh Hai Kỷ Nguyên:
+
+| Tiêu Chí Đánh Giá | Kỷ Nguyên Cũ (Big Tech Độc Quyền) | Kỷ Nguyên Mới (ZeroStudio Living Media) |
+| :--- | :--- | :--- |
+| **Bản chất Tệp tin** | Khối byte chết, câm lặng, thụ động. | **Sinh mệnh số tự hành**, tự nhận thức và biến hình chống quét. |
+| **Quyền Phân phối** | Thuật toán của ByteDance / Google quyết định sinh sát. | **Mạng lưới phân tán ngang hàng P2P**, tự do di chuyển không rào cản. |
+| **Dòng tiền & Chiết khấu** | Bị thu thuế 20% - 30%, giam tiền 7-14 ngày. | **Nổ tiền tức thì 100% về ví Creator**, 0 đồng phí sàn trung gian. |
+| **Địa vị của Creator** | Người làm thuê phụ thuộc vào thuật toán nền tảng. | **Nắm giữ chủ quyền số độc lập tuyệt đối (Sovereign Ownership)**. |
+
+---
+
+## IX. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
 
 ### 1. Cập Nhật Trang Web Online (Netlify):
 - **Trang quản lý:** [https://app.netlify.com/sites/zerostu/deploys](https://app.netlify.com/sites/zerostu/deploys).
