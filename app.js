@@ -3396,6 +3396,23 @@ window.showProPricingView = function() {
 
 window.selectedTier = 'pro';
 
+// Dynamic Promo / Discount Rate Calculator (Multi-Tier Marketing Engine)
+function getPromoDiscountRate(code) {
+    if (!code) return 0;
+    const c = String(code).trim().toUpperCase();
+    // 30% Flash Sale / Black Friday
+    if (c === 'VIP30' || c === 'SALE30' || c === 'BLACK30' || c.endsWith('30')) {
+        return 0.30;
+    }
+    // 20% VIP / Founder Special
+    if (c === 'VIP20' || c === 'SALE20' || c === 'FOUNDER20' || c === 'HIEU20' || c.endsWith('20')) {
+        return 0.20;
+    }
+    // Default Partner / Affiliate Discount: 10%
+    return 0.10;
+}
+window.getPromoDiscountRate = getPromoDiscountRate;
+
 window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
     window.selectedTier = tier;
     window.isCurrentOrderRenewal = !!isRenewal;
@@ -3417,8 +3434,11 @@ window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
         baseAmount = isUltra ? 699000 : 299000;
     }
 
-    // Check active affiliate referral
+    // Check active affiliate referral with Dynamic Discount Rate (10%, 20%, 30%)
     const activeRef = localStorage.getItem('zerostudio_ref');
+    const discountRate = getPromoDiscountRate(activeRef);
+    const discountPercent = Math.round(discountRate * 100);
+
     let amount = baseAmount;
     let memo = isRenewal 
         ? (isUltra ? `RENEW ULTRA ${currentOrderCode}` : `RENEW PRO ${currentOrderCode}`)
@@ -3427,12 +3447,13 @@ window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
     const discountPill = document.getElementById('checkout-discount-pill');
     const refTag = document.getElementById('checkout-ref-tag');
 
-    if (activeRef) {
-        // 10% Discount applied
-        amount = Math.floor((baseAmount * 0.9) / 1000) * 1000;
+    if (activeRef && discountRate > 0) {
+        amount = Math.floor((baseAmount * (1 - discountRate)) / 1000) * 1000;
         memo = `${memo} REF-${activeRef.toUpperCase()}`;
-        if (discountPill) discountPill.style.display = 'block';
-        if (refTag) refTag.textContent = activeRef.toUpperCase();
+        if (discountPill) {
+            discountPill.style.display = 'block';
+            discountPill.innerHTML = `🎁 Đã áp dụng mã đối tác <span id="checkout-ref-tag" style="font-weight: 800; color: #fbbf24; font-family: 'JetBrains Mono', monospace;">${activeRef.toUpperCase()}</span>: Giảm ngay ${discountPercent}%!`;
+        }
     } else {
         if (discountPill) discountPill.style.display = 'none';
     }
@@ -3449,7 +3470,7 @@ window.openVietQrCheckout = function(tier = 'pro', isRenewal = false) {
             promoInput.disabled = true;
             if (btnApplyPromo) btnApplyPromo.style.display = 'none';
             if (btnRemovePromo) btnRemovePromo.style.display = 'inline-block';
-            if (promoHint) promoHint.style.display = 'inline-block';
+            if (promoHint) { promoHint.textContent = `-${discountPercent}% TỰ ĐỘNG`; promoHint.style.display = 'inline-block'; }
         } else {
             promoInput.value = '';
             promoInput.disabled = false;
@@ -3558,7 +3579,9 @@ async function checkBankPaymentStatus(isManualClick) {
         } else if (isSoldOut) {
             expectedAmount = activeRef ? (isUltra ? 1341000 : 539000) : (isUltra ? 1490000 : 599000);
         } else if (activeRef) {
-            expectedAmount = isUltra ? 629000 : 269000;
+            const dRate = getPromoDiscountRate(activeRef);
+            const bPrice = isUltra ? 699000 : 299000;
+            expectedAmount = Math.floor((bPrice * (1 - dRate)) / 1000) * 1000;
         } else {
             expectedAmount = isUltra ? 699000 : 299000;
         }
@@ -3872,7 +3895,9 @@ window.confirmPaidAndGetLicense = function() {
     } else if (isSoldOut) {
         amount = activeRef ? (isUltra ? 1341000 : 539000) : (isUltra ? 1490000 : 599000);
     } else {
-        amount = activeRef ? (isUltra ? 629000 : 269000) : (isUltra ? 699000 : 299000);
+        const dRate = getPromoDiscountRate(activeRef);
+        const bPrice = isUltra ? 699000 : 299000;
+        amount = activeRef ? Math.floor((bPrice * (1 - dRate)) / 1000) * 1000 : bPrice;
     }
 
     if (typeof sendInstantNotification === 'function') {
@@ -6705,15 +6730,30 @@ window.initAffiliateSystem = function() {
         const proPriceEl = document.getElementById('pro-current-price');
         const ultraPriceEl = document.getElementById('ultra-current-price');
 
-        if (activeRef) {
-            if (banner) banner.style.display = 'block';
+        const dRate = getPromoDiscountRate(activeRef);
+        const dPct = Math.round(dRate * 100);
+
+        if (activeRef && dRate > 0) {
+            if (banner) {
+                banner.style.display = 'block';
+                const titleEl = banner.querySelector('div[style*="font-weight: 800"]');
+                if (titleEl) titleEl.textContent = `ƯU ĐÃI ĐỐI TÁC: GIẢM ${dPct}% TOÀN BỘ CÁC GÓI!`;
+                const badgeEl = banner.querySelector('span[style*="padding: 4px 10px"]');
+                if (badgeEl) badgeEl.textContent = `-${dPct}% TỰ ĐỘNG`;
+            }
             if (codeEl) codeEl.textContent = activeRef;
             if (pricingPromoTrigger) pricingPromoTrigger.style.display = 'none';
-            if (proPriceEl) proPriceEl.innerHTML = '269.000đ <span style="font-size: 0.78rem; color: #f472b6; font-weight: 700;">(-10%)</span>';
-            if (ultraPriceEl) ultraPriceEl.innerHTML = '629.000đ <span style="font-size: 0.78rem; color: #f472b6; font-weight: 700;">(-10%)</span>';
+            if (proPriceEl) {
+                const discPro = Math.floor((299000 * (1 - dRate)) / 1000) * 1000;
+                proPriceEl.innerHTML = `${discPro.toLocaleString('vi-VN')}đ <span style="font-size: 0.78rem; color: #f472b6; font-weight: 700;">(-${dPct}%)</span>`;
+            }
+            if (ultraPriceEl) {
+                const discUltra = Math.floor((699000 * (1 - dRate)) / 1000) * 1000;
+                ultraPriceEl.innerHTML = `${discUltra.toLocaleString('vi-VN')}đ <span style="font-size: 0.78rem; color: #f472b6; font-weight: 700;">(-${dPct}%)</span>`;
+            }
             if (refParam) {
                 setTimeout(() => {
-                    showToast(`🎉 Đã kích hoạt mã ưu đãi ${activeRef}: Giảm 10% toàn bộ gói!`, 'success');
+                    showToast(`🎉 Đã kích hoạt mã ưu đãi ${activeRef}: Giảm ${dPct}% toàn bộ gói!`, 'success');
                 }, 1200);
             }
         } else {
@@ -6740,7 +6780,8 @@ window.applyPromoCode = function() {
         return;
     }
     localStorage.setItem('zerostudio_ref', cleanCode);
-    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay 10%!`, 'success');
+    const discPct = Math.round(getPromoDiscountRate(cleanCode) * 100);
+    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay ${discPct}%!`, 'success');
     if (typeof launchGoldConfetti === 'function') launchGoldConfetti();
     if (typeof initAffiliateSystem === 'function') initAffiliateSystem();
     window.openVietQrCheckout(window.selectedTier || 'pro', !!window.isCurrentOrderRenewal);
@@ -6784,7 +6825,8 @@ window.applyPricingPromoCode = function() {
         return;
     }
     localStorage.setItem('zerostudio_ref', cleanCode);
-    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay 10%!`, 'success');
+    const discPct = Math.round(getPromoDiscountRate(cleanCode) * 100);
+    showToast(`🎉 Áp dụng mã ${cleanCode} thành công! Giảm ngay ${discPct}%!`, 'success');
     if (typeof launchGoldConfetti === 'function') launchGoldConfetti();
     if (typeof initAffiliateSystem === 'function') initAffiliateSystem();
     window.togglePricingPromoBox(false);
