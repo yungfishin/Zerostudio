@@ -17,7 +17,8 @@
 8. [VIII. PHÁT MINH VĨ ĐẠI THẾ KỶ: LIVING MEDIA PROTOCOL (LMP) - GIAO THỨC TRUYỀN THÔNG TỰ TRỊ SINH HỌC](#viii-phát-minh-vĩ-đại-thế-kỷ-living-media-protocol-lmp---giao-thức-truyền-thông-tự-trị-sinh-học)
 9. [IX. ĐỈNH CAO THỜI ĐẠI: HỆ ĐIỀU HÀNH CHỦ QUYỀN SỐ NHÂN LOẠI (THE SOVEREIGN HUMAN OS)](#ix-đỉnh-cao-thời-đại-hệ-điều-hành-chủ-quyền-số-nhân-loại-the-sovereign-human-os)
 10. [X. BỐN CHUYỂN DỊCH ĐỊA CHẤN & TRIẾT LÝ CUỘC NỔI DẬY CỦA SIÊU CÁ THỂ (THE FOUR TECTONIC SHIFTS & THE SOVEREIGN INDIVIDUAL REVOLUTION)](#x-bốn-chuyển-dịch-địa-chấn--triết-lý-cuộc-nổi-dậy-của-siêu-cá-thể-the-four-tectonic-shifts--the-sovereign-individual-revolution)
-11. [XI. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#xi-cẩm-nang-vận-hành-dành-cho-admin-runbook)
+11. [XI. BỘ BA VŨ KHÍ ĐẾ CHẾ TOÀN CẦU 2027: NEURO-PACING, ZEROSYNC & ZEROESCROW](#xi-bộ-ba-vũ-khí-đế-chế-toàn-cầu-2027-neuro-pacing-zerosync--zeroescrow)
+12. [XII. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)](#xii-cẩm-nang-vận-hành-dành-cho-admin-runbook)
 
 ---
 
@@ -291,13 +292,14 @@ gantt
         Dong Dau Chong Lua Dao CCCD       :active, des5, 2026-11, 2027-01
         AI Chuyen Bang PDF Sang Excel xlsx :des6, 2026-12, 2027-02
         Ky So Dien Tu Noi Bo Digital Stamp :des7, 2027-01, 2027-03
-    section Giai Đoạn 3 (Q2/2027)<br>Giao Diện & Trải Nghiệm
+    section Giai Đoạn 3 (Q2/2027)<br>Trải Nghiệm & Thần Kinh Học
         Thanh Mini Dock Noi Desktop       :des8, 2027-03, 2027-05
         Am Thanh Co Hoc Haptic Feedback    :des9, 2027-04, 2027-06
-        Bo Theme Đa Sac Mau Ultra         :des10, 2027-05, 2027-06
-    section Giai Đoạn 4 (Q3/2027)<br>Bùng Nổ Doanh Số
+        Neuro-Pacing Hypnosis Fibonacci   :des10, 2027-05, 2027-06
+    section Giai Đoạn 4 (Q3/2027)<br>Bùng Nổ Toàn Cầu & B2B
         Affiliate Marketing 1-Click Loop  :des11, 2027-06, 2027-08
-        Automated Telegram/Zalo Bot       :des12, 2027-07, 2027-09
+        ZeroSync Global LipSync 0d        :des12, 2027-07, 2027-09
+        ZeroEscrow Cryptographic Trade    :des12b, 2027-08, 2027-09
     section Giai Đoạn 5 (Q4/2027)<br>Kỷ Nguyên Living Media (LMP)
         Sub-Pixel Cellular Micro-Kernel   :des13, 2027-09, 2027-11
         Autonomous Traveling Storefront   :des14, 2027-10, 2027-12
@@ -318,20 +320,21 @@ gantt
 3. **Ký Số Điện Tử Nội Bộ (Digital Signature Stamp):**
    - Ký tên trực tiếp bằng chuột/bút cảm ứng lên file PDF/Word, mã hóa chữ ký số riêng biệt.
 
-#### Giai Đoạn 3: Tiến Hóa Giao Diện Đẳng Cấp & Thanh Thao Tác Nổi (Q2/2027)
+#### Giai Đoạn 3: Tiến Hóa Giao Diện Đẳng Cấp & Thần Kinh Học (Q2/2027)
 1. **Thanh Mini Dock Nổi Góc Màn Hình (Desktop Floating Drop-Zone):**
    - Widget nhỏ nằm ở góc màn hình. Kéo video từ Desktop thả vào là tự động xử lý và xuất file mới ra Desktop trong 3 giây mà không cần mở cả cửa sổ to.
 2. **Âm Thanh Cơ Học Haptic Feedback:**
    - Tích hợp hiệu ứng âm thanh vi cơ học (tiếng click đồng hồ Thụy Sĩ, tiếng ding pha lê khi xuất file xong).
-3. **Bộ Giao Diện Đa Sắc Màu Độc Quyền (Ultra Theme Packs):**
-   - Bổ sung các theme: *Cyberpunk Neon Green*, *Apple Titanium Silver*, *Royal Champagne Gold*.
+3. **Neuro-Pacing Hypnosis Engine (Động Cơ Nhịp Điệu Fibonacci Khóa Dopamine):**
+   - Co giãn nhịp cắt khung hình và âm thanh theo chuỗi tỷ lệ vàng Fibonacci (0.618s, 1.0s, 1.618s), đưa não bộ người xem vào trạng thái thôi miên nhận thức (Cognitive Flow State), tăng AVD >85%.
 
-#### Giai Đoạn 4: Tự Động Hóa Doanh Số & Viral Tăng Trưởng (Q3/2027)
-1. **Hệ Thống Đại Lý Tiếp Thị Liên Kết 1-Click (Affiliate Marketing):**
+#### Giai Đoạn 4: Toàn Cầu Hóa Doanh Số & Bảo Vệ Giao Dịch B2B (Q3/2027)
+1. **Hệ Thống Đại Lý Tiếp Thị Liên Kết 1-Click (Affiliate Marketing Loop):**
    - Mỗi khách hàng được cấp 1 link giới thiệu. Người khác mua qua link, người giới thiệu nhận hoa hồng 30-35%.
-   - Hàng nghìn bạn trẻ làm MMO sẽ tự giác làm video review ZeroStudio để kiếm tiền $\rightarrow$ Tạo đội quân marketing 0 đồng.
-2. **Bot Tự Động Gửi Key Qua Telegram / Zalo:**
-   - Tự động bắn thông báo và mã key qua Telegram / Zalo cho khách hàng lưu trữ vĩnh viễn.
+2. **ZeroSync Global Transmutation (Chuyển Ngữ Văn Hóa & Khớp Khẩu Hình Cục Bộ 0đ):**
+   - Dịch thuật tiếng lóng bản địa US/UK và tự động bẻ khớp cơ môi 3D Facial Mesh theo giọng đọc AI, đánh chiếm thị trường MMO quốc tế kiếm tiền USD/Euro.
+3. **ZeroEscrow Cryptographic Trade (Trọng Tài Hợp Đồng Khóa Mật Mã Chống Bùng Tiền):**
+   - Giao file xem trước 4K có lưới mật mã quang học, nổ tiền VietQR là tự động giải mã bàn giao file sạch trong 3 giây, xóa bỏ vĩnh viễn nạn bùng tiền freelance.
 
 #### Giai Đoạn 5: Kỷ Nguyên Living Media Protocol (LMP) - Tự Quyền Truyền Thông Sinh Học (Q4/2027)
 1. **Sub-Pixel WebAssembly Micro-Kernel:** Nhúng hạt nhân WASM vào màng tế bào điểm ảnh và sóng hài, tự biến hình vân tay toán học chống bot Content ID.
@@ -525,18 +528,73 @@ ightarrow$ AI trả lời chính xác từng mili-giây.
 * **Cái chết của luật cũ:** Luật bản quyền truyền thống (DMCA, Content ID) được viết từ năm 1998 cho đĩa CD/DVD đã hoàn toàn tê liệt trước kỷ nguyên AI phối lại (Remix / Diffusion Culture). Mọi nội dung ngày nay đều là sự lai ghép từ hàng nghìn nguồn khác nhau.
 * **Đột phá ZeroStudio - "Autonomous Lineage Royalties" (Cây Phả Hệ Tác Quyền Tự Động):**
   - Thay vì kiện tụng hay đánh gậy cấm đoán (vốn chỉ làm nghẽn dòng chảy sáng tạo):
-  - ZeroStudio nhúng cơ chế phân chia dòng tiền vi mô (Micro-revenue Split): Một video khi reup kiếm được tiền $ightarrow$ Tự động trích 10% gửi về ví tác giả clip gốc, 10% gửi về người tạo âm thanh, 80% cho người biên tập.
+  - ZeroStudio nhúng cơ chế phân chia dòng tiền vi mô (Micro-revenue Split): Một video khi reup kiếm được tiền $
+ightarrow$ Tự động trích 10% gửi về ví tác giả clip gốc, 10% gửi về người tạo âm thanh, 80% cho người biên tập.
   - **Biến người reup thành đại lý kiếm tiền tự nguyện cho tác giả gốc.** Không còn kiện tụng, chỉ có sự cộng sinh tài chính thịnh vượng!
 
 ### 4. Chuyển Dịch 4: Sự Ra Đời Của "Siêu Cá Thể" (The One-Person Sovereign Unicorn)
 * **Quy luật tổ chức mới:** Thay vì cần bộ máy 20-50 nhân sự cồng kềnh để vận hành một công ty triệu đô, một con người duy nhất nắm trong tay "Bộ Khung Xương Cơ Học Trí Tuệ" có thể đảm đương toàn bộ chuỗi giá trị.
 * **ZeroStudio là Bộ Giáp Iron Man cho Siêu Cá Thể:**
-  - Tự động bóc tách trend $ightarrow$ Tự động lồng tiếng $ightarrow$ Tự động dựng video $ightarrow$ Tự động bảo vệ danh tính $ightarrow$ Tự động thu tiền P2P $ightarrow$ Tự động quản lý sổ sách 100% bảo mật.
+  - Tự động bóc tách trend $
+ightarrow$ Tự động lồng tiếng $
+ightarrow$ Tự động dựng video $
+ightarrow$ Tự động bảo vệ danh tính $
+ightarrow$ Tự động thu tiền P2P $
+ightarrow$ Tự động quản lý sổ sách 100% bảo mật.
   - Một bạn trẻ ngồi trong phòng trọ với ZeroStudio có thể điều hành một đế chế nội dung toàn cầu, tạo ra dòng tiền độc lập mà **không cần gọi vốn, không cần thuê nhân viên, không chịu sự chi phối của bất kỳ ông chủ hay nền tảng nào**.
 
 ---
 
-## XI. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
+## XI. BỘ BA VŨ KHÍ ĐẾ CHẾ TOÀN CẦU 2027: NEURO-PACING, ZEROSYNC & ZEROESCROW
+*(THE TRIAD OF GLOBAL WEAPONS: RETENTION, GLOBALIZATION, AND TRANSACTION CERTAINTY)*
+
+> [!IMPORTANT]
+> **MỞ RỘNG BIÊN GIỚI ĐẾ CHẾ 2027:** Những vũ khí này giải quyết 3 bài toán sinh tử của bất kỳ nhà sáng tạo nội dung và doanh nghiệp số nào: **Làm sao để giữ chân người xem tuyệt đối? Làm sao để bán hàng kiếm tiền USD/Euro toàn cầu? Và làm sao để không bao giờ bị bùng tiền?**
+
+```
+=============================================================================================================
+                          BỘ BA VŨ KHÍ CHIẾN LƯỢC MỞ RỘNG BIÊN GIỚI ZEROSTUDIO 2027
+=============================================================================================================
+  1. NEURO-PACING HYPNOSIS         ==>  Khóa chặt Dopamine bằng nhịp điệu Fibonacci & Dải sóng não Alpha/Theta.
+     (Thần kinh học & Giữ chân)         Biến video bình thường thành cơn nghiện thị giác đạt tỷ lệ xem hết >85%.
+                                         │
+  2. ZEROSYNC TRANSMUTATION        ==>  Chuyển ngữ tiếng lóng bản địa US/UK + Khớp khẩu hình 3D Facial Mesh 0đ.
+     (Toàn cầu hóa thị trường)          Đưa creator Việt Nam vươn ra thế giới kiếm tiền USD & Euro dễ dàng.
+                                         │
+  3. ZEROESCROW TRADE              ==>  Lưới mật mã quang học khóa pixel: Khách duyệt nét căng nhưng không lấy trộm
+     (Bảo vệ giao dịch không bùng)      được; VietQR nổ tiền là tự động giải mã bàn giao file 4K ngay lập tức.
+=============================================================================================================
+```
+
+### 1. Vũ Khí 1: "Neuro-Pacing Hypnosis" (Động Cơ Nhịp Điệu Não Bộ Fibonacci - Khóa Chặt Dopamine)
+* **Thực trạng ngành sáng tạo:** Đa phần creator cắt video theo cảm tính, ngẫu hứng, dẫn đến việc người xem mỏi mắt và lướt đi chỉ sau 3-5 giây đầu tiên.
+* **Cơ sở thần kinh học & Tỷ lệ vàng:** 
+  - Bộ não con người xử lý chu kỳ chú ý thị giác tối ưu qua các dải sóng não Alpha (8-12Hz) và Theta (4-7Hz). 
+  - ZeroStudio ứng dụng chuỗi tỷ lệ vàng Fibonacci: `0.618s -> 1.0s -> 1.618s -> 2.618s` vào các nhịp cắt khung hình (visual cuts), âm thanh foley nhấn điểm và chuyển động camera.
+  - Khi nhịp điệu video hòa nhập với tần số sinh học của não, người xem rơi vào trạng thái **"Thôi miên nhận thức" (Cognitive Flow State)** — ngón tay bị giữ chặt, không thể quẹt sang video khác.
+* **Tính năng 1-Click:** Tự động quét timeline và nén/dãn các điểm nối video khớp hoàn hảo vào ma trận Fibonacci, đẩy AVD (Average View Duration) đạt mốc kỷ lục $> 85\%$.
+
+### 2. Vũ Khí 2: "ZeroSync Global Transmutation" (Chuyển Ngữ Văn Hóa & Khớp Khẩu Hình Cục Bộ 0đ API)
+* **Tiềm năng thị trường:** Doanh thu quảng cáo và Affiliate tại thị trường Âu - Mỹ (US/UK) gấp 10-20 lần so với thị trường nội địa. Tuy nhiên, các công cụ dịch video hiện tại thu phí cực đắt ($30 - $100/tháng) và dịch từng từ thô cứng gây phản cảm cho người bản xứ.
+* **Đột phá độc quyền ZeroStudio:**
+  1. **Chuyển ngữ văn hóa bản địa (Cultural Localization):** Tự động bóc tách và dịch thành ngữ, tiếng lóng đang thịnh hành của giới trẻ Mỹ/Anh, biến nội dung thành phong thái bản địa tự nhiên 100%.
+  2. **Tự động bẻ khớp khẩu hình cục bộ (Local 3D Facial Mesh Lip-Sync):** Chạy 100% bằng WebGPU và nhân WASM trên máy khách:
+     - Nhận diện 468 điểm mốc sinh trắc học trên khuôn mặt.
+     - Tự động vi chỉnh chuyển động cơ môi co giãn khớp chính xác theo từng nguyên âm phát ra của giọng AI tiếng Anh/tiếng Tây Ban Nha.
+* **Giá trị thực tiễn:** Creator chỉ cần đưa 1 video tiếng Việt vào $ightarrow$ Xuất ra 5 phiên bản đa ngôn ngữ khẩu hình chuẩn xác, tự tin kiếm triệu đô trên thị trường quốc tế!
+
+### 3. Vũ Khí 3: "ZeroEscrow" (Trọng Tài Hợp Đồng Giao File & Nhận Tiền Tự Động)
+* **Nỗi ám ảnh bùng tiền:** Giới làm dịch vụ số (video editor, thiết kế, lập trình, kế toán) luôn đối mặt với rủi ro: Giao file xong bị khách bùng tiền, chặn liên lạc; còn khách hàng thì sợ chuyển tiền cọc trước bị mất trắng.
+* **Đột phá Khóa Quang Học Mật Mã (Cryptographic Visual Lock):**
+  - Freelancer xuất file xem trước từ ZeroStudio: File đạt độ nét 4K hoàn mỹ nhưng bị phủ một **Lớp Lưới Mật Mã Quang Học (Glitch Encryption Grid)** xen kẽ các khung hình. Khách hàng kiểm tra được 100% chất lượng sản phẩm nhưng không thể đem đi sử dụng hay đăng tải.
+  - **Kích hoạt tự động khi nổ tiền:**
+    - Giao diện xem file tích hợp sẵn mã VietQR với đúng số tiền hợp đồng còn thiếu.
+    - Khách quét mã chuyển khoản $ightarrow$ Hệ thống SePAY / MB Bank xác nhận tiền vào tài khoản (3.5 giây) $ightarrow$ ZeroStudio tự động giải mã lớp lưới quang học ngay trong RAM, bàn giao file 4K sạch bóng tức thì.
+* **Giá trị thực tiễn:** Thiết lập niềm tin tuyệt đối cho toàn bộ nền kinh tế dịch vụ số, chấm dứt hoàn toàn vấn nạn bùng tiền tại Việt Nam!
+
+---
+
+## XII. CẨM NANG VẬN HÀNH DÀNH CHO ADMIN (RUNBOOK)
 
 ### 1. Cập Nhật Trang Web Online (Netlify):
 - **Trang quản lý:** [https://app.netlify.com/sites/zerostu/deploys](https://app.netlify.com/sites/zerostu/deploys).
