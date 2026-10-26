@@ -2510,6 +2510,8 @@ function filterAndRenderScrapedVideos() {
             const bV = typeof b.views === 'number' ? b.views : 0;
             return aV - bV;
         });
+    } else if (state.scrapeFilters.sort === 'newest') {
+        list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
     }
 
     state.scrapedVideos = list;
