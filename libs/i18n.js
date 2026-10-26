@@ -31,6 +31,7 @@ const TRANSLATIONS = {
         tab_upscale: "✨ Phóng To Ảnh 4K",
         tab_video: "🎬 Video Không Logo & 4K",
         tab_batch: "Bàn Làm Việc Hàng Loạt",
+        subnav_tts: "Lồng Tiếng AI & Sub MrBeast",
         tab_bg_ocr: "AI Tách Nền & OCR",
 
         // Battle Slider
@@ -274,6 +275,7 @@ const TRANSLATIONS = {
         tab_upscale: "✨ 4K AI Upscaler",
         tab_video: "🎬 Clean Video Downloader",
         tab_batch: "Batch Workbench",
+        subnav_tts: "AI Voiceover & MrBeast Sub",
         tab_bg_ocr: "AI Cutout & OCR",
 
         // Battle Slider
@@ -517,6 +519,8 @@ const TRANSLATIONS = {
         tab_upscale: "✨ 4K超分辨率",
         tab_video: "🎬 去水印超清下载",
         tab_batch: "批量工作台",
+        subnav_tts: "AI 配音 & MrBeast 爆款字幕",
+        subnav_tts: "AI 配音 & MrBeast 爆款字幕",
         tab_bg_ocr: "AI抠图与文字识别",
 
         // Battle Slider
@@ -760,6 +764,7 @@ const TRANSLATIONS = {
         tab_upscale: "✨ 4K超解像",
         tab_video: "🎬 ロゴなし動画抽出",
         tab_batch: "一括バッチ処理",
+        subnav_tts: "AI 音声合成 & MrBeast 字幕",
         tab_bg_ocr: "AI背景切り抜き&OCR",
 
         // Battle Slider

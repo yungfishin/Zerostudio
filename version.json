@@ -1,12 +1,13 @@
 {
-  "version": "2.5.6",
+  "version": "2.6.0",
   "release_date": "2026-10-26",
-  "title": "Bản Nâng Cấp V2.5.6: Khung Đề Xuất Nâng Cấp Ultra & Cơ Chế Mua Tặng Quà Điện Tử Độc Lập",
+  "title": "Bản Nâng Cấp V2.6.0: Vũ Khí MMO Giai Đoạn 1 - Lồng Tiếng AI Edge-TTS 0đ, Đốt Sub MrBeast & AI Trend Optimizer",
   "changelog": [
-    "Nâng cấp Ultra: Tích hợp Khung đề xuất Ultra MMO Master trong giao diện Pro (2 máy, 5 chế độ Anti-ban, 500 file batch) kèm VietQR 1-chạm",
-    "Mua quà tặng: Chế độ 'Mua làm quà tặng' độc lập, tạo Thẻ Quà Tặng Điện Tử (Digital Gift Card) kèm link kích hoạt 1-chạm ?gift=KEY cho bạn bè/nhân viên",
-    "Dọn sạch bản quyền: Khắc phục triệt để hiện tượng tự kích hoạt Pro ngầm từ file ổ đĩa, đảm bảo reset về Free sạch sẽ khi hủy liên kết",
-    "Trí tuệ nhân tạo ZeroAI: Tích hợp intent nhận diện 'tắt pro', 'về free', 'nâng lên ultra', 'mua quà tặng' và đồng bộ 100% 4 ngôn ngữ (vi, en, zh, ja)"
+    "AI Edge-TTS 0đ: Tự động lồng tiếng tiếng Việt chuẩn phòng thu (Hoài My & Nam Minh), không giới hạn ký tự và 0đ chi phí API",
+    "Phụ đề hoạt họa MrBeast: Đốt chữ nhảy khối vàng neon viền đen nổi bật 100%, tích hợp hòa âm thông minh (Auto-Ducking / Thay tiếng gốc)",
+    "AI Trend Optimizer: Gợi ý 5 tiêu đề giật tít gián đoạn nhận thức và 10 hashtag viral triệu view chuẩn thuật toán TikTok/Shorts",
+    "Trợ lý ảo ZeroAI Specialist: Tích hợp đầy đủ intent tư vấn lồng tiếng, tạo phụ đề MrBeast và tối ưu hóa SEO video viral",
+    "Đồng bộ đa ngôn ngữ 100%: Bản dịch tiếng Việt, tiếng Anh, tiếng Trung và tiếng Nhật cho toàn bộ cụm tính năng MMO Giai Đoạn 1"
   ],
   "web_url": "https://zerostu.netlify.app",
   "desktop_zip_url": "https://zerostu.netlify.app/ZeroStudio-Pro-Desktop.zip",

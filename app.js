@@ -220,7 +220,7 @@ function initSelfDefendingShield() {
 // ==========================================
 // OTA AUTO-UPDATE SYSTEM (IN-APP CLOUD SYNC)
 // ==========================================
-const CURRENT_APP_VERSION = "2.5.6";
+const CURRENT_APP_VERSION = "2.6.0";
 
 function compareVersions(v1, v2) {
     if (!v1 || !v2) return 0;
@@ -1748,7 +1748,8 @@ window.switchVideoSubMode = function(mode) {
         const proTitles = {
             channel: 'Cào Hàng Loạt Video Trọn Kênh TikTok / Douyin Sạch Logo',
             antiban: 'Phòng Thí Nghiệm Lách Bản Quyền & Đổi MD5',
-            subtitles: 'Bóc Phụ Đề AI & Dịch Thuật Xuất File SRT Cho CapCut'
+            subtitles: 'Bóc Phụ Đề AI & Dịch Thuật Xuất File SRT Cho CapCut',
+            tts: 'Lồng Tiếng AI Edge-TTS 0đ & Phụ Đề MrBeast'
         };
         if (proTitles[mode]) {
             window.requirePro(proTitles[mode]);
@@ -1760,7 +1761,8 @@ window.switchVideoSubMode = function(mode) {
         channel: document.getElementById('subnav-btn-channel'),
         antiban: document.getElementById('subnav-btn-antiban'),
         subtitles: document.getElementById('subnav-btn-subtitles'),
-        remaster: document.getElementById('subnav-btn-remaster')
+        remaster: document.getElementById('subnav-btn-remaster'),
+        tts: document.getElementById('subnav-btn-tts')
     };
 
     const panes = {
@@ -1768,7 +1770,8 @@ window.switchVideoSubMode = function(mode) {
         channel: document.getElementById('video-pane-channel'),
         antiban: document.getElementById('video-pane-antiban'),
         subtitles: document.getElementById('video-pane-subtitles'),
-        remaster: document.getElementById('video-pane-remaster')
+        remaster: document.getElementById('video-pane-remaster'),
+        tts: document.getElementById('video-pane-tts')
     };
 
     Object.keys(btns).forEach(key => {
@@ -5139,6 +5142,32 @@ let zeroAIMessages = [];
 // Knowledge Base Dictionary (100% Offline, Zero-Cost)
 const ZEROAI_KB = [
     {
+        id: 'ai_tts_voice',
+        keywords: ['lồng tiếng', 'giọng đọc', 'tts', 'edge-tts', 'hoài my', 'nam minh', 'thuyết minh', 'đọc kịch bản', 'đọc văn bản', 'chuyển văn bản thành giọng nói', 'voiceover', 'voice', 'sub mrbeast', 'phụ đề nảy chữ'],
+        title: 'Studio Lồng Tiếng AI Edge-TTS 0đ & Phụ Đề MrBeast',
+        response: `🎙️ <strong>STUDIO LỒNG TIẾNG AI EDGE-TTS 0Đ (Vũ Khí Giai Đoạn 1):</strong><br><br>
+• <strong>Giọng Đọc Chuẩn Phòng Thu:</strong> Hoài My (Nữ truyền cảm, review phim, bán hàng TikTok Shop) & Nam Minh (Nam trầm ấm, kể chuyện bí ẩn, tin tức thời sự).<br>
+• <strong>0đ Chi Phí API & Không Giới Hạn:</strong> Nhập kịch bản hàng chục nghìn từ không lo giới hạn credit hay tính phí theo phút như ElevenLabs.<br>
+• <strong>Đốt Sub MrBeast & Tự Động Hòa Âm:</strong> Đốt chữ màu vàng neon viền đen nổi bật 100%, tự động hạ nhạc nền (Auto-Ducking) khi có giọng đọc!`,
+        actions: [
+            { text: '🎙️ Mở Studio Lồng Tiếng & Sub MrBeast', func: "switchStudioTab('video'); switchVideoSubMode('tts');" },
+            { text: '⚡ Tạo Tiêu Đề & Hashtag Viral', func: "switchStudioTab('video'); switchVideoSubMode('tts'); setTimeout(() => document.getElementById('trend-topic-input')?.focus(), 300);" }
+        ]
+    },
+    {
+        id: 'ai_trend_optimizer',
+        keywords: ['giật tít', 'tiêu đề', 'hashtag', 'viral', 'triệu view', 'trend', 'xu hướng', 'tối ưu seo', 'hook'],
+        title: 'AI Trend Optimizer • 5 Tiêu Đề Giật Tít & 10 Hashtag Triệu View',
+        response: `📈 <strong>AI TREND OPTIMIZER (Bộ Giật Tít & Hashtag Triệu View):</strong><br><br>
+• Áp dụng công thức tâm lý học gián đoạn nhận thức của MrBeast: Tăng tỷ lệ nhấp chuột (CTR) và tỷ lệ giữ chân người xem (Retention Rate).<br>
+• <strong>Phân Tầng Thuật Toán 3 Lớp:</strong> 3 Hashtag siêu rộng (#fyp, #xuhuong) + 4 Hashtag ngách theo chủ đề + 3 Hashtag tương tác cao.<br>
+• Sao chép 1 chạm để dán thẳng vào mô tả video TikTok, Reels và YouTube Shorts!`,
+        actions: [
+            { text: '📈 Mở Bộ Tạo Tiêu Đề & Hashtag Viral', func: "switchStudioTab('video'); switchVideoSubMode('tts'); setTimeout(() => document.getElementById('trend-topic-input')?.focus(), 300);" },
+            { text: '🎙️ Bàn Lồng Tiếng AI Edge-TTS', func: "switchStudioTab('video'); switchVideoSubMode('tts');" }
+        ]
+    },
+    {
         id: 'mmo_copyright',
         keywords: ['lách', 'bản quyền', 'reup', 'mmo', 'tiktok', 'shorts', 'reels', 'content id', 'âm thanh', 'pitch', 'lật', 'video'],
         title: 'Công thức Lách Bản Quyền Video MMO 4 Bước',
@@ -6752,3 +6781,330 @@ if (typeof checkAndRenderLicenseRenewal === 'function') {
         updateProHeaderBadge();
     }, 600);
 }
+
+
+
+// =========================================================================
+// GIAI ĐOẠN 1: VŨ KHÍ MMO ĐỈNH CAO (EDGE-TTS 0Đ, PHỤ ĐỀ MRBEAST, TREND OPTIMIZER)
+// =========================================================================
+
+window.CURRENT_TTS_AUDIO_PATH = '';
+window.CURRENT_TTS_SRT = '';
+window.CURRENT_BURN_STYLE = 'mrbeast';
+
+window.loadTtsTemplate = function(type) {
+    const input = document.getElementById('tts-script-input');
+    if (!input) return;
+    
+    if (type === 'review') {
+        input.value = "Một tên sát nhân mang mặt nạ quái dị vừa trốn thoát khỏi nhà tù an ninh tối đa. Hắn ta chỉ nhắm vào những ai dám tò mò về căn hầm số 4. Nhưng điều rùng rợn nhất là cảnh sát vừa phát hiện ra, kẻ đứng sau giật dây tất cả lại chính là vị thẩm phán tối cao mà mọi người tôn sùng!";
+    } else if (type === 'sales') {
+        input.value = "Đừng lướt qua nếu bạn đang tìm kiếm một giải pháp cứu rỗi chiếc điện thoại của mình! Chiếc ốp lưng tản nhiệt graphene công nghệ phi thuyền này vừa giảm ngay 15 độ khi chiến game, vừa chống va đập cấp quân đội. Nhấn vào góc trái màn hình ngay hôm nay để nhận ưu đãi giảm 50%!";
+    } else if (type === 'story') {
+        input.value = "Vào ngày 14 tháng 10 năm 2012, một đoàn thám hiểm gồm 5 người đã tiến vào hang động tử thần tại dãy núi tuyết. Đúng 3 ngày sau, đài kiểm soát chỉ còn thu được duy nhất một tín hiệu cầu cứu gián đoạn với tiếng thì thầm: Nó không phải là con người, nó đang đứng ngay sau lưng tôi...";
+    }
+    window.updateTtsWordCount();
+};
+
+window.updateTtsWordCount = function() {
+    const input = document.getElementById('tts-script-input');
+    const display = document.getElementById('tts-word-count');
+    if (!input || !display) return;
+    
+    const text = input.value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    const estSec = Math.round(words / 2.6);
+    display.textContent = `${words} từ • Ước tính ~${estSec} giây đọc`;
+};
+
+window.clearTtsScript = function() {
+    const input = document.getElementById('tts-script-input');
+    if (input) {
+        input.value = '';
+        window.updateTtsWordCount();
+    }
+};
+
+window.generateTtsAudio = async function() {
+    if (!window.isProActive()) {
+        window.requirePro('Studio Lồng Tiếng AI Edge-TTS 0đ & Không Giới Hạn');
+        return;
+    }
+
+    const scriptInput = document.getElementById('tts-script-input');
+    const text = scriptInput ? scriptInput.value.trim() : '';
+    if (!text) {
+        alert('Vui lòng nhập kịch bản hoặc lời thoại cần đọc trước!');
+        return;
+    }
+
+    const voice = (document.getElementById('tts-voice-select') || {}).value || 'vi-VN-HoaiMyNeural';
+    const rate = (document.getElementById('tts-rate-select') || {}).value || '+0%';
+    const btn = document.getElementById('btn-generate-tts');
+
+    const originalBtnText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" style="width: 1rem; height: 1rem; border-width: 2px;"></span> Đang tổng hợp giọng AI chuẩn 48kHz...`;
+    }
+
+    try {
+        const ports = [8900, 8901, 8899];
+        let resp = null;
+        let lastErr = null;
+
+        for (const p of ports) {
+            try {
+                const res = await fetch(`http://127.0.0.1:${p}/api/tts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, voice, rate })
+                });
+                if (res.ok) {
+                    resp = await res.json();
+                    break;
+                }
+            } catch (err) {
+                lastErr = err;
+            }
+        }
+
+        if (!resp || !resp.success) {
+            throw new Error((resp && resp.error) || 'Không thể kết nối Video Bridge. Hãy chạy file BAT_DAU_STUDIO_VIDEO.bat!');
+        }
+
+        window.CURRENT_TTS_AUDIO_PATH = resp.audio_path;
+        window.CURRENT_TTS_SRT = resp.srt;
+
+        const wrap = document.getElementById('tts-audio-player-wrap');
+        const audioEl = document.getElementById('tts-audio-el');
+        const dlMp3 = document.getElementById('btn-download-tts-mp3');
+        const dlSrt = document.getElementById('btn-download-tts-srt');
+
+        if (audioEl) {
+            audioEl.src = resp.audio_data_uri;
+            audioEl.play().catch(() => {});
+        }
+        if (dlMp3) {
+            dlMp3.href = resp.audio_data_uri;
+            dlMp3.download = `ZeroStudio_TTS_${voice}_${Date.now()}.mp3`;
+        }
+        if (dlSrt) {
+            const srtBlob = new Blob([resp.srt], { type: 'text/plain;charset=utf-8' });
+            dlSrt.href = URL.createObjectURL(srtBlob);
+            dlSrt.download = `ZeroStudio_Subtitles_${Date.now()}.srt`;
+        }
+        if (wrap) {
+            wrap.style.display = 'block';
+        }
+
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
+        }
+        window.showToast('✅ Đã tạo giọng đọc AI thành công! Bạn có thể nghe thử hoặc đốt vào video ngay.', 'success');
+
+    } catch (err) {
+        console.error('[TTS ERROR]', err);
+        alert(`Lỗi tổng hợp giọng nói: ${err.message}`);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalBtnText;
+        }
+    }
+};
+
+window.handleBurnVideoFileSelect = function(event) {
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+        const pathInput = document.getElementById('burn-video-path-input');
+        if (pathInput) {
+            pathInput.value = file.path || file.name;
+        }
+    }
+};
+
+window.useDownloadedVideoForBurn = function() {
+    if (window.LAST_DOWNLOADED_VIDEO_PATH) {
+        const pathInput = document.getElementById('burn-video-path-input');
+        if (pathInput) {
+            pathInput.value = window.LAST_DOWNLOADED_VIDEO_PATH;
+            window.showToast('Đã gắn video vừa tải vào bàn dựng!', 'info');
+        }
+    } else {
+        alert('Chưa có video nào được tải ở Tab 1!');
+    }
+};
+
+window.setBurnStyle = function(style) {
+    window.CURRENT_BURN_STYLE = style;
+    const styles = ['mrbeast', 'tiktok', 'classic'];
+    styles.forEach(s => {
+        const btn = document.getElementById(`style-btn-${s}`);
+        if (btn) {
+            if (s === style) btn.classList.add('active');
+            else btn.classList.remove('active');
+        }
+    });
+};
+
+window.startBurnSubtitlesAndAudio = async function() {
+    if (!window.isProActive()) {
+        window.requirePro('Đốt Phụ Đề MrBeast & Ghép Nhạc Chuẩn Giữ Chân 100%');
+        return;
+    }
+
+    const videoPathInput = document.getElementById('burn-video-path-input');
+    const video_path = videoPathInput ? videoPathInput.value.trim() : '';
+    if (!video_path) {
+        alert('Vui lòng chọn hoặc nhập đường dẫn video gốc cần ghép!');
+        return;
+    }
+
+    let srt_content = window.CURRENT_TTS_SRT;
+    if (!srt_content) {
+        // Try reading from tts-script-input if any
+        const scriptInput = document.getElementById('tts-script-input');
+        const txt = scriptInput ? scriptInput.value.trim() : '';
+        if (txt) {
+            srt_content = `1\n00:00:00,100 --> 00:00:05,000\n${txt}\n`;
+        } else {
+            alert('Chưa có nội dung phụ đề! Vui lòng tạo giọng đọc AI ở Cột 1 trước.');
+            return;
+        }
+    }
+
+    const style = window.CURRENT_BURN_STYLE || 'mrbeast';
+    const tts_audio_path = window.CURRENT_TTS_AUDIO_PATH || '';
+    const audio_mix_mode = (document.getElementById('burn-audio-mix-select') || {}).value || 'replace';
+
+    const btn = document.getElementById('btn-burn-video');
+    const origText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" style="width: 1rem; height: 1rem; border-width: 2px;"></span> Đang đốt chữ MrBeast & Render 60fps...`;
+    }
+
+    try {
+        const ports = [8900, 8901, 8899];
+        let resp = null;
+
+        for (const p of ports) {
+            try {
+                const res = await fetch(`http://127.0.0.1:${p}/api/burn-subtitles`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        video_path,
+                        srt_content,
+                        style,
+                        tts_audio_path,
+                        audio_mix_mode
+                    })
+                });
+                if (res.ok) {
+                    resp = await res.json();
+                    break;
+                }
+            } catch (err) {}
+        }
+
+        if (!resp || !resp.success) {
+            throw new Error((resp && resp.error) || 'Render video thất bại. Kiểm tra đường dẫn video trên máy tính!');
+        }
+
+        const resultWrap = document.getElementById('burn-result-wrap');
+        const resultPath = document.getElementById('burn-result-path');
+        const dlBtn = document.getElementById('burn-result-download-btn');
+
+        if (resultPath) resultPath.textContent = `Vị trí lưu: ${resp.output_file}`;
+        if (dlBtn) dlBtn.href = `file:///${resp.output_file.replace(/\\/g, '/')}`;
+        if (resultWrap) resultWrap.style.display = 'block';
+
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+        }
+        window.showToast('🚀 Đã xuất video hoàn chỉnh chuẩn viral với phụ đề MrBeast!', 'success');
+
+    } catch (err) {
+        console.error('[BURN ERROR]', err);
+        alert(`Lỗi xuất video: ${err.message}`);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+        }
+    }
+};
+
+window.openExportFolder = function() {
+    window.showToast('Video đã được lưu vào thư mục Downloads/ZeroStudio_Viral_Exports trên máy của bạn!', 'info');
+};
+
+// =========================================================================
+// AI TREND OPTIMIZER (HOOK TITLES & 10 VIRAL HASHTAGS)
+// =========================================================================
+
+window.generateViralHooks = function() {
+    const topicInput = document.getElementById('trend-topic-input');
+    const topic = topicInput ? topicInput.value.trim() : '';
+    if (!topic) {
+        alert('Vui lòng nhập chủ đề video của bạn!');
+        return;
+    }
+
+    const t = topic;
+    const hooks = [
+        `🔥 Đừng bao giờ làm ${t} nếu bạn chưa biết bí mật số 3 này!`,
+        `⚡ Cách mình biến ${t} thành cỗ máy kiếm tiền chỉ trong 24 giờ!`,
+        `😱 99% mọi người đang hiểu sai về ${t} (Sự thật gây sốc)!`,
+        `🚨 Xem ngay mẹo ${t} này trước khi video bị thuật toán quét xóa vĩnh viễn!`,
+        `💡 Chiêu thức lười giúp bạn tiết kiệm 10 tiếng mỗi tuần khi làm ${t}!`
+    ];
+
+    const cleanTopicTag = t.toLowerCase().replace(/[^a-z0-9àáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđ\s]/g, '').replace(/\s+/g, '');
+    const hashtags = [
+        '#fyp', '#xuhuong', '#xuhuongtiktok',
+        `#${cleanTopicTag}`, `#review${cleanTopicTag}`, `#hoc${cleanTopicTag}`,
+        '#viralvideo', '#trendingtiktok', '#kienthuc', '#mmo'
+    ];
+
+    const hooksList = document.getElementById('trend-hooks-list');
+    const tagsCloud = document.getElementById('trend-hashtags-cloud');
+    const deck = document.getElementById('trend-results-deck');
+
+    if (hooksList) {
+        hooksList.innerHTML = hooks.map((h, i) => `
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 0.6rem 0.85rem; font-size: 0.84rem; color: #f8fafc; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+                <span>${h}</span>
+                <button type="button" onclick="navigator.clipboard.writeText('${h.replace(/'/g, "\\'")}'); window.showToast('Đã chép tiêu đề!', 'info');" style="background: none; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 4px; color: #38bdf8; font-size: 0.7rem; padding: 0.2rem 0.5rem; cursor: pointer; white-space: nowrap;">Sao chép</button>
+            </div>
+        `).join('');
+    }
+
+    if (tagsCloud) {
+        tagsCloud.innerHTML = hashtags.map(tag => `
+            <span style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 9999px; padding: 0.25rem 0.65rem; font-size: 0.76rem; color: #38bdf8; font-weight: 600; cursor: pointer;" onclick="navigator.clipboard.writeText('${tag}'); window.showToast('Đã chép ${tag}!', 'info');">
+                ${tag}
+            </span>
+        `).join('');
+    }
+
+    if (deck) {
+        deck.style.display = 'block';
+    }
+
+    window.LAST_GENERATED_HOOKS = hooks;
+    window.LAST_GENERATED_TAGS = hashtags;
+    window.showToast('✨ Đã sinh 5 tiêu đề giật tít & 10 hashtag viral chuẩn thuật toán!', 'success');
+};
+
+window.copyAllHooksAndTags = function() {
+    if (!window.LAST_GENERATED_HOOKS || !window.LAST_GENERATED_TAGS) return;
+    const fullText = `TIÊU ĐỀ GỢI Ý:\n` + window.LAST_GENERATED_HOOKS.map((h, i) => `${i+1}. ${h}`).join('\n') + `\n\nHASHTAG VIRAL:\n` + window.LAST_GENERATED_TAGS.join(' ');
+    navigator.clipboard.writeText(fullText).then(() => {
+        window.showToast('📋 Đã sao chép toàn bộ tiêu đề & hashtag vào bộ nhớ tạm!', 'success');
+    }).catch(() => {
+        alert(fullText);
+    });
+};

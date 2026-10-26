@@ -20,6 +20,7 @@
 | **v2.5.3** | 2026-10-25 | **Đồng bộ hóa 100% Đa Ngôn Ngữ (vi, en, zh, ja)** trên toàn bộ giao diện, bảng giá, bộ đếm, form thanh toán và công cụ; sửa triệt để lỗi chữ Trung hiển thị nhầm. |
 | **v2.5.4** | 2026-10-25 | **Thu hồi & Kick vĩnh viễn key khai thác trái phép (`ZERO-ULTRA-8899-VIP-DEV`)**, cơ chế Auto-Purge Revoked Keys; sửa lỗi thẻ Antiban Video và vượt qua 100% 7 bộ kiểm thử Playwright. |
 | **v2.5.5** | 2026-10-25 | **Cơ chế Đối Tác CPA Thanh Toán Thực & Cấp Bậc Hoa Hồng Đa Tầng**: Chỉ trích thưởng khi MB Bank nổ tiền (Pro 30% ~80k, Ultra 35% ~220k), Thang cấp bậc tích lũy (Bronze, Silver, Gold Master thưởng 1.000.000đ); đồng bộ 4 ngôn ngữ và bảo mật Zero-Bypass tuyệt đối. |
+| **v2.6.0** | 2026-10-26 | **Hoàn Thành Giai Đoạn 1 - Vũ Khí MMO Đỉnh Cao**: AI Edge-TTS 0đ lồng tiếng tiếng Việt tự nhiên chuẩn phòng thu (Hoài My & Nam Minh), Đốt phụ đề nảy chữ vàng neon MrBeast 100% giữ chân, AI Trend Optimizer gợi ý 5 tiêu đề giật tít & 10 hashtag viral triệu view, ZeroAI Specialist intent và đồng bộ 4 ngôn ngữ. |
 | **v2.5.6** | 2026-10-26 | **Khung Đề Xuất Nâng Cấp Ultra & Cơ Chế Mua Tặng Quà Điện Tử Độc Lập**: Khung Upsell Ultra 1-chạm trong giao diện Pro; Chế độ "Mua làm quà tặng" không chiếm slot máy người mua, tạo Thẻ Quà Tặng Điện Tử (Digital Gift Card) kèm link nhận quà `?gift=KEY` tự động kích hoạt; Dọn sạch file bản quyền ngầm trên ổ cứng khi reset về Free; Nâng cấp ZeroAI nhận diện ý định thông minh và đồng bộ 4 ngôn ngữ (vi, en, zh, ja). |
 
 ---
@@ -29,7 +30,7 @@
 ```mermaid
 timeline
     title Lộ Trình Phát Triển ZeroStudio (2026 - 2027)
-    section Giai Đoạn 1 (Q4/2026)<br>Vũ Khí MMO Đỉnh Cao
+    section Giai Đoạn 1 (Hoàn thành v2.6.0)<br>Vũ Khí MMO Đỉnh Cao
         AI Edge-TTS 0d : Tự động lồng tiếng tiếng Việt tự nhiên chuẩn nhịp reup
         MrBeast Style Auto-Captions : Phụ đề nảy chữ neon highlight theo âm thanh
         AI Trend Optimizer : Gợi ý 5 tiêu đề giật tít và 10 hashtag viral triệu view
