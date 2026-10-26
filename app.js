@@ -220,7 +220,7 @@ function initSelfDefendingShield() {
 // ==========================================
 // OTA AUTO-UPDATE SYSTEM (IN-APP CLOUD SYNC)
 // ==========================================
-const CURRENT_APP_VERSION = "2.5.5";
+const CURRENT_APP_VERSION = "2.5.6";
 
 function compareVersions(v1, v2) {
     if (!v1 || !v2) return 0;

@@ -1,11 +1,12 @@
 {
-  "version": "2.5.5",
-  "release_date": "2026-10-25",
-  "title": "Bản Nâng Cấp V2.5.5: Hệ Thống Đối Tác CPA Thanh Toán Thực & Cấp Bậc Hoa Hồng Đa Tầng",
+  "version": "2.5.6",
+  "release_date": "2026-10-26",
+  "title": "Bản Nâng Cấp V2.5.6: Khung Đề Xuất Nâng Cấp Ultra & Cơ Chế Mua Tặng Quà Điện Tử Độc Lập",
   "changelog": [
-    "Đối tác: Kích hoạt cơ chế CPA thực — chỉ trả hoa hồng khi khách hàng thanh toán VietQR MB Bank thành công (0đ gian lận acc ảo)",
-    "Bảng giá đối tác: Phân tầng hoa hồng theo gói (Pro 30% / 80k - Ultra 35% / 220k) và Thang cấp bậc lũy tiến (Bronze, Silver, Gold Master thưởng 1TR)",
-    "Đa ngôn ngữ & An toàn: Đồng bộ 100% 4 ngôn ngữ (vi, en, zh, ja) trên toàn bộ hệ thống Đối Tác & thắt chặt phòng thủ Zero-Bypass"
+    "Nâng cấp Ultra: Tích hợp Khung đề xuất Ultra MMO Master trong giao diện Pro (2 máy, 5 chế độ Anti-ban, 500 file batch) kèm VietQR 1-chạm",
+    "Mua quà tặng: Chế độ 'Mua làm quà tặng' độc lập, tạo Thẻ Quà Tặng Điện Tử (Digital Gift Card) kèm link kích hoạt 1-chạm ?gift=KEY cho bạn bè/nhân viên",
+    "Dọn sạch bản quyền: Khắc phục triệt để hiện tượng tự kích hoạt Pro ngầm từ file ổ đĩa, đảm bảo reset về Free sạch sẽ khi hủy liên kết",
+    "Trí tuệ nhân tạo ZeroAI: Tích hợp intent nhận diện 'tắt pro', 'về free', 'nâng lên ultra', 'mua quà tặng' và đồng bộ 100% 4 ngôn ngữ (vi, en, zh, ja)"
   ],
   "web_url": "https://zerostu.netlify.app",
   "desktop_zip_url": "https://zerostu.netlify.app/ZeroStudio-Pro-Desktop.zip",
