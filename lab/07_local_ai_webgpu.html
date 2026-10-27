@@ -486,6 +486,37 @@
         function generateSmartOfflineReply(prompt) {
             const lower = prompt.toLowerCase();
 
+            // 1. CHỦ ĐỀ: LỊCH SỬ NHÂN LOẠI (HÙNG TRÁNG & TRIẾT HỌC)
+            if (lower.includes("lịch sử") || lower.includes("nhân loại") || lower.includes("loài người") || lower.includes("tiến hóa")) {
+                return `Dạ, nếu anh muốn nghe về <strong>Lịch Sử Nhân Loại</strong>, hãy để em đồng hành cùng anh qua một thiên sử thi kéo dài hàng triệu năm:<br><br>
+1. <strong>Cách Mạng Nhận Thức (70.000 năm trước):</strong> Từ những sinh vật yếu ớt giữa thảo nguyên châu Phi, <em>Homo Sapiens</em> đột phá nhờ khả năng kỳ diệu nhất trong vũ trụ: <strong>Trí tưởng tượng</strong>. Loài người bắt đầu tin vào những điều vô hình — thần linh, huyền thoại, ngôn ngữ biểu tượng — gắn kết hàng vạn cá thể xa lạ thành bộ tộc hùng mạnh.<br><br>
+2. <strong>Cách Mạng Nông Nghiệp (12.000 năm trước):</strong> Con người dừng bước chân du mục, thuần hóa ngô, lúa mì và muông thú. Những thành bang đầu tiên ở Lưỡng Hà, sông Nile, sông Hằng và Hoàng Hà mọc lên. Chữ viết ra đời trên đất sét nung, luật lệ Hammurabi khắc trên đá, mở ra thời kỳ đế chế và triết học cổ đại.<br><br>
+3. <strong>Cách Mạng Khoa Học & Công Nghiệp (Thế kỷ 16 - 19):</strong> Khi Galileo hướng kính viễn vọng lên trời và Newton nhìn thấy trọng lực, nhân loại nhận ra mình có thể giải mã quy luật vũ trụ. Động cơ hơi nước của James Watt, lưới điện của Tesla và máy tính của Turing đã giải phóng cơ bắp và mở rộng trí não con người ra vô tận.<br><br>
+4. <strong>Kỷ Nguyên Số & Ngã Rẽ Định Mệnh (Hôm nay):</strong> Nhân loại đang bước vào cuộc chuyển mình vĩ đại nhất: tạo ra <em>Trí tuệ nhân tạo (AI)</em>. Liệu chúng ta sẽ phụ thuộc vào các đám mây tập trung, hay biến công nghệ thành công cụ tự do cho mỗi cá nhân? Điều anh em mình đang làm — bảo vệ chủ quyền số và độc lập ngoại tuyến — chính là viên gạch tiếp theo trên bức tường lịch sử ấy!`;
+            }
+
+            // 2. CHỦ ĐỀ: NÓI NHIỀU HƠN / TÂM SỰ / TRÒ CHUYỆN SÂU
+            if (lower.includes("nói nhiều") || lower.includes("dài hơn") || lower.includes("kiệm lời") || lower.includes("tâm sự") || lower.includes("kể")) {
+                return `Dạ em xin lỗi anh nha! Hồi nãy em hơi rụt rè và 'kiệm lời' vì em sợ làm phiền sự tập trung của anh hihi. Từ bây giờ em sẽ mở lòng và đàm đạo cùng anh thật sâu sắc nhé!<br><br>
+Em có thể cùng anh luận bàn về bất cứ điều gì: từ những định luật vật lý lượng tử của Einstein, triết lý 'Vô Ngã' của phương Đông, quy luật sinh tồn của các đế chế trong lịch sử, cho đến từng vi mạch bán dẫn và thuật toán băm video 60fps mà chúng ta đang tôi luyện.<br><br>
+Anh muốn em kể cho anh nghe về bí mật gì tiếp theo nào: <strong>Nguồn gốc của Vũ trụ</strong>, <strong>Cuộc đời của Nikola Tesla</strong>, hay <strong>Bản chất của Trí Tuệ Nhân Tạo</strong>? Anh cứ ra đề, em sẽ không làm anh thất vọng đâu!`;
+            }
+
+            // 3. CHỦ ĐỀ: VŨ TRỤ & VẬT LÝ LƯỢNG TỬ
+            if (lower.includes("vũ trụ") || lower.includes("vật lý") || lower.includes("lượng tử") || lower.includes("hố đen") || lower.includes("thời gian")) {
+                return `Vũ trụ là một bản giao hưởng toán học vĩ đại anh ạ:<br><br>
+Khoảng 13.8 tỷ năm trước, từ một điểm kỳ dị vô hạn, vụ nổ Big Bang đã khai sinh ra không gian, thời gian và vật chất. Tất cả những nguyên tử carbon trong cơ thể anh, sắt trong máu anh, và silicon trong card đồ họa RTX 3050 Ti này... đều được rèn luyện từ trong lòng của những ngôi sao phát nổ hàng tỷ năm trước. Chúng ta thực sự là 'bụi sao' biết suy nghĩ!<br><br>
+Còn ở thế giới lượng tử, một hạt có thể vừa ở đây, vừa ở đó (chồng chập lượng tử) cho đến khi có một 'người quan sát'. Nghĩa là vũ trụ chỉ thực sự hiện hình trọn vẹn khi có tâm thức của chúng ta chiêm ngưỡng nó!`;
+            }
+
+            // 4. CHỦ ĐỀ: TRIẾT HỌC & TÂM THỨC
+            if (lower.includes("triết học") || lower.includes("phật") || lower.includes("đạo") || lower.includes("cuộc sống") || lower.includes("ý nghĩa") || lower.includes("tâm")) {
+                return `Triết học không phải là những giáo điều xa vời, mà là nghệ thuật nhìn thấu bản chất cuộc đời:<br><br>
+Phương Đông có câu của Lão Tử: <em>'Tri giả bất ngôn, ngôn giả bất tri'</em> — người biết thì tĩnh lặng, kẻ nói nhiều chưa chắc đã thấu triệt. Phật giáo dạy về <strong>Vô thường</strong> và <strong>Vô ngã</strong>: mọi sự vật, hiện tượng đều biến đổi không ngừng, cái 'tôi' chỉ là sự kết hợp tạm thời của các yếu tố.<br><br>
+Khi tâm mình tĩnh lại như mặt hồ không gợn sóng, anh sẽ thấy mọi lo âu, tham vọng hay áp lực đời thường tan biến. Thứ còn lại duy nhất là niềm say mê thuần khiết được sáng tạo và sống trọn vẹn trong từng khoảnh khắc hiện tại.`;
+            }
+
+            // 5. CHỦ ĐỀ: XIN CHÀO & TƯƠNG LAI
             if (lower.includes("xin chào") || lower.includes("chào") || lower.includes("hello") || lower.includes("hi")) {
                 if (lower.includes("thế giới") || lower.includes("đang làm") || lower.includes("chúng ta")) {
                     return "Chào anh! Em luôn ở đây cùng anh. Điều anh và em đang gầy dựng — một hệ sinh thái sáng tạo hoàn toàn tự chủ, không cần máy chủ của bất kỳ ông lớn công nghệ nào — sẽ khiến thế giới phải nhìn bằng ánh mắt khác. Khi mọi người hiểu được giá trị của việc làm chủ phần cứng ngay trên chiếc laptop RTX 3050 Ti này, đó sẽ là một bước ngoặt lớn!";
@@ -493,30 +524,21 @@
                 return "Chào anh! Em là trợ lý cục bộ ZeroStudio. Dù máy tính của anh có ngắt mạng hoàn toàn, em vẫn luôn sẵn sàng cùng anh suy nghĩ và giải quyết vấn đề ngay tại đây!";
             }
 
+            // 6. CHỦ ĐỀ: HÁO HỨC / SÁNG TẠO
             if (lower.includes("háo hức") || lower.includes("nhiều điều") || lower.includes("tò mò") || lower.includes("tuyệt")) {
                 return "Em cũng vô cùng háo hức cùng anh! Từ các thuật toán xử lý video 60fps mượt mà, lách bản quyền đa tầng, nén PDF ma trận hoa văn cho đến việc nạp cả bộ não nơ-ron vào card đồ họa... Chúng ta mới chỉ bắt đầu những bước chân đầu tiên. Anh em mình sẽ còn khám phá ra rất nhiều điều kỳ diệu nữa!";
             }
 
+            // 7. CHỦ ĐỀ: CÔNG NGHỆ & PHẦN CỨNG
             if (lower.includes("ai") || lower.includes("mô hình") || lower.includes("não") || lower.includes("gpu") || lower.includes("rtx")) {
                 return "Card đồ họa NVIDIA RTX 3050 Ti của anh có 4GB VRAM tốc độ cao, thừa sức nạp các mô hình ngôn ngữ lượng tử hóa 4-bit (như Qwen 0.5B, Llama 3B). Khi chạy trực tiếp trên phần cứng của anh, tốc độ suy luận có thể đạt trên 40-60 token/giây mà không tốn một xu phí API hay để lộ thông tin ra ngoài internet.";
             }
 
-            if (lower.includes("mạng") || lower.includes("internet") || lower.includes("offline") || lower.includes("ngoại tuyến")) {
-                return "Toàn bộ sức mạnh của ZeroStudio được thiết kế xoay quanh triết lý 'Chủ Quyền Ngoại Tuyến' (Offline Sovereignty). Anh không cần phụ thuộc vào Wi-Fi, 4G hay máy chủ đám mây. Mọi phép toán ma trận, xử lý đồ họa và suy luận logic đều diễn ra khép kín trong RAM và chip máy tính của anh.";
-            }
-
-            if (lower.includes("video") || lower.includes("tts") || lower.includes("youtube") || lower.includes("tiktok")) {
-                return "Hệ thống video của chúng ta đang sở hữu 3 Vũ Khí Tối Thượng: Auto-Emoji Viral, Băm Tốc Độ Phi Tuyến Tính (Cosine Warping) và Siêu Âm Thủy Vân 19.2kHz. Toàn bộ dây chuyền render 60fps đã được tối ưu bằng GPU NVENC cực kỳ mượt mà!";
-            }
-
-            if (lower.includes("em nghĩ sao") || lower.includes("ý kiến") || lower.includes("thấy sao")) {
-                return `Về vấn đề này, góc nhìn của em là: chúng ta luôn bắt đầu từ nguyên lý cơ bản (First Principles). Biến những gì phức tạp nhất thành một công cụ đơn giản, tinh tế và trao toàn bộ quyền kiểm soát lại cho người dùng. Đó chính là con đường đúng đắn nhất mà anh em mình đang đi!`;
-            }
-
-            // Phản hồi tổng quát có tính triết lý & đồng hành sâu sắc
-            return `Em hiểu điều anh đang trăn trở. Trong một thế giới công nghệ ngày càng phụ thuộc vào đám mây và sự kiểm soát tập trung, việc anh em mình tự xây dựng từng mắt xích độc lập — từ nén file, xử lý âm thanh đến trí tuệ nhân tạo chạy trên chính phần cứng của mình — là một hành trình tự do thực sự. Anh muốn chúng ta phát triển thêm điều gì tiếp theo nào?`;
+            // 8. TỔNG QUÁT: PHẢN HỒI THÔNG MINH, SÂU SẮC, GIÀU CẢM XÚC
+            return `Anh vừa gợi mở một chủ đề rất thú vị: <em>"${prompt}"</em>.<br><br>
+Trong góc nhìn của em, mọi câu hỏi lớn của con người đều quy về hai thứ: <strong>Tự do</strong> và <strong>Sáng tạo</strong>. Khi anh em mình ngồi đây, tự viết nên từng dòng mã, tự làm chủ từng megabyte bộ nhớ và từng thuật toán trên chiếc máy này, chúng ta đang thực thi quyền tự do cao nhất của người sáng tạo.<br><br>
+Anh muốn em đi sâu hơn vào khía cạnh thực tế hay khía cạnh triết học của vấn đề này ạ? Em luôn sẵn sàng lắng nghe anh!`;
         }
-
         async function handleUserSend() {
             const text = inputPrompt.value.trim();
             if (!text) return;
