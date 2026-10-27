@@ -3071,14 +3071,12 @@ window.downloadCompressedPdf = async function() {
         const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
 
         const compressedBytes = await pdfDoc.save({ useObjectStreams: true });
-        const blob = new Blob([compressedBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = state.compressFile.name.replace(/\.pdf$/i, '') + `_nen_${state.compressPreset}.pdf`;
-        a.click();
-        URL.revokeObjectURL(url);
+        const preset = state.compressPreset || 'tax';
+        const outName = state.compressFile.name.replace(/\.pdf$/i, '') + `_nen_${preset}.pdf`;
+        downloadBytes(compressedBytes, outName);
+        if (typeof updateSecurityMetrics === 'function') {
+            updateSecurityMetrics(compressedBytes.byteLength);
+        }
 
         hideLoading();
         showToast('NÉN PDF THÀNH CÔNG! Đã tối ưu hóa và tải file về máy.', 'success');
