@@ -10,6 +10,7 @@
 5. `05_lmp_p2p_checkout_kernel.html`: Vi nhân WASM nhúng trong sub-pixel video tự phát sinh QR thanh toán P2P VietQR NAPAS 24/7 trực tiếp trên màn hình video.
 6. `06_zbox_airgap_patch_packager.py`: Đóng gói bản cập nhật hệ thống ngoại tuyến `.zup` có chữ ký số mật mã Ed25519 cho trạm ZeroBox không có internet.
 7. `07_local_ai_webgpu.html`: [KỊCH BẢN 2] Động cơ trí tuệ nhân tạo cục bộ chạy 100% trên phần cứng card đồ họa NVIDIA GeForce RTX 3050 Ti qua chuẩn WebGPU / Transformers.js trực tiếp trong trình duyệt, suy luận hoàn toàn ngoại tuyến không cần internet.
+8. `08_password_entropy_bruteforce_simulator.html`: [BẢO MẬT & ENTROPY] Trình mô phỏng bẻ khóa Brute-Force đa tầng phần cứng (Online, RTX 3050 Ti, Dàn 8x RTX 4090, Siêu máy tính 100 Triệu Tỷ phép tính/s) và đo độ hỗn loạn toán học (Entropy Bits) cục bộ thời gian thực.
 
 ## 2. Kế Hoạch Lớn: Kịch Bản 1 - ZeroBrain Offline SLM Node (Khi hồi 100% Quota):
 - **Phần cứng đích:** NVIDIA GeForce RTX 3050 Ti Laptop GPU (4GB Dedicated VRAM).
