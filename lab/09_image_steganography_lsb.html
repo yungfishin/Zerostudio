@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroStudio Skunkworks Lab #09 - LSB Image Steganography</title>
+    <style>
+        :root {
+            --bg-dark: #070a12;
+            --panel-bg: rgba(13, 20, 36, 0.85);
+            --border-color: rgba(56, 189, 248, 0.2);
+            --accent-cyan: #38bdf8;
+            --accent-green: #34d399;
+            --accent-amber: #fbbf24;
+            --accent-rose: #f43f5e;
+            --accent-purple: #c084fc;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "JetBrains Mono", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(52, 211, 153, 0.08) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-lab {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            flex: 1;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Drop Zone */
+        .drop-zone {
+            border: 2px dashed rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(2, 6, 23, 0.4);
+            margin-bottom: 20px;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .drop-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .drop-text {
+            font-size: 14px;
+            color: var(--text-main);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .drop-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .text-input {
+            width: 100%;
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            resize: vertical;
+        }
+
+        .text-input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+
+        .btn-green:hover:not(:disabled) {
+            box-shadow: 0 4px 16px rgba(52, 211, 153, 0.4);
+        }
+
+        /* Image Preview Box */
+        .preview-box {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .preview-col {
+            flex: 1;
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 6px;
+            object-fit: contain;
+            margin-top: 8px;
+        }
+
+        /* Educational Explanation Card */
+        .explain-box {
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .pixel-demo {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 14px 0;
+        }
+
+        .swatch {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .bit-label {
+            font-family: monospace;
+            font-size: 11px;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .result-box {
+            background: rgba(5, 150, 105, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .result-title {
+            color: var(--accent-green);
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .result-content {
+            font-size: 15px;
+            color: #fff;
+            line-height: 1.5;
+            word-break: break-all;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand-title">
+            <span>⚡ ZeroStudio Lab #09</span>
+            <span class="badge-lab">LSB Image Steganography</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); font-family: monospace;">
+            Thuật Giấu Tin Vào Điểm Ảnh • 100% Offline
+        </div>
+    </header>
+
+    <div class="tabs">
+        <button id="tab-encode" class="tab-btn active">🔒 Giấu Mật Thư Vào Bức Ảnh</button>
+        <button id="tab-decode" class="tab-btn">🔓 Quét & Giải Mã Bức Ảnh</button>
+    </div>
+
+    <div class="layout-grid">
+        <!-- Main Panel -->
+        <div class="panel">
+            <!-- MODE 1: ENCODE -->
+            <div id="section-encode">
+                <div class="panel-title">1. Chọn bức ảnh để làm "bình phong"</div>
+
+                <div id="drop-encode" class="drop-zone">
+                    <div class="drop-icon">🖼️</div>
+                    <div class="drop-text">Bấm vào đây hoặc kéo thả bức ảnh của anh vào</div>
+                    <div class="drop-sub">Hỗ trợ PNG, JPG, JPEG (Tự động chuyển sang Canvas lossless)</div>
+                    <input id="file-encode" type="file" accept="image/*" style="display: none;" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">2. Nhập dòng mật thư bí mật anh muốn giấu:</label>
+                    <textarea id="secret-text" class="text-input" rows="3" placeholder="Ví dụ: Hẹn anh ở quán nước bờ sông lúc 5 giờ chiều nha! 🍃☕"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">3. Mã PIN bảo vệ (Tùy chọn - Tăng cường thêm 1 lớp mã hóa XOR):</label>
+                    <input id="pin-encode" type="text" class="text-input" placeholder="Để trống nếu không cần mã PIN..." />
+                </div>
+
+                <button id="btn-encode" class="btn" disabled>
+                    🚀 Nhúng Mật Thư Vào Điểm Ảnh & Tải Ảnh Về
+                </button>
+
+                <div id="preview-encode-box" class="preview-box" style="display: none;">
+                    <div class="preview-col">
+                        <div style="font-size: 11px; color: var(--text-muted);">Ảnh Gốc (Original)</div>
+                        <img id="img-orig-preview" class="preview-img" />
+                    </div>
+                    <div class="preview-col">
+                        <div style="font-size: 11px; color: var(--accent-green);">Ảnh Đã Giấu Tin (Stego Image)</div>
+                        <img id="img-stego-preview" class="preview-img" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODE 2: DECODE -->
+            <div id="section-decode" style="display: none;">
+                <div class="panel-title">1. Chọn bức ảnh chứa mật thư cần đọc</div>
+
+                <div id="drop-decode" class="drop-zone">
+                    <div class="drop-icon">🔍</div>
+                    <div class="drop-text">Bấm vào đây hoặc kéo thả ảnh đã giấu tin vào</div>
+                    <div class="drop-sub">Tệp ảnh định dạng PNG đã được nhúng mật thư</div>
+                    <input id="file-decode" type="file" accept="image/png" style="display: none;" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">2. Nhập mã PIN (Nếu lúc giấu có đặt):</label>
+                    <input id="pin-decode" type="text" class="text-input" placeholder="Nhập mã PIN nếu có..." />
+                </div>
+
+                <button id="btn-decode" class="btn btn-green" disabled>
+                    🔓 Quét Điểm Ảnh & Trích Xuất Mật Thư
+                </button>
+
+                <div id="result-box" class="result-box">
+                    <div class="result-title">✅ MẬT THƯ ĐÃ ĐƯỢC GIẢI MÃ THÀNH CÔNG:</div>
+                    <div id="decoded-content" class="result-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Explanation -->
+        <div class="panel">
+            <div class="panel-title">💡 Giải Mã Cơ Chế Hoạt Động</div>
+
+            <div class="explain-box">
+                <strong>Điểm Mù Của Mắt Người:</strong><br>
+                Mỗi điểm ảnh có 3 màu Đỏ - Xanh lá - Xanh dương (từ 0 đến 255).<br><br>
+                Hãy nhìn 2 ô màu bên dưới:
+                
+                <div class="pixel-demo">
+                    <div>
+                        <div class="swatch" style="background: rgb(214, 180, 92);"></div>
+                        <div class="bit-label">Màu gốc: 92<br><code>...01011100</code></div>
+                    </div>
+                    <div style="font-size: 18px; color: var(--accent-cyan);">➔</div>
+                    <div>
+                        <div class="swatch" style="background: rgb(214, 180, 93);"></div>
+                        <div class="bit-label">Đã giấu: 93<br><code>...0101110<strong style="color: var(--accent-green);">1</strong></code></div>
+                    </div>
+                </div>
+
+                Mắt thường nhìn <strong>2 ô màu này giống nhau 100%</strong>!<br><br>
+                Thuật toán chỉ lén đổi <strong>bit cuối cùng</strong> (từ 0 sang 1) để cất giữ từng chữ cái của anh.
+            </div>
+
+            <div class="explain-box" style="margin-bottom: 0;">
+                <strong>Tại Sao Phải Tải Về Dưới Dạng PNG?</strong><br>
+                Định dạng JPG nén ảnh bằng cách gom các màu gần giống nhau lại, sẽ làm mất bit giấu tin.<br><br>
+                Định dạng <strong>PNG (Lossless)</strong> bảo toàn chính xác 100% từng điểm ảnh, giúp mật thư của anh tồn tại vĩnh viễn không bị biến dạng!
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Canvas for pixel math -->
+    <canvas id="hidden-canvas" style="display: none;"></canvas>
+
+    <script>
+        const tabEncode = document.getElementById('tab-encode');
+        const tabDecode = document.getElementById('tab-decode');
+        const secEncode = document.getElementById('section-encode');
+        const secDecode = document.getElementById('section-decode');
+
+        // Tab Switching
+        tabEncode.addEventListener('click', () => {
+            tabEncode.classList.add('active');
+            tabDecode.classList.remove('active');
+            secEncode.style.display = 'block';
+            secDecode.style.display = 'none';
+        });
+
+        tabDecode.addEventListener('click', () => {
+            tabDecode.classList.add('active');
+            tabEncode.classList.remove('active');
+            secDecode.style.display = 'block';
+            secEncode.style.display = 'none';
+        });
+
+        // ----------------------------------------------------
+        // ENCODE LOGIC
+        // ----------------------------------------------------
+        const dropEncode = document.getElementById('drop-encode');
+        const fileEncode = document.getElementById('file-encode');
+        const secretText = document.getElementById('secret-text');
+        const pinEncode = document.getElementById('pin-encode');
+        const btnEncode = document.getElementById('btn-encode');
+        const previewBox = document.getElementById('preview-encode-box');
+        const imgOrigPreview = document.getElementById('img-orig-preview');
+        const imgStegoPreview = document.getElementById('img-stego-preview');
+        const canvas = document.getElementById('hidden-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let loadedImage = null;
+
+        dropEncode.addEventListener('click', () => fileEncode.click());
+        fileEncode.addEventListener('change', (e) => handleImageUpload(e.target.files[0]));
+
+        function handleImageUpload(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    loadedImage = img;
+                    imgOrigPreview.src = event.target.result;
+                    previewBox.style.display = 'flex';
+                    btnEncode.disabled = false;
+                    dropEncode.querySelector('.drop-text').textContent = `Đã nạp ảnh: ${file.name} (${img.width}x${img.height}px)`;
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        btnEncode.addEventListener('click', () => {
+            if (!loadedImage) return;
+            const text = secretText.value.trim();
+            if (!text) {
+                alert("Anh ơi, nhập dòng mật thư cần giấu vào ô trước đã nhé!");
+                return;
+            }
+
+            canvas.width = loadedImage.width;
+            canvas.height = loadedImage.height;
+            ctx.drawImage(loadedImage, 0, 0);
+
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data; // RGBA array
+
+            // Optional XOR PIN
+            const pin = pinEncode.value.trim();
+            let bytes = new TextEncoder().encode(text);
+            if (pin) {
+                const pinBytes = new TextEncoder().encode(pin);
+                bytes = bytes.map((b, i) => b ^ pinBytes[i % pinBytes.length]);
+            }
+
+            // We store 32-bit length first (4 bytes) + data bytes
+            const totalBytes = bytes.length;
+            const maxCapacity = Math.floor((data.length / 4) / 8); // 1 bit per color byte (using R, G, B)
+
+            if (totalBytes + 4 > maxCapacity) {
+                alert(`Bức ảnh này quá nhỏ! Chỉ chứa được tối đa ${maxCapacity} ký tự.`);
+                return;
+            }
+
+            // Prepare bit array: 32 bits for length + payload bits
+            const bitArray = [];
+            // Push length (32 bits)
+            for (let i = 31; i >= 0; i--) {
+                bitArray.push((totalBytes >> i) & 1);
+            }
+            // Push data bytes (8 bits each)
+            for (let i = 0; i < bytes.length; i++) {
+                for (let b = 7; b >= 0; b--) {
+                    bitArray.push((bytes[i] >> b) & 1);
+                }
+            }
+
+            // Embed bits into LSB of Red, Green, Blue (skip Alpha channel)
+            let bitIdx = 0;
+            for (let i = 0; i < data.length && bitIdx < bitArray.length; i++) {
+                // Skip alpha channel (every 4th byte: 3, 7, 11...)
+                if (i % 4 === 3) continue;
+
+                // Clear lowest bit and set to our secret bit
+                data[i] = (data[i] & ~1) | bitArray[bitIdx];
+                bitIdx++;
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+
+            // Export to PNG (lossless)
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                imgStegoPreview.src = url;
+
+                // Trigger download
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "anh-da-giau-mat-thu.png";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                alert("🎉 Tuyệt vời! Mật thư đã được giấu vào từng điểm ảnh thành công! File ảnh 'anh-da-giau-mat-thu.png' đã được tải về máy của anh!");
+            }, 'image/png');
+        });
+
+        // ----------------------------------------------------
+        // DECODE LOGIC
+        // ----------------------------------------------------
+        const dropDecode = document.getElementById('drop-decode');
+        const fileDecode = document.getElementById('file-decode');
+        const pinDecode = document.getElementById('pin-decode');
+        const btnDecode = document.getElementById('btn-decode');
+        const resultBox = document.getElementById('result-box');
+        const decodedContent = document.getElementById('decoded-content');
+
+        let decodeImage = null;
+
+        dropDecode.addEventListener('click', () => fileDecode.click());
+        fileDecode.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    decodeImage = img;
+                    btnDecode.disabled = false;
+                    dropDecode.querySelector('.drop-text').textContent = `Đã chọn: ${file.name} (${img.width}x${img.height}px)`;
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        btnDecode.addEventListener('click', () => {
+            if (!decodeImage) return;
+
+            canvas.width = decodeImage.width;
+            canvas.height = decodeImage.height;
+            ctx.drawImage(decodeImage, 0, 0);
+
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data;
+
+            // Extract bits
+            const bits = [];
+            for (let i = 0; i < data.length; i++) {
+                if (i % 4 === 3) continue; // skip alpha
+                bits.push(data[i] & 1);
+                // Read at least 32 bits for length header
+                if (bits.length === 32) {
+                    let len = 0;
+                    for (let b = 0; b < 32; b++) {
+                        len = (len << 1) | bits[b];
+                    }
+                    if (len <= 0 || len > 1000000) {
+                        alert("Không tìm thấy mật thư hợp lệ trong bức ảnh này!");
+                        return;
+                    }
+                }
+            }
+
+            // Extract length (first 32 bits)
+            let totalBytes = 0;
+            for (let i = 0; i < 32; i++) {
+                totalBytes = (totalBytes << 1) | bits[i];
+            }
+
+            const totalBitsNeeded = 32 + (totalBytes * 8);
+            if (bits.length < totalBitsNeeded) {
+                alert("Ảnh bị thiếu dữ liệu hoặc bị chỉnh sửa làm hỏng mật thư!");
+                return;
+            }
+
+            // Extract bytes
+            const bytes = new Uint8Array(totalBytes);
+            let bitIdx = 32;
+            for (let i = 0; i < totalBytes; i++) {
+                let byteVal = 0;
+                for (let b = 0; b < 8; b++) {
+                    byteVal = (byteVal << 1) | bits[bitIdx];
+                    bitIdx++;
+                }
+                bytes[i] = byteVal;
+            }
+
+            // Optional XOR PIN decode
+            const pin = pinDecode.value.trim();
+            if (pin) {
+                const pinBytes = new TextEncoder().encode(pin);
+                for (let i = 0; i < bytes.length; i++) {
+                    bytes[i] ^= pinBytes[i % pinBytes.length];
+                }
+            }
+
+            try {
+                const text = new TextDecoder().decode(bytes);
+                decodedContent.textContent = text;
+                resultBox.style.display = 'block';
+            } catch (err) {
+                alert("Giải mã thất bại! Có thể mã PIN không đúng.");
+            }
+        });
+    </script>
+</body>
+</html>
