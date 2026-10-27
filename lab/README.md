@@ -12,6 +12,7 @@
 7. `07_local_ai_webgpu.html`: [KỊCH BẢN 2] Động cơ trí tuệ nhân tạo cục bộ chạy 100% trên phần cứng card đồ họa NVIDIA GeForce RTX 3050 Ti qua chuẩn WebGPU / Transformers.js trực tiếp trong trình duyệt, suy luận hoàn toàn ngoại tuyến không cần internet.
 8. `08_password_entropy_bruteforce_simulator.html`: [BẢO MẬT & ENTROPY] Trình mô phỏng bẻ khóa Brute-Force đa tầng phần cứng (Online, RTX 3050 Ti, Dàn 8x RTX 4090, Siêu máy tính 100 Triệu Tỷ phép tính/s) và đo độ hỗn loạn toán học (Entropy Bits) cục bộ thời gian thực.
 9. `09_image_steganography_lsb.html`: [THỦY VÂN & GIẤU TIN ĐIỂM ẢNH] Công cụ nhúng và trích xuất mật thư nhị phân vào điểm ảnh LSB (Least Significant Bit) trên HTML5 Canvas, mắt thường không thể phân biệt màu sắc, hỗ trợ lớp bảo vệ mã hóa XOR PIN, 100% offline.
+10. `10_zero_knowledge_proof_simulator.html`: [BẰNG CHỨNG KHÔNG TRI THỨC] Mô phỏng trực quan tương tác giao thức Hang Động Ali Baba (ZKP - Zero-Knowledge Proofs), kiểm chứng xác suất (1/2)^k sụp đổ về 1 trên 1 TỶ mà 0 byte bí mật bị tiết lộ.
 
 ## 2. Kế Hoạch Lớn: Kịch Bản 1 - ZeroBrain Offline SLM Node (Khi hồi 100% Quota):
 - **Phần cứng đích:** NVIDIA GeForce RTX 3050 Ti Laptop GPU (4GB Dedicated VRAM).

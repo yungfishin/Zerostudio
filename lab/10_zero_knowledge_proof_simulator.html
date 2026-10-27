@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroStudio Skunkworks Lab #10 - Zero-Knowledge Proofs (ZKP) Simulator</title>
+    <style>
+        :root {
+            --bg-dark: #070a12;
+            --panel-bg: rgba(13, 20, 36, 0.85);
+            --border-color: rgba(56, 189, 248, 0.2);
+            --accent-cyan: #38bdf8;
+            --accent-green: #34d399;
+            --accent-amber: #fbbf24;
+            --accent-rose: #f43f5e;
+            --accent-purple: #c084fc;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "JetBrains Mono", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(192, 132, 252, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.08) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-lab {
+            background: rgba(192, 132, 252, 0.15);
+            color: var(--accent-purple);
+            border: 1px solid rgba(192, 132, 252, 0.4);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            flex: 1;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Cave Canvas Visualizer */
+        .cave-box {
+            position: relative;
+            background: #02040a;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 14px;
+            height: 320px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Controls Area */
+        .controls-card {
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-role {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .role-btn.active-honest {
+            background: rgba(52, 211, 153, 0.15);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .role-btn.active-cheat {
+            background: rgba(244, 63, 94, 0.15);
+            border-color: var(--accent-rose);
+            color: var(--accent-rose);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #fff;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, #9333ea, #7e22ce);
+        }
+
+        .btn-purple:hover:not(:disabled) {
+            box-shadow: 0 4px 14px rgba(192, 132, 252, 0.4);
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-muted);
+            flex: 0 0 80px;
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        /* Log Terminal */
+        .terminal-box {
+            background: #02040a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            height: 120px;
+            overflow-y: auto;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .log-success { color: var(--accent-green); }
+        .log-fail { color: var(--accent-rose); font-weight: 700; }
+        .log-info { color: var(--accent-cyan); }
+
+        /* Sidebar Stats */
+        .stat-card {
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .stat-lbl {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-val {
+            font-size: 24px;
+            font-weight: 800;
+            font-family: monospace;
+        }
+
+        .explain-card {
+            background: rgba(192, 132, 252, 0.05);
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .explain-title {
+            color: var(--accent-purple);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand-title">
+            <span>⚡ ZeroStudio Lab #10</span>
+            <span class="badge-lab">Zero-Knowledge Proofs (ZKP)</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); font-family: monospace;">
+            Mô Phỏng Hang Động Ali Baba • Toán Học Xác Suất
+        </div>
+    </header>
+
+    <div class="layout-grid">
+        <!-- Main Panel -->
+        <div class="panel">
+            <div class="panel-title">🚪 Mô Phỏng Hang Động Bí Mật (Ali Baba's Cave)</div>
+
+            <div class="cave-box">
+                <canvas id="cave-canvas"></canvas>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-card">
+                <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px;">
+                    1. Chọn Trạng Thái Của Bạn (Người Chứng Minh):
+                </div>
+                <div class="toggle-role">
+                    <button id="btn-honest" class="role-btn active-honest">
+                        🧙‍♂️ Tôi THỰC SỰ BIẾT Thần Chú (Trung Thực)
+                    </button>
+                    <button id="btn-cheat" class="role-btn">
+                        🎭 Tôi KHÔNG BIẾT Thần Chú (Kẻ Mạo Danh)
+                    </button>
+                </div>
+
+                <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px;">
+                    2. Tiến Hành Thử Thách Cùng Máy Tính (Kẻ Nghi Ngờ):
+                </div>
+                <div class="btn-row">
+                    <button id="btn-step" class="btn">
+                        🎲 Chạy 1 Vòng Thử Thách
+                    </button>
+                    <button id="btn-autorun" class="btn btn-purple">
+                        ⚡ Tự Động Chạy 30 Vòng (Siêu Tốc)
+                    </button>
+                    <button id="btn-reset" class="btn btn-reset">
+                        🔄 Đặt Lại
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel-title" style="margin-bottom: 8px;">📜 Nhật Ký Thử Thách Thời Gian Thực</div>
+            <div id="terminal-box" class="terminal-box">
+                <div class="log-info">> Hệ thống ZKP sẵn sàng. Chọn trạng thái và bấm 'Chạy 1 Vòng' để kiểm chứng...</div>
+            </div>
+        </div>
+
+        <!-- Sidebar Telemetry -->
+        <div class="panel">
+            <div class="panel-title">📊 Xác Suất Toán Học Bị Bắt Gian Lận</div>
+
+            <div class="stat-card">
+                <div class="stat-lbl">Số Vòng Đã Vượt Qua</div>
+                <div id="stat-rounds" class="stat-val" style="color: var(--accent-cyan);">0 / 30</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-lbl">Xác Suất Kẻ Gian Đoán Mò Ăn May: (1/2)^k</div>
+                <div id="stat-chance" class="stat-val" style="color: var(--accent-rose);">100%</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Càng nhiều vòng, cơ hội ăn may càng giảm về 0.</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-lbl">Độ Tin Cậy Chứng Minh Của ZKP</div>
+                <div id="stat-confidence" class="stat-val" style="color: var(--accent-green);">0.00%</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Độ tin cậy toán học tuyệt đối khi đạt 30 vòng.</div>
+            </div>
+
+            <div class="explain-card">
+                <div class="explain-title">💡 Bản Chất Kỳ Diệu Của ZKP:</div>
+                Trong suốt 30 vòng thử thách:
+                <ul style="padding-left: 16px; margin-top: 6px;">
+                    <li>Bạn <strong>KHÔNG HỀ TIẾT LỘ</strong> câu thần chú là chữ gì.</li>
+                    <li>Nhưng toán học chứng minh xác suất bạn gian lận chỉ là <strong>1 trên 1 TỶ</strong>!</li>
+                    <li>Người kiểm chứng buộc phải tin 100% sự thật mà <strong>0 byte bí mật bị rò rỉ</strong>.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('cave-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', () => { resizeCanvas(); drawCave(); });
+        resizeCanvas();
+
+        let isHonest = true;
+        let rounds = 0;
+        let isCaught = false;
+
+        const btnHonest = document.getElementById('btn-honest');
+        const btnCheat = document.getElementById('btn-cheat');
+        const btnStep = document.getElementById('btn-step');
+        const btnAuto = document.getElementById('btn-autorun');
+        const btnReset = document.getElementById('btn-reset');
+        const terminalBox = document.getElementById('terminal-box');
+
+        const statRounds = document.getElementById('stat-rounds');
+        const statChance = document.getElementById('stat-chance');
+        const statConfidence = document.getElementById('stat-confidence');
+
+        btnHonest.addEventListener('click', () => {
+            isHonest = true;
+            btnHonest.className = "role-btn active-honest";
+            btnCheat.className = "role-btn";
+            resetState();
+            log("info", "> Đã chọn: Người Trung Thực (Có thần chú bí mật).");
+        });
+
+        btnCheat.addEventListener('click', () => {
+            isHonest = false;
+            btnCheat.className = "role-btn active-cheat";
+            btnHonest.className = "role-btn";
+            resetState();
+            log("info", "> Đã chọn: Kẻ Mạo Danh (Không có thần chú, chỉ đoán mò).");
+        });
+
+        btnReset.addEventListener('click', () => {
+            resetState();
+            log("info", "> Đã đặt lại toàn bộ thử thách.");
+        });
+
+        function resetState() {
+            rounds = 0;
+            isCaught = false;
+            btnStep.disabled = false;
+            btnAuto.disabled = false;
+            updateStats();
+            drawCave();
+        }
+
+        function updateStats() {
+            statRounds.textContent = `${rounds} / 30`;
+            if (rounds === 0) {
+                statChance.textContent = "100%";
+                statConfidence.textContent = "0.00%";
+                return;
+            }
+
+            if (isCaught) {
+                statChance.textContent = "0% (BỊ BẮT)";
+                statConfidence.textContent = "0% (GIAN LẬN)";
+                return;
+            }
+
+            const chance = Math.pow(0.5, rounds);
+            if (chance < 0.000001) {
+                statChance.textContent = `~ 1 / ${(1/chance).toLocaleString('vi-VN')}`;
+            } else {
+                statChance.textContent = `${(chance * 100).toFixed(4)}%`;
+            }
+
+            const confidence = (1 - chance) * 100;
+            statConfidence.textContent = `${confidence.toFixed(6)}%`;
+        }
+
+        function log(type, msg) {
+            const div = document.createElement('div');
+            div.className = `log-${type}`;
+            div.textContent = msg;
+            terminalBox.appendChild(div);
+            terminalBox.scrollTop = terminalBox.scrollHeight;
+        }
+
+        // Draw Cave Graphic
+        let playerPos = { x: 0.15, y: 0.5 }; // Entrance
+        let doorOpen = false;
+
+        function drawCave() {
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Background rock texture
+            ctx.fillStyle = "#02040a";
+            ctx.fillRect(0, 0, w, h);
+
+            // Entrance tunnel
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.4)";
+            ctx.lineWidth = 40;
+            ctx.lineCap = "round";
+
+            // Main loop (donut)
+            ctx.beginPath();
+            ctx.ellipse(w * 0.6, h * 0.5, w * 0.28, h * 0.35, 0, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Entrance straight tunnel
+            ctx.beginPath();
+            ctx.moveTo(w * 0.08, h * 0.5);
+            ctx.lineTo(w * 0.32, h * 0.5);
+            ctx.stroke();
+
+            // Inner magic door (At the deep right side: x = 0.88, y = 0.5)
+            const doorX = w * 0.88;
+            const doorY = h * 0.5;
+            ctx.fillStyle = doorOpen ? "#34d399" : "#f43f5e";
+            ctx.fillRect(doorX - 6, doorY - 24, 12, 48);
+
+            ctx.fillStyle = "#fff";
+            ctx.font = "11px monospace";
+            ctx.fillText(doorOpen ? "CỬA MỞ" : "CỬA KHÓA", doorX - 28, doorY - 32);
+
+            // Labels: Path A (Top), Path B (Bottom)
+            ctx.fillStyle = "rgba(56, 189, 248, 0.8)";
+            ctx.font = "bold 13px monospace";
+            ctx.fillText("NHÁNH A (ĐƯỜNG TRÊN)", w * 0.5, h * 0.12);
+            ctx.fillText("NHÁNH B (ĐƯỜNG DƯỚI)", w * 0.5, h * 0.92);
+            ctx.fillText("LỐI VÀO", w * 0.05, h * 0.5 - 28);
+
+            // Draw Player dot
+            ctx.beginPath();
+            ctx.arc(playerPos.x * w, playerPos.y * h, 10, 0, Math.PI * 2);
+            ctx.fillStyle = isHonest ? "#34d399" : "#f43f5e";
+            ctx.fill();
+            ctx.strokeStyle = "#fff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        drawCave();
+
+        btnStep.addEventListener('click', runSingleRound);
+
+        function runSingleRound() {
+            if (isCaught || rounds >= 30) return;
+
+            rounds++;
+            // 1. Player secretly enters Path A (0) or Path B (1)
+            const playerChoice = Math.random() < 0.5 ? 'A' : 'B';
+            
+            // 2. Computer randomly challenges: Exit from Path A or B!
+            const computerChallenge = Math.random() < 0.5 ? 'A' : 'B';
+
+            // Visual animation
+            doorOpen = false;
+
+            if (isHonest) {
+                // Honest player knows magic spell: ALWAYS SUCCEEDS!
+                doorOpen = (playerChoice !== computerChallenge); // opened door if took opposite path
+                playerPos = { x: 0.28, y: computerChallenge === 'A' ? 0.38 : 0.62 };
+                drawCave();
+                updateStats();
+
+                log("success", `[VÒNG ${rounds}] Bạn bí mật vào đường ${playerChoice}. Máy tính yêu cầu: "BƯỚC RA ĐƯỜNG ${computerChallenge}".`);
+                if (playerChoice !== computerChallenge) {
+                    log("info", `👉 Bạn dùng thần chú bí mật mở cửa đá xuyên từ ${playerChoice} sang ${computerChallenge} thành công!`);
+                } else {
+                    log("info", `👉 Bạn quay đầu bước ra từ đường ${computerChallenge} thành công!`);
+                }
+
+                if (rounds === 30) {
+                    log("success", `🎉 HOÀN THÀNH 30 VÒNG! Xác suất ăn may chỉ là 1/1.073.741.824 (Một phần một tỷ). Bạn đã CHỨNG MINH 100% SỰ THẬT mà không để lộ một từ nào của câu thần chú!`);
+                    btnStep.disabled = true;
+                    btnAuto.disabled = true;
+                }
+            } else {
+                // Cheat player DOES NOT have spell:
+                if (playerChoice === computerChallenge) {
+                    // Lucky! Exit same path
+                    playerPos = { x: 0.28, y: computerChallenge === 'A' ? 0.38 : 0.62 };
+                    drawCave();
+                    updateStats();
+                    log("info", `[VÒNG ${rounds}] Kẻ mạo danh vào đường ${playerChoice}. Máy tính yêu cầu đường ${computerChallenge} -> ĂN MAY bước ra được!`);
+                } else {
+                    // Trapped at door! BUSTED!
+                    isCaught = true;
+                    doorOpen = false;
+                    playerPos = { x: 0.85, y: playerChoice === 'A' ? 0.35 : 0.65 };
+                    drawCave();
+                    updateStats();
+                    log("fail", `🚨 [VÒNG ${rounds}] Kẻ mạo danh vào đường ${playerChoice}. Máy tính yêu cầu đường ${computerChallenge}! Không có thần chú mở cửa, BỊ MẮC KẸT VÀ BẮT QUẢ TANG LỪA ĐẢO!`);
+                    btnStep.disabled = true;
+                    btnAuto.disabled = true;
+                }
+            }
+        }
+
+        btnAuto.addEventListener('click', () => {
+            if (isCaught || rounds >= 30) resetState();
+            let timer = setInterval(() => {
+                if (rounds >= 30 || isCaught) {
+                    clearInterval(timer);
+                } else {
+                    runSingleRound();
+                }
+            }, 60);
+        });
+    </script>
+</body>
+</html>
