@@ -365,6 +365,7 @@ async function getBridgeBaseUrl() {
             const res = await fetch(`http://127.0.0.1:${port}/api/ping`, { mode: 'cors', signal: AbortSignal.timeout(400) });
             if (res.ok) {
                 ACTIVE_BRIDGE_URL = `http://127.0.0.1:${port}`;
+                syncBridgeHardwareId(ACTIVE_BRIDGE_URL);
                 return ACTIVE_BRIDGE_URL;
             }
         } catch {}
@@ -372,9 +373,30 @@ async function getBridgeBaseUrl() {
     return ACTIVE_BRIDGE_URL;
 }
 
+async function syncBridgeHardwareId(bridgeUrl) {
+    if (!bridgeUrl || window._syncedBridgeHwid) return;
+    try {
+        const res = await fetch(`${bridgeUrl}/api/bridge/hardware-id`, { mode: 'cors', signal: AbortSignal.timeout(800) });
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.hardware_id) {
+                window._syncedBridgeHwid = data.hardware_id;
+                const physicalFp = 'HWID-' + data.hardware_id.substring(0, 16).toUpperCase();
+                localStorage.setItem('zerostudio_hardware_id', data.hardware_id);
+                localStorage.setItem('zerostudio_device_id', physicalFp);
+                console.log('🔒 [Layer 5 Hardware Defense] Synchronized Physical HWID:', physicalFp);
+            }
+        }
+    } catch (_) {}
+}
+
 function getDeviceFingerprint() {
     let fp = null;
-    try { fp = localStorage.getItem('zerostudio_device_id'); } catch {}
+    try {
+        const physical = localStorage.getItem('zerostudio_hardware_id');
+        if (physical) return 'HWID-' + physical.substring(0, 16).toUpperCase();
+        fp = localStorage.getItem('zerostudio_device_id');
+    } catch {}
     if (!fp) {
         const nav = window.navigator || {};
         const scr = window.screen || {};

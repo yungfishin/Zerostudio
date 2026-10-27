@@ -124,6 +124,62 @@ def scan_cracking_tools() -> tuple[bool, str]:
 
 
 
+
+# =========================================================================
+# LAYER 5: BULLETPROOF HARDWARE FINGERPRINTING (ZERO SUBPROCESS OVERHEAD)
+# =========================================================================
+def get_windows_hardware_id() -> dict:
+    """
+    Extracts immutable hardware identifiers on Windows without relying on deprecated WMIC.
+    Uses native Windows Registry MachineGuid, physical NIC MAC, and CPU architecture.
+    """
+    import platform
+    import uuid
+    components = []
+    
+    # 1. Native Windows MachineGuid via winreg (Immutable, 100% available on Win 7/10/11)
+    if sys.platform == 'win32':
+        try:
+            import winreg
+            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\Microsoft\Cryptography', 0, winreg.KEY_READ | winreg.KEY_WOW64_64KEY)
+            guid, _ = winreg.QueryValueEx(key, 'MachineGuid')
+            winreg.CloseKey(key)
+            if guid and len(guid) > 10:
+                components.append(f'GUID:{guid.strip()}')
+        except Exception:
+            pass
+
+    # 2. Hardware MAC address via uuid.getnode() (Physical NIC)
+    try:
+        raw_mac = uuid.getnode()
+        mac = ':'.join(['{:02x}'.format((raw_mac >> ele) & 0xff) for ele in range(0, 8*6, 8)][::-1])
+        if mac and mac != '00:00:00:00:00:00':
+            components.append(f'MAC:{mac}')
+    except Exception:
+        pass
+
+    # 3. CPU Architecture and Processor info
+    try:
+        proc = platform.processor() or platform.machine()
+        if proc:
+            components.append(f'CPU:{proc.strip()}')
+    except Exception:
+        pass
+
+    # Fallback if in locked sandbox
+    if not components:
+        components.append('ZERO-FALLBACK-FINGERPRINT')
+
+    salt = 'ZeroStudio_2026_Hardware_Salt_Secure'
+    raw_fingerprint = '|'.join(components) + f'|{salt}'
+    hw_hash = hashlib.sha256(raw_fingerprint.encode('utf-8')).hexdigest()
+    
+    return {
+        'hardware_id': hw_hash,
+        'components_count': len(components),
+        'engine': 'ZeroStudio Hardware Cryptographic Anchor'
+    }
+
 def mint_license_token(key: str, hwid: str) -> str:
 
     if not key:
@@ -154,7 +210,7 @@ def mint_license_token(key: str, hwid: str) -> str:
 
             'v': 1,
 
-            'hwid': hwid or 'DEV-DESKTOP-BOUND',
+            'hwid': hwid if (hwid and hwid != 'DEV-DESKTOP-BOUND') else get_windows_hardware_id()['hardware_id'],
 
             'tier': tier,
 
@@ -988,6 +1044,20 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
 
 
 
+        if parsed.path in ['/api/bridge/hardware-id', '/api/hardware-id']:
+            hw_info = get_windows_hardware_id()
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'status': 'success',
+                'hardware_id': hw_info['hardware_id'],
+                'components_count': hw_info['components_count'],
+                'engine': hw_info['engine']
+            }).encode('utf-8'))
+            return
+
         if parsed.path == '/api/ping':
 
             self.send_response(200)
@@ -1330,7 +1400,7 @@ class VideoBridgeHandler(BaseHTTPRequestHandler):
 
             tier = 'ultra' if (key and (key.startswith('ZERO-ULTRA-') or 'MASTER' in key or 'ADMIN' in key)) else ('pro' if is_valid_key else 'free')
 
-            token = mint_license_token(key, 'DEV-DESKTOP-BOUND') if is_valid_key else ''
+            token = mint_license_token(key, get_windows_hardware_id()['hardware_id']) if is_valid_key else ''
 
             self.wfile.write(json.dumps({
 
