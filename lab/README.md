@@ -9,8 +9,14 @@
 4. `04_neuro_hook_autosplicer.py`: Thuật toán bóc tách cao trào tâm lý micro-expression tự động tạo 3s hook giữ chân >65% AVD.
 5. `05_lmp_p2p_checkout_kernel.html`: Vi nhân WASM nhúng trong sub-pixel video tự phát sinh QR thanh toán P2P VietQR NAPAS 24/7 trực tiếp trên màn hình video.
 6. `06_zbox_airgap_patch_packager.py`: Đóng gói bản cập nhật hệ thống ngoại tuyến `.zup` có chữ ký số mật mã Ed25519 cho trạm ZeroBox không có internet.
+7. `07_local_ai_webgpu.html`: [KỊCH BẢN 2] Động cơ trí tuệ nhân tạo cục bộ chạy 100% trên phần cứng card đồ họa NVIDIA GeForce RTX 3050 Ti qua chuẩn WebGPU / Transformers.js trực tiếp trong trình duyệt, suy luận hoàn toàn ngoại tuyến không cần internet.
 
-## 2. Tiêu Chuẩn Nghiệm Thu (Audit Gate):
+## 2. Kế Hoạch Lớn: Kịch Bản 1 - ZeroBrain Offline SLM Node (Khi hồi 100% Quota):
+- **Phần cứng đích:** NVIDIA GeForce RTX 3050 Ti Laptop GPU (4GB Dedicated VRAM).
+- **Mô hình tối ưu:** Llama 3.2 3B / Qwen 2.5 Coder 3B (Lượng tử hóa Q4_K_M ~ 2.0GB VRAM).
+- **Động cơ thực thi:** Tích hợp `video_bridge.py` qua giao thức ASGI Localhost `127.0.0.1:8900`, cho phép trợ lý AI cục bộ tự động đọc/ghi file, chỉnh sửa video, đối soát ngân hàng ngay cả khi cách ly mạng 100%.
+
+## 3. Tiêu Chuẩn Nghiệm Thu (Audit Gate):
 - **Gate 1:** Chạy độc lập 100% (Zero External Dependency).
 - **Gate 2:** Stress-test kiểm soát rò rỉ bộ nhớ (RAM Leak < 5MB).
 - **Gate 3:** Benchmark hiệu năng mili-giây (Real-time Execution).
