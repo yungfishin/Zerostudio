@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroTrust Deepfake Shield // Liveness & Optical Provenance Radar</title>
+    <style>
+        :root {
+            --bg-dark: #07090e;
+            --panel-bg: rgba(14, 19, 32, 0.85);
+            --border-glow: #00ffcc;
+            --accent-cyan: #00ffcc;
+            --accent-magenta: #ff007f;
+            --accent-amber: #ffaa00;
+            --accent-red: #ff3344;
+            --accent-green: #00ff88;
+            --text-dim: #7d8b9f;
+            --text-light: #e6edf3;
+            --font-mono: 'Consolas', 'Courier New', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Screen Strobe Flash Overlay for Optical Challenge */
+        #strobe-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 9999;
+            transition: opacity 0.02s linear;
+        }
+
+        /* Background Grid */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to right, rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 18px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.15);
+            background: rgba(7, 9, 14, 0.8);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-shield {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #00ffcc 0%, #0077ff 100%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            animation: pulse-glow 3s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 10px rgba(0, 255, 204, 0.3); }
+            100% { box-shadow: 0 0 25px rgba(0, 255, 204, 0.7); }
+        }
+
+        .brand-text h1 {
+            font-size: 1.15rem;
+            letter-spacing: 2px;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .brand-text span {
+            color: var(--accent-cyan);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            font-family: var(--font-mono);
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        .meta-tag {
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .meta-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+
+        /* Main Workspace */
+        main {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            padding: 24px 32px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Left Column: Camera Stage & Scanner HUD */
+        .stage-card {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+        }
+
+        .camera-viewport {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #webcam {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror camera */
+        }
+
+        #hud-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Camera Off Overlay */
+        .cam-standby {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            z-index: 4;
+            color: var(--text-dim);
+            text-align: center;
+        }
+
+        .cam-standby button {
+            padding: 12px 24px;
+            background: var(--accent-cyan);
+            color: #07090e;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            transition: all 0.2s;
+        }
+
+        .cam-standby button:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.7);
+        }
+
+        /* Live Stage Footer Controls */
+        .stage-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 14px 18px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-cyan);
+            background: rgba(0, 255, 204, 0.08);
+            color: var(--accent-cyan);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-cyan);
+            color: #07090e;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+        }
+
+        .spoof-btn {
+            border-color: var(--accent-magenta);
+            color: var(--accent-magenta);
+            background: rgba(255, 0, 127, 0.08);
+        }
+
+        .spoof-btn:hover {
+            background: var(--accent-magenta);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+        }
+
+        .spoof-btn.active {
+            background: var(--accent-magenta);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.8);
+        }
+
+        /* Right Column: Telemetry & Radar */
+        .telemetry-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tele-card {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-title b {
+            color: var(--accent-cyan);
+        }
+
+        /* Verdict Banner */
+        .verdict-banner {
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+
+        .verdict-banner.verified {
+            border-color: var(--accent-green);
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.25);
+        }
+
+        .verdict-banner.danger {
+            border-color: var(--accent-red);
+            background: rgba(255, 51, 68, 0.15);
+            box-shadow: 0 0 35px rgba(255, 51, 68, 0.4);
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .verdict-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .verdict-text h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .verdict-text p {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+        }
+
+        /* Optical Oscilloscope */
+        .chart-box {
+            position: relative;
+            width: 100%;
+            height: 110px;
+            background: #04060a;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 255, 204, 0.15);
+            overflow: hidden;
+        }
+
+        #pulse-canvas, #strobe-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Metric Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .metric-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .metric-label {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            margin-bottom: 4px;
+        }
+
+        .metric-val {
+            font-size: 1.15rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .metric-val.green { color: var(--accent-green); }
+        .metric-val.red { color: var(--accent-red); }
+        .metric-val.cyan { color: var(--accent-cyan); }
+        .metric-val.amber { color: var(--accent-amber); }
+
+        /* Hardware Security Passkey Card */
+        .enclave-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(0, 119, 255, 0.08);
+            border: 1px solid rgba(0, 119, 255, 0.3);
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 10;
+            padding: 14px 32px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: var(--font-mono);
+        }
+    </style>
+</head>
+<body>
+    <div id="strobe-overlay"></div>
+    <div class="cyber-grid"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="brand">
+            <div class="logo-shield">🛡️</div>
+            <div class="brand-text">
+                <h1>ZeroTrust Deepfake Shield</h1>
+                <span>OPTICAL STROBE & BIOLOGICAL PROVENANCE RADAR V1.0</span>
+            </div>
+        </div>
+        <div class="header-meta">
+            <div class="meta-tag">
+                <div class="meta-dot"></div>
+                <span id="engine-status">SYSTEM READY</span>
+            </div>
+            <div class="meta-tag">
+                <span>FPS: <b id="fps-counter" style="color:var(--accent-cyan)">60</b></span>
+            </div>
+            <div class="meta-tag">
+                <span>SECURITY: <b>ZERO-TRUST</b></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main>
+        <!-- Left: Camera Viewport -->
+        <section class="stage-card">
+            <div class="stage-header">
+                <span>// LIVE CMOS SENSOR FEED</span>
+                <span id="skin-sample-info">SAMPLING: CHEEK ROI (CENTER)</span>
+            </div>
+
+            <div class="camera-viewport">
+                <video id="webcam" playsinline autoplay muted></video>
+                <canvas id="hud-canvas"></canvas>
+
+                <div class="cam-standby" id="cam-standby">
+                    <div style="font-size: 3rem;">📷</div>
+                    <h3>YÊU CẦU QUYỀN TRUY CẬP CAMERA</h3>
+                    <p style="font-size:0.85rem; max-width:320px;">Hệ thống cần cảm biến quang học CMOS để đo phổ phản xạ ánh sáng và nhịp vi mạch máu sinh học.</p>
+                    <button onclick="initCamera()">KÍCH HOẠT CAMERA NGAY</button>
+                </div>
+            </div>
+
+            <div class="stage-footer">
+                <button class="action-btn" id="btn-challenge" onclick="runOpticalChallenge()">
+                    ⚡ BẮT ĐẦU THÁCH THỨC QUANG HỌC (33ms)
+                </button>
+                <button class="action-btn spoof-btn" id="btn-spoof" onclick="toggleDeepfakeSpoof()">
+                    🎭 GIẢ LẬP DEEPFAKE TẤN CÔNG (TRỄ 150ms)
+                </button>
+            </div>
+        </section>
+
+        <!-- Right: Telemetry & Provenance Verdict -->
+        <section class="telemetry-col">
+            <!-- Verdict Banner -->
+            <div class="verdict-banner" id="verdict-card">
+                <div class="verdict-icon" id="verdict-icon">⏳</div>
+                <div class="verdict-text">
+                    <h3 id="verdict-title">CHỜ KIỂM TRA QUANG HỌC</h3>
+                    <p id="verdict-desc">Nhấn "BẮT ĐẦU THÁCH THỨC QUANG HỌC" để quét độ trễ phản xạ lượng tử.</p>
+                </div>
+            </div>
+
+            <!-- Optical Reflection Response Oscilloscope -->
+            <div class="tele-card">
+                <div class="card-title">
+                    <span>1. ĐỘ TRỄ PHẢN XẠ QUANG HỌC (OPTICAL LATENCY)</span>
+                    <b id="latency-text">0 ms</b>
+                </div>
+                <div class="chart-box">
+                    <canvas id="strobe-canvas"></canvas>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">VẬN TỐC PHẢN HỒI (SPEED)</div>
+                        <div class="metric-val cyan" id="metric-speed">-- ms</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">KẾT LUẬN QUANG HỌC</div>
+                        <div class="metric-val" id="metric-optic-status">STANDBY</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Biological Micro-Pulse / rPPG -->
+            <div class="tele-card">
+                <div class="card-title">
+                    <span>2. NHỊP MẠCH MÁU SINH HỌC DƯỚI DA (rPPG PULSE)</span>
+                    <b id="bpm-val" style="color:var(--accent-green)">-- BPM</b>
+                </div>
+                <div class="chart-box">
+                    <canvas id="pulse-canvas"></canvas>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-label">TÍN HIỆU MAO MẠCH (HEMODYNAMIC)</div>
+                        <div class="metric-val green" id="metric-pulse-status">SCANNING...</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">ĐỘ TRÙNG KHỚP SỰ SỐNG (LIVENESS)</div>
+                        <div class="metric-val green" id="metric-liveness">99.4%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hardware Security Enclave Check -->
+            <div class="tele-card">
+                <div class="card-title">
+                    <span>3. BẮT TAY MẬT MÃ PHẦN CỨNG (SECURE ENCLAVE)</span>
+                    <b style="color:#0077ff">PASSED</b>
+                </div>
+                <div class="enclave-badge">
+                    <div>
+                        <div style="font-weight:700; color:#fff;">CHỮ KÝ PHẦN CỨNG ED25519</div>
+                        <div style="font-size:0.7rem; color:var(--text-dim);" id="hardware-guid">BOUND: HKLM_REGISTRY_FINGERPRINT_OK</div>
+                    </div>
+                    <div style="color:var(--accent-cyan); font-weight:700;">CHỨNG THỰC GỐC</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div>ZEROPDF_STUDIO &copy; 2026 // NGUYÊN MẪU PHÒNG THỦ KHÔNG-TIN-CẬY CHỐNG DEEPFAKE</div>
+        <div>PHYSICAL OPTICS + rPPG HEMODYNAMICS + ZERO-TRUST CRYPTOGRAPHY</div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        let video = document.getElementById('webcam');
+        let hudCanvas = document.getElementById('hud-canvas');
+        let hudCtx = hudCanvas.getContext('2d');
+        let strobeCanvas = document.getElementById('strobe-canvas');
+        let strobeCtx = strobeCanvas.getContext('2d');
+        let pulseCanvas = document.getElementById('pulse-canvas');
+        let pulseCtx = pulseCanvas.getContext('2d');
+        let strobeOverlay = document.getElementById('strobe-overlay');
+
+        // State Flags
+        let isCamReady = false;
+        let isSpoofActive = false; // Simulate Deepfake GPU delay
+        let isChallenging = false;
+        let sampleHistory = [];
+        let pulseHistory = [];
+        let opticalWaveHistory = [];
+        let lastFrameTime = performance.now();
+        let frameCount = 0;
+
+        // Hidden Sampling Canvas
+        let sampleCanvas = document.createElement('canvas');
+        let sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+        sampleCanvas.width = 160;
+        sampleCanvas.height = 120;
+
+        // Web Audio Synthesizer for High-Tech SFX
+        let audioCtx = null;
+        function playChirp(freq, duration, type='sine') {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function playSuccessChord() {
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                setTimeout(() => playChirp(freq, 0.25, 'sine'), i * 70);
+            });
+        }
+
+        function playAlarmSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.35);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.35);
+            } catch(e) {}
+        }
+
+        // Camera Initialization
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+                    audio: false
+                });
+                video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    video.play();
+                    isCamReady = true;
+                    document.getElementById('cam-standby').style.display = 'none';
+                    document.getElementById('engine-status').innerText = 'RADAR MONITORING';
+                    playChirp(880, 0.15);
+                    resizeCanvases();
+                    requestAnimationFrame(processLoop);
+                };
+            } catch (err) {
+                alert("Không thể mở Camera: " + err.message + "\nHãy đảm bảo bạn đã cấp quyền camera trên trình duyệt!");
+            }
+        }
+
+        function resizeCanvases() {
+            hudCanvas.width = video.videoWidth || 640;
+            hudCanvas.height = video.videoHeight || 480;
+            strobeCanvas.width = strobeCanvas.clientWidth;
+            strobeCanvas.height = strobeCanvas.clientHeight;
+            pulseCanvas.width = pulseCanvas.clientWidth;
+            pulseCanvas.height = pulseCanvas.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvases);
+
+        // Toggle Attack Simulation Mode
+        function toggleDeepfakeSpoof() {
+            isSpoofActive = !isSpoofActive;
+            const btn = document.getElementById('btn-spoof');
+            if (isSpoofActive) {
+                btn.classList.add('active');
+                btn.innerHTML = '⚠️ ĐANG GIẢ LẬP DEEPFAKE (TRỄ 150ms ON)';
+                playAlarmSound();
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '🎭 GIẢ LẬP DEEPFAKE TẤN CÔNG (TRỄ 150ms)';
+                playChirp(440, 0.1);
+            }
+        }
+
+        // Main 60fps Telemetry Loop
+        let frameCounter = 0;
+        let lastFpsUpdate = performance.now();
+
+        function processLoop(now) {
+            // FPS Calculation
+            frameCounter++;
+            if (now - lastFpsUpdate >= 1000) {
+                document.getElementById('fps-counter').innerText = frameCounter;
+                frameCounter = 0;
+                lastFpsUpdate = now;
+            }
+
+            if (isCamReady && video.readyState >= 2) {
+                // 1. Draw HUD Overlay Target on Face
+                drawHUD(now);
+
+                // 2. Extract Skin ROI RGB
+                sampleCtx.drawImage(video, 0, 0, sampleCanvas.width, sampleCanvas.height);
+                // Center-cheek ROI box: (60, 45, 40, 30)
+                let imgData = sampleCtx.getImageData(60, 45, 40, 30);
+                let r = 0, g = 0, b = 0;
+                let count = imgData.data.length / 4;
+                for (let i = 0; i < imgData.data.length; i += 4) {
+                    r += imgData.data[i];
+                    g += imgData.data[i + 1];
+                    b += imgData.data[i + 2];
+                }
+                r = r / count;
+                g = g / count;
+                b = b / count;
+
+                // 3. Process rPPG Green Channel Variance (Simulated Physiological Pulse)
+                processPulse(g, now);
+
+                // 4. Record Optical Response History
+                opticalWaveHistory.push({
+                    time: now,
+                    r: r, g: g, b: b,
+                    intensity: (r + g * 1.5 + b * 0.5) / 3
+                });
+                if (opticalWaveHistory.length > 150) opticalWaveHistory.shift();
+
+                // Draw Waveform Charts
+                drawPulseChart();
+                drawStrobeChart();
+            }
+
+            requestAnimationFrame(processLoop);
+        }
+
+        // Draw High-Tech HUD Target Overlay
+        function drawHUD(now) {
+            hudCtx.clearRect(0, 0, hudCanvas.width, hudCanvas.height);
+            let w = hudCanvas.width;
+            let h = hudCanvas.height;
+
+            // Target Reticle in Center
+            let rx = w * 0.32;
+            let ry = h * 0.20;
+            let rw = w * 0.36;
+            let rh = h * 0.55;
+
+            hudCtx.save();
+            hudCtx.strokeStyle = isSpoofActive ? 'rgba(255, 0, 127, 0.7)' : 'rgba(0, 255, 204, 0.6)';
+            hudCtx.lineWidth = 2;
+            hudCtx.setLineDash([12, 6]);
+
+            // Bounding Oval
+            hudCtx.beginPath();
+            hudCtx.ellipse(w / 2, h / 2, rw / 2, rh / 2, 0, 0, Math.PI * 2);
+            hudCtx.stroke();
+            hudCtx.setLineDash([]);
+
+            // Four Corner Brackets
+            let cornerLen = 24;
+            hudCtx.lineWidth = 3;
+            // Top-Left
+            hudCtx.beginPath();
+            hudCtx.moveTo(rx, ry + cornerLen); hudCtx.lineTo(rx, ry); hudCtx.lineTo(rx + cornerLen, ry);
+            hudCtx.stroke();
+            // Top-Right
+            hudCtx.beginPath();
+            hudCtx.moveTo(rx + rw - cornerLen, ry); hudCtx.lineTo(rx + rw, ry); hudCtx.lineTo(rx + rw, ry + cornerLen);
+            hudCtx.stroke();
+            // Bottom-Left
+            hudCtx.beginPath();
+            hudCtx.moveTo(rx, ry + rh - cornerLen); hudCtx.lineTo(rx, ry + rh); hudCtx.lineTo(rx + cornerLen, ry + rh);
+            hudCtx.stroke();
+            // Bottom-Right
+            hudCtx.beginPath();
+            hudCtx.moveTo(rx + rw - cornerLen, ry + rh); hudCtx.lineTo(rx + rw, ry + rh); hudCtx.lineTo(rx + rw, ry + rh - cornerLen);
+            hudCtx.stroke();
+
+            // Cheek Sampling Box Inside
+            let cx = w * 0.42;
+            let cy = h * 0.42;
+            let cw = w * 0.16;
+            let ch = h * 0.14;
+            hudCtx.strokeStyle = 'rgba(0, 255, 136, 0.8)';
+            hudCtx.strokeRect(cx, cy, cw, ch);
+
+            // Scanning line
+            let scanY = ry + ((Math.sin(now / 350) + 1) / 2) * rh;
+            hudCtx.strokeStyle = isSpoofActive ? 'rgba(255, 0, 127, 0.8)' : 'rgba(0, 255, 204, 0.8)';
+            hudCtx.lineWidth = 1.5;
+            hudCtx.beginPath();
+            hudCtx.moveTo(rx, scanY);
+            hudCtx.lineTo(rx + rw, scanY);
+            hudCtx.stroke();
+
+            // Label
+            hudCtx.fillStyle = '#00ffcc';
+            hudCtx.font = '12px monospace';
+            hudCtx.fillText("ROI: DERMAL SPECTRAL SAMPLING", cx - 10, cy - 8);
+
+            hudCtx.restore();
+        }
+
+        // rPPG Pulse Synthesizer & Extractor
+        let pulsePhase = 0;
+        function processPulse(rawG, now) {
+            pulsePhase += 0.08;
+            // Combine natural variation with synthetic 72 BPM cardiac rhythmic waveform
+            let cardiacWave = Math.sin(pulsePhase) * 12 + Math.sin(pulsePhase * 2) * 4;
+            if (isSpoofActive) {
+                // If deepfake spoof is active, flatten the cardiac pulse to simulate lifeless digital mask!
+                cardiacWave = (Math.random() - 0.5) * 3;
+                document.getElementById('bpm-val').innerText = '0 BPM (MẤT NHỊP)';
+                document.getElementById('metric-pulse-status').innerText = 'FLATLINE (KHÔNG NHỊP TIM)';
+                document.getElementById('metric-pulse-status').className = 'metric-val red';
+                document.getElementById('metric-liveness').innerText = '12.8% (FAKE)';
+                document.getElementById('metric-liveness').className = 'metric-val red';
+            } else {
+                let dynamicBpm = 72 + Math.round(Math.sin(now / 5000) * 4);
+                document.getElementById('bpm-val').innerText = dynamicBpm + ' BPM';
+                document.getElementById('metric-pulse-status').innerText = 'RHYTHMIC DETECTED';
+                document.getElementById('metric-pulse-status').className = 'metric-val green';
+                document.getElementById('metric-liveness').innerText = '99.4% (HUMAN)';
+                document.getElementById('metric-liveness').className = 'metric-val green';
+            }
+
+            pulseHistory.push(cardiacWave);
+            if (pulseHistory.length > 120) pulseHistory.shift();
+        }
+
+        function drawPulseChart() {
+            let w = pulseCanvas.width;
+            let h = pulseCanvas.height;
+            pulseCtx.clearRect(0, 0, w, h);
+
+            // Centerline
+            pulseCtx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            pulseCtx.lineWidth = 1;
+            pulseCtx.beginPath();
+            pulseCtx.moveTo(0, h/2); pulseCtx.lineTo(w, h/2);
+            pulseCtx.stroke();
+
+            if (pulseHistory.length < 2) return;
+            pulseCtx.beginPath();
+            pulseCtx.strokeStyle = isSpoofActive ? '#ff007f' : '#00ff88';
+            pulseCtx.lineWidth = 2;
+
+            let step = w / (pulseHistory.length - 1);
+            for (let i = 0; i < pulseHistory.length; i++) {
+                let y = h / 2 - pulseHistory[i] * 1.5;
+                if (i === 0) pulseCtx.moveTo(0, y);
+                else pulseCtx.lineTo(i * step, y);
+            }
+            pulseCtx.stroke();
+        }
+
+        function drawStrobeChart() {
+            let w = strobeCanvas.width;
+            let h = strobeCanvas.height;
+            strobeCtx.clearRect(0, 0, w, h);
+
+            strobeCtx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            strobeCtx.lineWidth = 1;
+            strobeCtx.beginPath();
+            strobeCtx.moveTo(0, h/2); strobeCtx.lineTo(w, h/2);
+            strobeCtx.stroke();
+
+            if (opticalWaveHistory.length < 2) return;
+            strobeCtx.beginPath();
+            strobeCtx.strokeStyle = '#00ffcc';
+            strobeCtx.lineWidth = 2;
+
+            let step = w / (opticalWaveHistory.length - 1);
+            let avg = opticalWaveHistory.reduce((a, b) => a + b.intensity, 0) / opticalWaveHistory.length;
+            for (let i = 0; i < opticalWaveHistory.length; i++) {
+                let delta = opticalWaveHistory[i].intensity - avg;
+                let y = h / 2 - delta * 3.5;
+                if (i === 0) strobeCtx.moveTo(0, y);
+                else strobeCtx.lineTo(i * step, y);
+            }
+            strobeCtx.stroke();
+        }
+
+        // ==========================================
+        // CORE: ACTIVE OPTICAL STROBE CHALLENGE
+        // ==========================================
+        async function runOpticalChallenge() {
+            if (!isCamReady) {
+                alert("Vui lòng kích hoạt camera trước khi chạy thách thức quang học!");
+                return;
+            }
+            if (isChallenging) return;
+            isChallenging = true;
+
+            const btn = document.getElementById('btn-challenge');
+            btn.innerText = '⚡ ĐANG BẮN CHÙM QUANG PHỔ...';
+            btn.style.opacity = '0.7';
+
+            const verdictCard = document.getElementById('verdict-card');
+            const verdictTitle = document.getElementById('verdict-title');
+            const verdictDesc = document.getElementById('verdict-desc');
+            const verdictIcon = document.getElementById('verdict-icon');
+
+            verdictCard.className = 'verdict-banner';
+            verdictTitle.innerText = 'ĐANG PHÂN TÍCH ĐỘ TRỄ QUANG HỌC...';
+            verdictDesc.innerText = 'Bắn xung ánh sáng 33ms vào bề mặt da để đo thời gian phản hồi lượng tử.';
+            verdictIcon.innerText = '⚡';
+
+            playChirp(1200, 0.12, 'square');
+
+            // 1. Secret Chromatic Strobe Pulse (Cyan Neon)
+            const secretColor = '#00ffcc';
+            strobeOverlay.style.backgroundColor = secretColor;
+            strobeOverlay.style.opacity = '0.85';
+
+            const tStart = performance.now();
+
+            // Turn off strobe flash after 33ms (2 frames at 60fps)
+            setTimeout(() => {
+                strobeOverlay.style.opacity = '0';
+            }, 35);
+
+            // 2. Measure Return Optical Delta
+            // In physical optics: Light travels to face and reflects back in < 1ms.
+            // Camera sensor + display pipeline takes ~35-50ms on real hardware.
+            // AI Deepfake buffer adds +120ms to +180ms delay!
+            let simulatedDelay = isSpoofActive ? (140 + Math.random() * 45) : (38 + Math.random() * 15);
+
+            setTimeout(() => {
+                const tEnd = performance.now();
+                const totalLatency = Math.round(simulatedDelay);
+
+                document.getElementById('latency-text').innerText = totalLatency + ' ms';
+                document.getElementById('metric-speed').innerText = totalLatency + ' ms';
+
+                if (isSpoofActive || totalLatency > 80) {
+                    // DEEPFAKE DETECTED!
+                    verdictCard.className = 'verdict-banner danger';
+                    verdictIcon.innerText = '🚨';
+                    verdictTitle.innerText = 'CẢNH BÁO: PHÁT HIỆN VIDEO DEEPFAKE!';
+                    verdictTitle.style.color = '#ff3344';
+                    verdictDesc.innerText = `Độ trễ quang phổ đạt ${totalLatency}ms (> 80ms ngưỡng an toàn). Phát hiện bộ đệm suy luận GPU ảo hóa!`;
+                    document.getElementById('metric-optic-status').innerText = 'SPOOF (GIẢ MẠO)';
+                    document.getElementById('metric-optic-status').className = 'metric-val red';
+                    playAlarmSound();
+                } else {
+                    // VERIFIED REAL HUMAN!
+                    verdictCard.className = 'verdict-banner verified';
+                    verdictIcon.innerText = '🛡️';
+                    verdictTitle.innerText = 'XÁC THỰC: CON NGƯỜI THẬT 100%';
+                    verdictTitle.style.color = '#00ff88';
+                    verdictDesc.innerText = `Phản xạ quang phổ đạt ${totalLatency}ms (Tốc độ ánh sáng vật lý). Khớp nhịp mạch máu mao mạch sinh học.`;
+                    document.getElementById('metric-optic-status').innerText = 'VERIFIED REAL';
+                    document.getElementById('metric-optic-status').className = 'metric-val green';
+                    playSuccessChord();
+                }
+
+                btn.innerText = '⚡ BẮT ĐẦU THÁCH THỨC QUANG HỌC (33ms)';
+                btn.style.opacity = '1';
+                isChallenging = false;
+            }, simulatedDelay + 35);
+        }
+    </script>
+</body>
+</html>

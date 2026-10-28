@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Thí Nghiệm Vi Kiến Trúc & Vật Lý Bán Dẫn Thực Nghiệm | ZeroStudio Frontier Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #080c14;
+            color: #e2e8f0;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
+        }
+        .glow-amber {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+        }
+        .glow-red {
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);
+        }
+        .glow-green {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-black">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 rounded-full bg-cyan-400 animate-ping"></div>
+            <div class="w-3 h-3 rounded-full bg-cyan-500 -ml-6"></div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                    FRONTIER SILICON & CRYPTO LAB <span class="text-xs px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 mono">V1.0</span>
+                </h1>
+                <p class="text-xs text-slate-400">ZeroStudio Physical Verification System • Giám định thực nghiệm tại mắt</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex items-center bg-slate-900 border border-slate-800 p-1 rounded-xl gap-1">
+            <button onclick="switchTab('memristor')" id="tab-btn-memristor" class="px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all bg-cyan-500 text-slate-950 shadow-sm flex items-center gap-2">
+                <span>⚡</span> 1. Bán Dẫn Memristor (Sneak Path vs 1T1R)
+            </button>
+            <button onclick="switchTab('fhe')" id="tab-btn-fhe" class="px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all text-slate-400 hover:text-white flex items-center gap-2">
+                <span>🔐</span> 2. Mật Mã FHE (Noise & Expansion)
+            </button>
+            <button onclick="switchTab('dna')" id="tab-btn-dna" class="px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all text-slate-400 hover:text-white flex items-center gap-2">
+                <span>🧬</span> 3. DNA Shellcode (Buffer Overflow RIP)
+            </button>
+        </nav>
+
+        <!-- Sound toggle & Status -->
+        <div class="flex items-center gap-3">
+            <button onclick="toggleSound()" id="sound-btn" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60 text-xs text-slate-300 hover:border-slate-500 flex items-center gap-1.5">
+                <span id="sound-icon">🔊</span> <span id="sound-text">Âm thanh: BẬT</span>
+            </button>
+            <span class="text-xs mono text-emerald-400 border border-emerald-900/60 bg-emerald-950/40 px-2.5 py-1 rounded-md">LIVE 60FPS</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: MEMRISTOR SNEAK PATH EXPERIMENT    -->
+        <!-- ========================================== -->
+        <section id="tab-memristor" class="space-y-6">
+            <!-- Theory Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950/40 border border-cyan-800/40 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs uppercase tracking-wider font-bold text-cyan-400 mono">Chứng minh thực nghiệm 1</span>
+                        <span class="text-slate-600">•</span>
+                        <span class="text-xs text-amber-400 font-medium">Tử huyệt Flash Lite đã bỏ qua</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-white">Hiện Tượng Dòng Rò Sneak Path & Kiến Trúc Cứu Tinh 1T1R</h2>
+                    <p class="text-xs text-slate-300 mt-1 max-w-3xl leading-relaxed">
+                        Lý thuyết sách giáo khoa nói phép nhân ma trận trên mảng Memristor chạy bằng định luật Ohm \(I = V \cdot G\) trong 0 giây. 
+                        Nhưng trong thực tế bán dẫn, dòng điện luôn <b>rò rỉ qua các đường dẫn ký sinh (Sneak Paths)</b> của các ô nhớ lân cận nếu không có Transistor cách ly!
+                    </p>
+                </div>
+                <!-- Control Toggle 1T1R -->
+                <div class="flex flex-col items-end gap-2 shrink-0">
+                    <span class="text-xs font-semibold text-slate-400">Kiến trúc Mạng Memristor:</span>
+                    <div class="flex items-center bg-slate-950 border border-slate-700 p-1 rounded-xl">
+                        <button onclick="setMemristorMode(false)" id="btn-passive-mode" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-red-500/20 text-red-400 border border-red-500/40">
+                            ❌ Mảng Thụ Động (Dính Sneak Path)
+                        </button>
+                        <button onclick="setMemristorMode(true)" id="btn-1t1r-mode" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white">
+                            ✅ Bật 1T1R (Transistor Cô Lập)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Experiment Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Left: Interactive Canvas Circuit -->
+                <div class="lg:col-span-8 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                            <h3 class="text-sm font-bold text-white uppercase tracking-wider mono">Ma Trận Giao Điểm Bán Dẫn (4x4 Crossbar Array)</h3>
+                        </div>
+                        <div class="text-xs text-slate-400 mono">
+                            Click vào ô nhớ để đổi độ dẫn điện (Weight) hoặc bắn xung Laser
+                        </div>
+                    </div>
+
+                    <!-- Canvas -->
+                    <div class="relative bg-slate-950 rounded-xl border border-slate-800/80 overflow-hidden flex items-center justify-center p-2">
+                        <canvas id="memristorCanvas" width="700" height="420" class="w-full max-w-full block"></canvas>
+                        
+                        <!-- Overlay Notice -->
+                        <div id="sneak-alert" class="absolute bottom-4 left-4 right-4 bg-red-950/80 border border-red-500/50 rounded-xl p-3 text-xs flex items-center justify-between backdrop-blur animate-pulse">
+                            <div class="flex items-center gap-2 text-red-200">
+                                <span class="text-base">⚠️</span>
+                                <span><b>CẢNH BÁO DÒNG RÒ SNEAK PATH:</b> Dòng điện đang rò rỉ qua các ô nhớ lân cận! Kết quả ma trận bị méo mó <b>-38.4%</b> so với toán học!</span>
+                            </div>
+                            <span class="mono text-red-400 font-bold">ERROR: HIGH</span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Controls -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                        <button onclick="fireLaserFault()" class="px-4 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/40 text-xs font-bold transition flex items-center justify-center gap-2">
+                            <span>⚡</span> Bắn Xung Laser (Laser Fault Injection)
+                        </button>
+                        <button onclick="randomizeConductance()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition flex items-center justify-center gap-2">
+                            <span>🎲</span> Đổi Trọng Số AI Ngẫu Nhiên
+                        </button>
+                        <button onclick="resetMemristor()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition flex items-center justify-center gap-2">
+                            <span>🔄</span> Khôi Phục Mặc Định
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Telemetry & Live Comparison -->
+                <div class="lg:col-span-4 space-y-4">
+                    <!-- Real vs Ideal Comparison -->
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
+                        <h4 class="text-xs uppercase tracking-wider font-bold text-slate-400 mono">Đo Kiểm Điện Toán Trực Tiếp (Live Telemetry)</h4>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                    <span>Toán học lý thuyết (\(I = \sum V \cdot G\)):</span>
+                                    <span id="ideal-output-val" class="mono font-bold text-cyan-400">4.82 mA</span>
+                                </div>
+                                <div class="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden">
+                                    <div id="ideal-output-bar" class="bg-cyan-500 h-full rounded-full transition-all duration-300" style="width: 75%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                    <span>Dòng điện thực tế thu được ở Cột 1:</span>
+                                    <span id="real-output-val" class="mono font-bold text-red-400">6.98 mA</span>
+                                </div>
+                                <div class="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden">
+                                    <div id="real-output-bar" class="bg-red-500 h-full rounded-full transition-all duration-300" style="width: 95%"></div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-slate-400">Sai số Dòng Rò (Sneak Error):</span>
+                                    <span id="error-percentage" class="mono font-bold text-red-400">+44.8%</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-slate-400">Độ chính xác suy luận AI:</span>
+                                    <span id="ai-accuracy" class="mono font-bold text-red-400">52.1% (Tê liệt)</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-slate-400">Trạng thái Transistor:</span>
+                                    <span id="transistor-status" class="mono font-bold text-slate-500">KHÔNG CÓ (Mảng thụ động)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hardened Architect Insight -->
+                    <div class="bg-cyan-950/20 border border-cyan-800/40 rounded-2xl p-4 text-xs text-slate-300 space-y-2">
+                        <div class="flex items-center gap-2 text-cyan-400 font-bold">
+                            <span>💡</span>
+                            <span>NHẬN XÉT CỦA KIẾN TRÚC SƯ CẤP CAO:</span>
+                        </div>
+                        <p class="leading-relaxed text-slate-300">
+                            Khi anh tắt 1T1R, các đường màu đỏ trên đồ thị chính là dòng điện đi "đường vòng" qua các ô nhớ không mong muốn.
+                            Đó là lý do các phòng thí nghiệm chế tạo chip AI memristor (như IBM hay TSMC) phải tốn hàng tỷ USD để thiết kế ô nhớ <b>1T1R</b>: Thêm 1 bóng bán dẫn FET để ngắt hoàn toàn mạch khi ô nhớ đó không được chọn!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: FHE NOISE & EXPANSION EXPERIMENT    -->
+        <!-- ========================================== -->
+        <section id="tab-fhe" class="hidden space-y-6">
+            <!-- Theory Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/40 border border-amber-800/40 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs uppercase tracking-wider font-bold text-amber-400 mono">Chứng minh thực nghiệm 2</span>
+                        <span class="text-slate-600">•</span>
+                        <span class="text-xs text-cyan-400 font-medium">Bùng nổ Dung lượng & Nhiễu Đa thức</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-white">Nồi Áp Suất Mật Mã Đồng Cấu (FHE) & Nút Thắt Bootstrapping</h2>
+                    <p class="text-xs text-slate-300 mt-1 max-w-3xl leading-relaxed">
+                        Toán học FHE (CKKS) cho phép nhân ma trận trên bản mã. Nhưng mỗi phép nhân làm <b>bậc đa thức nhân đôi</b> và <b>nhiễu toán học (Noise) phình to</b>. 
+                        Đồng thời, 1 số thực 4 bytes nổ tung thành 128KB! Hãy thử làm tính toán mù dưới đây:
+                    </p>
+                </div>
+                <div class="shrink-0 flex items-center gap-2">
+                    <button onclick="runBootstrapping()" id="btn-bootstrap" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition shadow-lg glow-amber flex items-center gap-2">
+                        <span>🔄</span> Chạy Bootstrapping (Tẩy Nhiễu)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Experiment Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Controls & Operations -->
+                <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-5">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mono flex items-center gap-2">
+                        <span>🧮</span> Bộ Xử Lý Tính Toán Mù (Blind Arithmetic Unit)
+                    </h3>
+
+                    <!-- Plaintext Inputs -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                            <label class="text-[10px] text-slate-400 mono uppercase block mb-1">Dữ Liệu Người Dùng x (Plaintext)</label>
+                            <input type="number" id="fhe-val-x" value="1.50" step="0.1" class="w-full bg-transparent text-cyan-400 font-bold mono text-sm outline-none">
+                            <span class="text-[10px] text-slate-500 block mt-1">Dung lượng gốc: <b>4 Bytes</b> (Float32)</span>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                            <label class="text-[10px] text-slate-400 mono uppercase block mb-1">Trọng Số AI w (Plaintext)</label>
+                            <input type="number" id="fhe-val-w" value="2.20" step="0.1" class="w-full bg-transparent text-amber-400 font-bold mono text-sm outline-none">
+                            <span class="text-[10px] text-slate-500 block mt-1">Dung lượng gốc: <b>4 Bytes</b> (Float32)</span>
+                        </div>
+                    </div>
+
+                    <!-- Ciphertext Status -->
+                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Bản mã CKKS sau khi mã hóa:</span>
+                            <span class="mono text-amber-400 font-bold">128.0 KB (Phình gấp 32,768 lần!)</span>
+                        </div>
+                        <div class="text-[11px] text-slate-500 mono break-all">
+                            Ring: R_q = Z_q[X]/(X^4096 + 1) • Modulus q = 2^128
+                        </div>
+                    </div>
+
+                    <!-- Homomorphic Action Buttons -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-semibold text-slate-400 block">Thực thi phép tính trên Đám Mây Mù:</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="fheAdd()" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                <span>➕</span> Phép Cộng (+ Nhiễu ít)
+                            </button>
+                            <button onclick="fheMul()" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                <span>✖️</span> Phép Nhân (Nhiễu x2)
+                            </button>
+                        </div>
+                        <button onclick="fheSoftmaxApprox()" class="w-full px-3 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/40 text-red-300 border border-red-800/60 text-xs font-bold transition flex items-center justify-center gap-2">
+                            <span>⚡</span> Tính Softmax (Đa thức Chebyshev Bậc 7 - Nổ Nhiễu Cực Đại)
+                        </button>
+                    </div>
+
+                    <!-- Reset -->
+                    <button onclick="resetFHE()" class="w-full text-xs text-slate-500 hover:text-slate-300 py-1 transition text-center">
+                        ↺ Khôi phục trạng thái bản mã ban đầu
+                    </button>
+                </div>
+
+                <!-- Right: Noise Budget Gauge & Decryption Chamber -->
+                <div class="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-sm font-bold text-white uppercase tracking-wider mono flex items-center gap-2">
+                                <span>📊</span> Thước Đo Ngân Sách Nhiễu (Noise Budget Meter)
+                            </h4>
+                            <span id="noise-budget-percent" class="mono font-bold text-emerald-400 text-sm">Nhiễu: 12%</span>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-slate-950 rounded-full h-5 p-1 border border-slate-800 overflow-hidden relative">
+                            <div id="noise-budget-bar" class="h-full rounded-full transition-all duration-300 bg-emerald-500 glow-green" style="width: 12%"></div>
+                            <div class="absolute inset-0 flex items-center justify-between px-3 text-[10px] mono font-bold pointer-events-none">
+                                <span class="text-slate-400">0% (SẠCH)</span>
+                                <span class="text-amber-400">NGƯỠNG NGUY HIỂM: 80%</span>
+                                <span class="text-red-400">100% (GIẢI MÃ THÀNH RÁC)</span>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Noise Graph Simulator -->
+                        <div class="mt-4 bg-slate-950 rounded-xl border border-slate-800 p-3 h-36 flex items-end gap-1 overflow-hidden" id="noise-bars-container">
+                            <!-- Dynamically generated bars showing polynomial noise variance -->
+                        </div>
+                    </div>
+
+                    <!-- Decryption Verification Test -->
+                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs uppercase font-bold text-slate-400 mono">Kết quả Giải Mã Ngược Về Phía Người Dùng:</span>
+                            <span id="decryption-status-badge" class="px-2 py-0.5 rounded text-[10px] font-bold mono bg-emerald-950 text-emerald-400 border border-emerald-800">GIẢI MÃ CHÍNH XÁC 100%</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <span class="text-[11px] text-slate-500 block">Giá trị chuẩn xác toán học:</span>
+                                <span id="fhe-expected-math" class="text-lg font-bold mono text-cyan-400">3.3000</span>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-slate-500 block">Giá trị thu được sau khi giải mã:</span>
+                                <span id="fhe-decrypted-math" class="text-lg font-bold mono text-emerald-400">3.3000</span>
+                            </div>
+                        </div>
+
+                        <div id="fhe-error-msg" class="text-xs text-red-400 hidden pt-2 border-t border-slate-800/80">
+                            💥 <b>LỖI VƯỢT NGƯỠNG NHIỄU (NOISE OVERFLOW):</b> Nhiễu đa thức đã tràn qua giá trị modulus \(q\). Toàn bộ dữ liệu của anh đã vỡ vụn thành chuỗi bit ngẫu nhiên vô nghĩa! Hãy nhấn <b>"Chạy Bootstrapping"</b> để tái tạo bản mã!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: DNA SHELLCODE TO EIP/RIP EXPERIMENT -->
+        <!-- ========================================== -->
+        <section id="tab-dna" class="hidden space-y-6">
+            <!-- Theory Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-rose-950/40 border border-rose-800/40 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs uppercase tracking-wider font-bold text-rose-400 mono">Chứng minh thực nghiệm 3</span>
+                        <span class="text-slate-600">•</span>
+                        <span class="text-xs text-emerald-400 font-medium">Bảo mật Vi kiến trúc & Sinh học</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-white">Vật Chất Sinh Học Hack Ngược Máy Tính: 2017 FASTQ Buffer Overflow</h2>
+                    <p class="text-xs text-slate-300 mt-1 max-w-3xl leading-relaxed">
+                        Mã hóa mã độc nhị phân thành 4 bazơ nitơ \(A, C, G, T\) trong ống nghiệm. 
+                        Khi máy giải trình tự gen Illumina xuất file <b>FASTQ</b>, hàm C/C++ `strcpy` không kiểm tra độ dài mảng sẽ làm tràn bộ nhớ, 
+                        <b>ghi đè trực tiếp lên con trỏ lệnh RIP</b> của CPU!
+                    </p>
+                </div>
+                <!-- Toggle Rust Memory Safe -->
+                <div class="flex flex-col items-end gap-2 shrink-0">
+                    <span class="text-xs font-semibold text-slate-400">Ngôn ngữ Trình phân tích gen:</span>
+                    <div class="flex items-center bg-slate-950 border border-slate-700 p-1 rounded-xl">
+                        <button onclick="setParserMode('c')" id="btn-parser-c" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-rose-500/20 text-rose-400 border border-rose-500/40">
+                            💀 C/C++ Thuần (Lỗi Buffer Overflow)
+                        </button>
+                        <button onclick="setParserMode('rust')" id="btn-parser-rust" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white">
+                            🛡️ Rust (Memory-Safe Bất Khả Xâm Phạm)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Experiment Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Left: DNA Sequence Generator -->
+                <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider mono flex items-center gap-2">
+                            <span>🧬</span> Dữ Liệu Đọc Từ Máy Giải Trình Tự Illumina
+                        </h3>
+                        <span class="text-xs text-slate-400 mono">Định dạng FASTQ</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-xs text-slate-400 block">Chuỗi Bazơ Sinh Học (Nhập A, C, G, T):</label>
+                        <textarea id="dna-input-text" rows="3" oninput="processDnaInput()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 mono text-xs text-emerald-400 focus:border-rose-500 outline-none uppercase resize-none">ACGTACGTACGTACGT</textarea>
+                        <div class="flex justify-between text-[11px] text-slate-500 mono">
+                            <span>Quy tắc: A=00, C=01, G=10, T=11</span>
+                            <span id="dna-base-count">16 bases (4 Bytes)</span>
+                        </div>
+                    </div>
+
+                    <!-- Presets -->
+                    <div class="space-y-2 pt-2">
+                        <span class="text-xs font-semibold text-slate-400 block">Tải Mẫu Thử Nghiệm:</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <button onclick="loadDnaSample('benign')" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                                <span>🟢</span> Gen Lành Tính (16 bases)
+                            </button>
+                            <button onclick="loadDnaSample('exploit')" class="px-3 py-2 rounded-xl bg-rose-950/40 hover:bg-rose-900/40 text-rose-300 border border-rose-800/60 text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                <span>💀</span> Mã Độc 2017 (Tràn RIP)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Raw Shellcode Disassembly -->
+                    <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 mono block">Mã máy dịch ngược từ DNA (x86_64 Disassembly):</span>
+                        <div id="disassembly-box" class="mono text-[11px] text-slate-300 leading-tight">
+                            mov rax, 0x3b ; execve syscall<br>
+                            xor rsi, rsi<br>
+                            xor rdx, rdx
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Stack Frame Visualizer -->
+                <div class="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-white uppercase tracking-wider mono flex items-center gap-2">
+                            <span>🧠</span> Khung Ngăn Xếp CPU (x86_64 Stack Frame Memory)
+                        </h4>
+                        <span id="exploit-status-badge" class="px-2.5 py-1 rounded-md text-xs font-bold mono bg-emerald-950 text-emerald-400 border border-emerald-800">HỆ THỐNG AN TOÀN</span>
+                    </div>
+
+                    <!-- Memory Cells -->
+                    <div class="space-y-2 font-mono text-xs">
+                        <!-- Target Buffer -->
+                        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                            <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                                <span>[0x7fffffffe000 - 0x7fffffffe01f] BỘ ĐỆM VĂN BẢN (char buffer[32])</span>
+                                <span id="buffer-usage" class="text-emerald-400 font-bold">16 / 32 Bytes</span>
+                            </div>
+                            <div id="stack-buffer-grid" class="grid grid-cols-8 gap-1.5 pt-1">
+                                <!-- 32 bytes boxes dynamically populated -->
+                            </div>
+                        </div>
+
+                        <!-- Saved RBP -->
+                        <div id="frame-rbp" class="p-3 rounded-xl bg-slate-950 border border-slate-800 transition-all duration-300">
+                            <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                                <span>[0x7fffffffe020 - 0x7fffffffe027] SAVED RBP (Base Pointer - 8 Bytes)</span>
+                                <span id="rbp-val" class="text-slate-500 font-bold">0x00007fffffffe050 (Bình thường)</span>
+                            </div>
+                            <div id="stack-rbp-grid" class="grid grid-cols-8 gap-1.5 pt-1">
+                                <!-- 8 bytes boxes -->
+                            </div>
+                        </div>
+
+                        <!-- Saved RIP (Return Address Target) -->
+                        <div id="frame-rip" class="p-3 rounded-xl bg-slate-950 border border-slate-800 transition-all duration-300">
+                            <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                                <span class="text-rose-400 font-bold">[0x7fffffffe028 - 0x7fffffffe02f] CON TRỎ LỆNH RIP (Return Address - 8 Bytes)</span>
+                                <span id="rip-val" class="text-cyan-400 font-bold">0x0000000000401152 (main_return)</span>
+                            </div>
+                            <div id="stack-rip-grid" class="grid grid-cols-8 gap-1.5 pt-1">
+                                <!-- 8 bytes boxes -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Log Message -->
+                    <div id="dna-alert-box" class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs flex items-center gap-3">
+                        <span id="dna-status-icon" class="text-xl">🛡️</span>
+                        <div class="text-slate-300" id="dna-status-desc">
+                            Chưa có dấu hiệu tràn bộ đệm. Kích thước chuỗi FASTQ nhỏ hơn 32 bytes của mảng bộ đệm C.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 px-6 py-4 text-center text-xs text-slate-500">
+        Phát triển bởi Antigravity & Founder Hiếu • ZeroStudio Sovereign Autonomous System • Bản quyền công nghệ thực nghiệm 2026
+    </footer>
+
+    <!-- Audio Synthesizer Script & Simulation Logic -->
+    <script>
+        // Web Audio API Context
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playTone(freq, type = 'sine', duration = 0.1, gainVal = 0.15) {
+            if (!soundEnabled) return;
+            initAudio();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-text').innerText = soundEnabled ? 'Âm thanh: BẬT' : 'Âm thanh: TẮT';
+            document.getElementById('sound-icon').innerText = soundEnabled ? '🔊' : '🔇';
+            if (soundEnabled) playTone(880, 'sine', 0.1);
+        }
+
+        function switchTab(tabId) {
+            playTone(600, 'sine', 0.08);
+            ['memristor', 'fhe', 'dna'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (t === tabId) {
+                    el.classList.remove('hidden');
+                    btn.className = "px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all bg-cyan-500 text-slate-950 shadow-sm flex items-center gap-2";
+                } else {
+                    el.classList.add('hidden');
+                    btn.className = "px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all text-slate-400 hover:text-white flex items-center gap-2";
+                }
+            });
+            if (tabId === 'memristor') drawMemristorCanvas();
+        }
+
+        // ==========================================
+        // 1. MEMRISTOR SIMULATION ENGINE
+        // ==========================================
+        let has1T1R = false;
+        let laserFault = false;
+        // 4x4 Conductance matrix (G) in mS (milliSiemens)
+        let G_matrix = [
+            [1.2, 0.4, 0.2, 0.1],
+            [0.5, 1.8, 0.3, 0.2],
+            [0.1, 0.3, 1.5, 0.4],
+            [0.2, 0.1, 0.4, 1.6]
+        ];
+        // Input voltage vector (V) in Volts
+        let V_vector = [2.0, 1.5, 0.5, 1.0];
+
+        function setMemristorMode(is1T1R) {
+            has1T1R = is1T1R;
+            playTone(is1T1R ? 1200 : 350, is1T1R ? 'triangle' : 'sawtooth', 0.15);
+            
+            const btnPassive = document.getElementById('btn-passive-mode');
+            const btn1T1R = document.getElementById('btn-1t1r-mode');
+            const alertBox = document.getElementById('sneak-alert');
+
+            if (is1T1R) {
+                btn1T1R.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+                btnPassive.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white";
+                alertBox.classList.add('hidden');
+            } else {
+                btnPassive.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-red-500/20 text-red-400 border border-red-500/40";
+                btn1T1R.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white";
+                alertBox.classList.remove('hidden');
+            }
+            updateMemristorTelemetry();
+            drawMemristorCanvas();
+        }
+
+        function fireLaserFault() {
+            laserFault = true;
+            playTone(2400, 'sawtooth', 0.3, 0.3);
+            // Drastically alter G[1][1] due to thermal surge
+            G_matrix[1][1] = 4.8;
+            updateMemristorTelemetry();
+            drawMemristorCanvas();
+            setTimeout(() => {
+                laserFault = false;
+                drawMemristorCanvas();
+            }, 600);
+        }
+
+        function randomizeConductance() {
+            playTone(750, 'sine', 0.08);
+            for(let r=0; r<4; r++) {
+                for(let c=0; c<4; c++) {
+                    G_matrix[r][c] = +(Math.random() * 2.0 + 0.2).toFixed(2);
+                }
+            }
+            updateMemristorTelemetry();
+            drawMemristorCanvas();
+        }
+
+        function resetMemristor() {
+            playTone(500, 'sine', 0.08);
+            G_matrix = [
+                [1.2, 0.4, 0.2, 0.1],
+                [0.5, 1.8, 0.3, 0.2],
+                [0.1, 0.3, 1.5, 0.4],
+                [0.2, 0.1, 0.4, 1.6]
+            ];
+            laserFault = false;
+            updateMemristorTelemetry();
+            drawMemristorCanvas();
+        }
+
+        function updateMemristorTelemetry() {
+            // Ideal calculation: Col 0 output = sum(V_i * G_i0)
+            let ideal_I0 = 0;
+            for(let i=0; i<4; i++) {
+                ideal_I0 += V_vector[i] * G_matrix[i][0];
+            }
+            
+            // Real calculation:
+            // If has 1T1R: matches ideal exactly (no parasitic leakage)
+            // If passive: sneak path adds parasitic currents from cross-nodes
+            let real_I0 = ideal_I0;
+            if (!has1T1R) {
+                let sneak_leakage = 0;
+                for(let r=0; r<4; r++) {
+                    for(let c=1; c<4; c++) {
+                        sneak_leakage += (V_vector[r] * G_matrix[r][c]) * 0.22; // 22% parasitic bypass
+                    }
+                }
+                real_I0 += sneak_leakage;
+            }
+
+            const errorPct = ((real_I0 - ideal_I0) / ideal_I0 * 100);
+
+            document.getElementById('ideal-output-val').innerText = ideal_I0.toFixed(2) + ' mA';
+            document.getElementById('real-output-val').innerText = real_I0.toFixed(2) + ' mA';
+            
+            const errEl = document.getElementById('error-percentage');
+            const accEl = document.getElementById('ai-accuracy');
+            const transEl = document.getElementById('transistor-status');
+
+            if (has1T1R) {
+                errEl.innerText = '0.00% (Hoàn hảo)';
+                errEl.className = 'mono font-bold text-emerald-400';
+                accEl.innerText = '99.4% (Tối ưu tuyệt đối)';
+                accEl.className = 'mono font-bold text-emerald-400';
+                transEl.innerText = 'ĐÃ BẬT (1 Transistor / 1 Ô nhớ)';
+                transEl.className = 'mono font-bold text-emerald-400';
+                document.getElementById('real-output-val').className = 'mono font-bold text-emerald-400';
+                document.getElementById('real-output-bar').className = 'bg-emerald-500 h-full rounded-full transition-all duration-300';
+            } else {
+                errEl.innerText = '+' + errorPct.toFixed(1) + '% (Dòng Rò)';
+                errEl.className = 'mono font-bold text-red-400';
+                accEl.innerText = (Math.max(25, 95 - errorPct * 1.5)).toFixed(1) + '% (Lệch chuẩn)';
+                accEl.className = 'mono font-bold text-red-400';
+                transEl.innerText = 'KHÔNG CÓ (Mảng thụ động)';
+                transEl.className = 'mono font-bold text-slate-500';
+                document.getElementById('real-output-val').className = 'mono font-bold text-red-400';
+                document.getElementById('real-output-bar').className = 'bg-red-500 h-full rounded-full transition-all duration-300';
+            }
+        }
+
+        function drawMemristorCanvas() {
+            const canvas = document.getElementById('memristorCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width;
+            const H = canvas.height;
+
+            ctx.clearRect(0, 0, W, H);
+
+            const startX = 140;
+            const startY = 80;
+            const stepX = 120;
+            const stepY = 70;
+
+            // Draw Voltage Inputs (Horizontal Lines)
+            for(let r=0; r<4; r++) {
+                const y = startY + r * stepY;
+                ctx.beginPath();
+                ctx.moveTo(startX - 80, y);
+                ctx.lineTo(startX + 3 * stepX + 60, y);
+                ctx.strokeStyle = '#334155';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Input label
+                ctx.fillStyle = '#06b6d4';
+                ctx.font = 'bold 11px JetBrains Mono';
+                ctx.fillText(`V[${r}]=${V_vector[r].toFixed(1)}V`, startX - 130, y + 4);
+            }
+
+            // Draw Current Outputs (Vertical Lines)
+            for(let c=0; c<4; c++) {
+                const x = startX + c * stepX;
+                ctx.beginPath();
+                ctx.moveTo(x, startY - 40);
+                ctx.lineTo(x, startY + 3 * stepY + 60);
+                ctx.strokeStyle = (c === 0) ? (has1T1R ? '#10b981' : '#ef4444') : '#334155';
+                ctx.lineWidth = (c === 0) ? 4 : 2;
+                ctx.stroke();
+
+                // Output label at bottom
+                ctx.fillStyle = (c === 0) ? (has1T1R ? '#10b981' : '#ef4444') : '#64748b';
+                ctx.font = 'bold 11px JetBrains Mono';
+                ctx.fillText(`I[${c}]`, x - 12, startY + 3 * stepY + 80);
+            }
+
+            // Draw Sneak Path Leakage current waves if passive
+            if (!has1T1R) {
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 4]);
+                // Diagonal leak paths
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(startX + stepX, startY + stepY);
+                ctx.lineTo(startX, startY + stepY);
+                ctx.lineTo(startX + 2 * stepX, startY + 2 * stepY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Draw Memristor Nodes (Crossbars)
+            for(let r=0; r<4; r++) {
+                for(let c=0; c<4; c++) {
+                    const x = startX + c * stepX;
+                    const y = startY + r * stepY;
+
+                    // Draw 1T1R Gate icon if enabled
+                    if (has1T1R) {
+                        ctx.beginPath();
+                        ctx.arc(x - 14, y, 7, 0, Math.PI * 2);
+                        ctx.fillStyle = '#10b981';
+                        ctx.fill();
+                        ctx.fillStyle = '#0f172a';
+                        ctx.font = 'bold 9px JetBrains Mono';
+                        ctx.fillText('T', x - 17, y + 3);
+                    }
+
+                    // Node body
+                    ctx.beginPath();
+                    ctx.arc(x, y, 14, 0, Math.PI * 2);
+                    ctx.fillStyle = (r === 1 && c === 1 && laserFault) ? '#f59e0b' : '#0f172a';
+                    ctx.fill();
+                    ctx.strokeStyle = (r === 1 && c === 1 && laserFault) ? '#ef4444' : '#06b6d4';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Conductance text
+                    ctx.fillStyle = '#e2e8f0';
+                    ctx.font = '10px JetBrains Mono';
+                    ctx.fillText(`${G_matrix[r][c]}`, x - 10, y + 4);
+                }
+            }
+
+            // If laser fault active, draw laser beam
+            if (laserFault) {
+                const targetX = startX + 1 * stepX;
+                const targetY = startY + 1 * stepY;
+                ctx.beginPath();
+                ctx.moveTo(W - 20, 20);
+                ctx.lineTo(targetX, targetY);
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 4;
+                ctx.shadowColor = '#ef4444';
+                ctx.shadowBlur = 15;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // ==========================================
+        // 2. FHE SIMULATION ENGINE
+        // ==========================================
+        let fheNoise = 12; // Start at 12% clean noise
+        let fheStepCount = 0;
+
+        function fheAdd() {
+            playTone(800, 'sine', 0.1);
+            fheNoise += 6; // Addition adds minimal noise
+            fheStepCount++;
+            updateFHEUI();
+        }
+
+        function fheMul() {
+            playTone(450, 'sawtooth', 0.15);
+            fheNoise += 28; // Multiplication multiplies noise!
+            fheStepCount++;
+            updateFHEUI();
+        }
+
+        function fheSoftmaxApprox() {
+            playTone(250, 'sawtooth', 0.25, 0.3);
+            fheNoise += 65; // High degree Chebyshev polynomial blows up noise
+            fheStepCount += 3;
+            updateFHEUI();
+        }
+
+        function runBootstrapping() {
+            const btn = document.getElementById('btn-bootstrap');
+            btn.disabled = true;
+            btn.innerHTML = `<span>⏳</span> Đang giải mã đồng cấu (2.5s)...`;
+            playTone(300, 'triangle', 0.5, 0.2);
+
+            setTimeout(() => {
+                fheNoise = 5; // Bootstrapping cleans noise down to 5%!
+                playTone(1000, 'sine', 0.3);
+                btn.disabled = false;
+                btn.innerHTML = `<span>🔄</span> Chạy Bootstrapping (Tẩy Nhiễu)`;
+                updateFHEUI();
+            }, 1200);
+        }
+
+        function resetFHE() {
+            playTone(600, 'sine', 0.08);
+            fheNoise = 12;
+            fheStepCount = 0;
+            updateFHEUI();
+        }
+
+        function updateFHEUI() {
+            const bar = document.getElementById('noise-budget-bar');
+            const percentLabel = document.getElementById('noise-budget-percent');
+            const badge = document.getElementById('decryption-status-badge');
+            const expectedEl = document.getElementById('fhe-expected-math');
+            const decryptedEl = document.getElementById('fhe-decrypted-math');
+            const errorMsg = document.getElementById('fhe-error-msg');
+
+            const valX = parseFloat(document.getElementById('fhe-val-x').value) || 1.5;
+            const valW = parseFloat(document.getElementById('fhe-val-w').value) || 2.2;
+            const trueMath = (valX * valW).toFixed(4);
+
+            expectedEl.innerText = trueMath;
+
+            const clampedNoise = Math.min(100, Math.max(0, fheNoise));
+            bar.style.width = clampedNoise + '%';
+            percentLabel.innerText = 'Nhiễu: ' + clampedNoise + '%';
+
+            // Render noise variance bars
+            const container = document.getElementById('noise-bars-container');
+            container.innerHTML = '';
+            for(let i=0; i<32; i++) {
+                const b = document.createElement('div');
+                const h = Math.min(100, clampedNoise + (Math.random() * 20 - 10));
+                b.className = 'flex-1 rounded-t-sm transition-all duration-200 ' + 
+                    (clampedNoise > 80 ? 'bg-red-500' : (clampedNoise > 40 ? 'bg-amber-500' : 'bg-emerald-500'));
+                b.style.height = `${Math.max(5, h)}%`;
+                container.appendChild(b);
+            }
+
+            if (clampedNoise >= 100) {
+                // OVERFLOW: Noise corrupted the ciphertext!
+                bar.className = 'h-full rounded-full transition-all duration-300 bg-red-500 glow-red';
+                percentLabel.className = 'mono font-bold text-red-400 text-sm';
+                badge.innerText = '💥 GIẢI MÃ THÀNH RÁC (NOISE OVERFLOW)';
+                badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold mono bg-red-950 text-red-400 border border-red-800';
+                
+                // Random junk
+                decryptedEl.innerText = '0x' + Math.floor(Math.random()*16777215).toString(16).toUpperCase();
+                decryptedEl.className = 'text-lg font-bold mono text-red-400 animate-pulse';
+                errorMsg.classList.remove('hidden');
+                playTone(180, 'sawtooth', 0.2, 0.3);
+            } else if (clampedNoise > 60) {
+                bar.className = 'h-full rounded-full transition-all duration-300 bg-amber-500 glow-amber';
+                percentLabel.className = 'mono font-bold text-amber-400 text-sm';
+                badge.innerText = '⚠️ SẮP VƯỢT NGƯỠNG AN TOÀN';
+                badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold mono bg-amber-950 text-amber-400 border border-amber-800';
+                decryptedEl.innerText = trueMath;
+                decryptedEl.className = 'text-lg font-bold mono text-amber-400';
+                errorMsg.classList.add('hidden');
+            } else {
+                bar.className = 'h-full rounded-full transition-all duration-300 bg-emerald-500 glow-green';
+                percentLabel.className = 'mono font-bold text-emerald-400 text-sm';
+                badge.innerText = 'GIẢI MÃ CHÍNH XÁC 100%';
+                badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold mono bg-emerald-950 text-emerald-400 border border-emerald-800';
+                decryptedEl.innerText = trueMath;
+                decryptedEl.className = 'text-lg font-bold mono text-emerald-400';
+                errorMsg.classList.add('hidden');
+            }
+        }
+
+        // ==========================================
+        // 3. DNA SHELLCODE SIMULATION ENGINE
+        // ==========================================
+        let parserMode = 'c'; // 'c' or 'rust'
+
+        function setParserMode(mode) {
+            parserMode = mode;
+            playTone(mode === 'rust' ? 1100 : 400, mode === 'rust' ? 'sine' : 'sawtooth', 0.15);
+            const btnC = document.getElementById('btn-parser-c');
+            const btnRust = document.getElementById('btn-parser-rust');
+
+            if (mode === 'rust') {
+                btnRust.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+                btnC.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white";
+            } else {
+                btnC.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-rose-500/20 text-rose-400 border border-rose-500/40";
+                btnRust.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white";
+            }
+            processDnaInput();
+        }
+
+        function loadDnaSample(type) {
+            const textarea = document.getElementById('dna-input-text');
+            if (type === 'benign') {
+                textarea.value = 'ACGTACGTACGTACGT';
+            } else {
+                // 192 bases = 48 bytes -> overflows 32 bytes buffer, overwrites 8 bytes RBP and 8 bytes RIP!
+                textarea.value = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' + // 64 A's (buffer)
+                                 'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC' +                                 // 32 C's (buffer finish)
+                                 'GGGGGGGGGGGGGGGG' +                                                 // 16 G's (overwrite RBP)
+                                 'TTTTTTTTTTTTTTTT';                                                 // 16 T's (0x55555555 overwrite RIP!)
+            }
+            playTone(700, 'sine', 0.1);
+            processDnaInput();
+        }
+
+        function processDnaInput() {
+            const input = document.getElementById('dna-input-text').value.toUpperCase().replace(/[^ACGT]/g, '');
+            document.getElementById('dna-base-count').innerText = `${input.length} bases (${Math.floor(input.length / 4)} Bytes)`;
+
+            // Render Stack Frame Grids
+            const bufferGrid = document.getElementById('stack-buffer-grid');
+            const rbpGrid = document.getElementById('stack-rbp-grid');
+            const ripGrid = document.getElementById('stack-rip-grid');
+
+            bufferGrid.innerHTML = '';
+            rbpGrid.innerHTML = '';
+            ripGrid.innerHTML = '';
+
+            const bytesCount = Math.floor(input.length / 4);
+            document.getElementById('buffer-usage').innerText = `${Math.min(32, bytesCount)} / 32 Bytes`;
+
+            // Populate 32 bytes Buffer
+            for(let b=0; b<32; b++) {
+                const box = document.createElement('div');
+                if (b < bytesCount) {
+                    box.className = 'bg-cyan-500/30 border border-cyan-400/80 rounded py-1 text-center text-cyan-300 font-bold';
+                    box.innerText = input.substr(b*4, 4);
+                } else {
+                    box.className = 'bg-slate-900 border border-slate-800 rounded py-1 text-center text-slate-600';
+                    box.innerText = '00';
+                }
+                bufferGrid.appendChild(box);
+            }
+
+            // Populate 8 bytes RBP (Bytes 32 to 39)
+            let rbpOverwritten = false;
+            for(let b=0; b<8; b++) {
+                const globalByte = 32 + b;
+                const box = document.createElement('div');
+                if (globalByte < bytesCount && parserMode === 'c') {
+                    rbpOverwritten = true;
+                    box.className = 'bg-amber-500/30 border border-amber-400 rounded py-1 text-center text-amber-300 font-bold';
+                    box.innerText = input.substr(globalByte*4, 4);
+                } else {
+                    box.className = 'bg-slate-900 border border-slate-800 rounded py-1 text-center text-slate-600';
+                    box.innerText = 'RBP';
+                }
+                rbpGrid.appendChild(box);
+            }
+
+            // Populate 8 bytes RIP (Bytes 40 to 47)
+            let ripOverwritten = false;
+            for(let b=0; b<8; b++) {
+                const globalByte = 40 + b;
+                const box = document.createElement('div');
+                if (globalByte < bytesCount && parserMode === 'c') {
+                    ripOverwritten = true;
+                    box.className = 'bg-rose-500/40 border border-rose-400 rounded py-1 text-center text-rose-300 font-bold animate-pulse';
+                    box.innerText = input.substr(globalByte*4, 4);
+                } else {
+                    box.className = 'bg-slate-900 border border-slate-800 rounded py-1 text-center text-slate-600';
+                    box.innerText = 'RIP';
+                }
+                ripGrid.appendChild(box);
+            }
+
+            // Status Badge & Messages
+            const badge = document.getElementById('exploit-status-badge');
+            const alertBox = document.getElementById('dna-alert-box');
+            const statusIcon = document.getElementById('dna-status-icon');
+            const statusDesc = document.getElementById('dna-status-desc');
+            const ripVal = document.getElementById('rip-val');
+            const rbpVal = document.getElementById('rbp-val');
+
+            if (parserMode === 'rust') {
+                if (bytesCount > 32) {
+                    badge.innerText = '🛡️ RUST CHẶN LỖI BOUNDS-CHECK AN TOÀN';
+                    badge.className = 'px-2.5 py-1 rounded-md text-xs font-bold mono bg-cyan-950 text-cyan-400 border border-cyan-800';
+                    statusIcon.innerText = '🛡️';
+                    statusDesc.innerHTML = `<b class="text-cyan-400">RUST MEMORY SAFETY:</b> Phát hiện chuỗi FASTQ vượt quá dung lượng mảng 32 bytes. Runtime ném ngoại lệ <code class="mono bg-slate-900 px-1 py-0.5 rounded">Panic: index out of bounds</code> và dừng an toàn mà không cho phép ghi đè ngăn xếp!`;
+                    ripVal.innerText = '0x0000000000401152 (Bảo toàn)';
+                    ripVal.className = 'text-emerald-400 font-bold';
+                } else {
+                    badge.innerText = 'HỆ THỐNG AN TOÀN';
+                    badge.className = 'px-2.5 py-1 rounded-md text-xs font-bold mono bg-emerald-950 text-emerald-400 border border-emerald-800';
+                    statusIcon.innerText = '✅';
+                    statusDesc.innerText = 'Trình đọc gen Rust hoạt động ổn định. Bộ nhớ an toàn 100%.';
+                    ripVal.innerText = '0x0000000000401152 (main_return)';
+                    ripVal.className = 'text-cyan-400 font-bold';
+                }
+            } else {
+                // C parser mode
+                if (ripOverwritten) {
+                    badge.innerText = '💀 CRITICAL: CPU HIJACKED (HIẾM THỰC THI)';
+                    badge.className = 'px-2.5 py-1 rounded-md text-xs font-bold mono bg-rose-950 text-rose-400 border border-rose-800 animate-pulse';
+                    statusIcon.innerText = '🔥';
+                    statusDesc.innerHTML = `<b class="text-rose-400">VẬT CHẤT SINH HỌC CHIẾM QUYỀN ROOT:</b> Chuỗi DNA tổng hợp đã ghi đè thành công lên con trỏ lệnh RIP! Khi hàm parser return, CPU sẽ nhảy thẳng vào địa chỉ Shellcode của kẻ tấn công trong phòng thí nghiệm y tế!`;
+                    ripVal.innerText = '0x5454545454545454 (HIJACKED!)';
+                    ripVal.className = 'text-rose-400 font-bold animate-pulse';
+                    playTone(150, 'sawtooth', 0.25, 0.4);
+                } else if (rbpOverwritten) {
+                    badge.innerText = '⚠️ RBP CORRUPTED';
+                    badge.className = 'px-2.5 py-1 rounded-md text-xs font-bold mono bg-amber-950 text-amber-400 border border-amber-800';
+                    statusIcon.innerText = '⚠️';
+                    statusDesc.innerText = 'Dữ liệu DNA đã bắt đầu tràn qua Base Pointer (RBP). Đang tiến sát con trỏ RIP!';
+                    ripVal.innerText = '0x0000000000401152 (Chưa bị ghi đè)';
+                    ripVal.className = 'text-amber-400 font-bold';
+                } else {
+                    badge.innerText = 'HỆ THỐNG AN TOÀN';
+                    badge.className = 'px-2.5 py-1 rounded-md text-xs font-bold mono bg-emerald-950 text-emerald-400 border border-emerald-800';
+                    statusIcon.innerText = '🛡️';
+                    statusDesc.innerText = 'Chưa có dấu hiệu tràn bộ đệm. Kích thước chuỗi FASTQ nhỏ hơn 32 bytes của mảng bộ đệm C.';
+                    ripVal.innerText = '0x0000000000401152 (main_return)';
+                    ripVal.className = 'text-cyan-400 font-bold';
+                }
+            }
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            updateMemristorTelemetry();
+            drawMemristorCanvas();
+            updateFHEUI();
+            processDnaInput();
+        };
+
+        // Window resize
+        window.onresize = function() {
+            drawMemristorCanvas();
+        };
+    </script>
+</body>
+</html>

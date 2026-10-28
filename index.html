@@ -11907,6 +11907,12 @@
                 <span data-i18n="tab_bg_ocr">AI Tách Nền & OCR</span> <span class="badge-ultra-mini">ULTRA</span>
 
             </button>
+            <button class="bento-nav-btn btn-ultra-glow" data-tab="anti-fraud" style="border-color: rgba(14, 165, 233, 0.4); color: #38bdf8;">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span data-i18n="tab_antifraud">Giáp Bảo Mật CCCD</span> <span class="badge-ultra-mini" style="background: linear-gradient(135deg, #0284c7, #06b6d4);">SHIELD</span>
+            </button>
 
         </div>
 
@@ -14530,6 +14536,183 @@
 
         <!-- ======================================================== -->
 
+        <!-- TAB 9: GIÁP BẢO MẬT CCCD & KHÁNG AI INPAINTING (SOVEREIGN SHIELD) -->
+        <div class="tab-pane" id="tab-anti-fraud">
+            <div class="bento-spotlight" style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+                
+                <!-- Sub-Navigation Switcher -->
+                <div style="display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <button class="video-subnav-btn active" id="shield-subnav-cccd" onclick="switchShieldSubMode('cccd')" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 18px; border-radius: 10px;">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        🛡️ Giáp Bảo Mật CCCD (Chống Vay App)
+                    </button>
+                    <button class="video-subnav-btn" id="shield-subnav-stego" onclick="switchShieldSubMode('stego')" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 18px; border-radius: 10px;">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        👁️ Gài Bẫy Tàng Hình & Kính Soi (2D-DCT)
+                    </button>
+                </div>
+
+                <!-- SUB-PANE 1: GIÁP BẢO VỆ CCCD -->
+                <div id="shield-pane-cccd">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1.2rem;">
+                        <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(14, 165, 233, 0.15); border: 1px solid rgba(14, 165, 233, 0.4); border-radius: 9999px; padding: 0.35rem 0.85rem; font-size: 0.75rem; color: #38bdf8; font-weight: 700;">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            ZERO-KNOWLEDGE • 100% TRONG RAM • GIỮ NGUYÊN ĐỘ PHÂN GIẢI GỐC
+                        </div>
+                        <button class="btn-outline" onclick="loadSampleCCCDInStudio()" style="font-size: 12px; padding: 6px 14px; border-color: rgba(56, 189, 248, 0.3); color: #38bdf8; border-radius: 8px;">
+                            🔄 Nạp Mẫu CCCD Để Thử
+                        </button>
+                    </div>
+
+                    <!-- 1-Click Quick Presets -->
+                    <div style="margin-bottom: 1.2rem; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 16px;">
+                        <span style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-right: 10px;">⚡ Chọn Nhanh Mẫu Pháp Lý:</span>
+                        <div style="display: inline-flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                            <button class="btn-outline" onclick="setAntiFraudPreset('job')" style="padding: 4px 12px; font-size: 12px; border-radius: 20px; border-color: rgba(56, 189, 248, 0.4); color: #e0f2fe;">🏢 Xin Việc Làm</button>
+                            <button class="btn-outline" onclick="setAntiFraudPreset('bank')" style="padding: 4px 12px; font-size: 12px; border-radius: 20px; border-color: rgba(56, 189, 248, 0.4); color: #e0f2fe;">🏦 Mở Ngân Hàng</button>
+                            <button class="btn-outline" onclick="setAntiFraudPreset('rent')" style="padding: 4px 12px; font-size: 12px; border-radius: 20px; border-color: rgba(56, 189, 248, 0.4); color: #e0f2fe;">🏠 Thuê Nhà / Trọ</button>
+                            <button class="btn-outline" onclick="setAntiFraudPreset('contract')" style="padding: 4px 12px; font-size: 12px; border-radius: 20px; border-color: rgba(56, 189, 248, 0.4); color: #e0f2fe;">🚗 Hợp Đồng Mua Bán</button>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+                        <!-- Left Controls -->
+                        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 20px;">
+                            <div class="drop-stage" id="antifraud-dropzone" style="padding: 20px 15px; margin-bottom: 16px; border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: 12px; background: rgba(14, 165, 233, 0.04); text-align: center; cursor: pointer;">
+                                <input type="file" id="antifraud-file-input" accept="image/*" style="display: none;">
+                                <input type="file" id="antifraud-camera-input" accept="image/*" capture="environment" style="display: none;">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 32px; height: 32px; margin: 0 auto 6px; color: #38bdf8;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <div style="font-weight: 700; color: #f8fafc; font-size: 13px; margin-bottom: 4px;">Kéo & thả ảnh CCCD / Hộ chiếu</div>
+                                <div style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;">
+                                    <button class="shimmer-button" type="button" onclick="document.getElementById('antifraud-file-input').click()" style="padding: 5px 14px; font-size: 12px;">📁 Chọn Từ Máy</button>
+                                    <button class="btn-outline" type="button" onclick="document.getElementById('antifraud-camera-input').click()" style="padding: 5px 12px; font-size: 12px; border-radius: 8px; color:#38bdf8;">📷 Chụp Bằng Camera</button>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 10px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 4px;">Mục đích cấp giấy tờ (*):</label>
+                                <input type="text" id="af-purpose" value="XÁC MINH MỞ TÀI KHOẢN MB BANK" oninput="triggerAntiFraudRender()" style="width: 100%; padding: 8px 12px; background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #fff; font-size: 13px;">
+                            </div>
+
+                            <div style="margin-bottom: 10px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 4px;">Tên đơn vị / tổ chức nhận:</label>
+                                <input type="text" id="af-org" value="NGÂN HÀNG QUÂN ĐỘI MB BANK" oninput="triggerAntiFraudRender()" style="width: 100%; padding: 8px 12px; background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #fff; font-size: 13px;">
+                            </div>
+
+                            <div style="margin-bottom: 10px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 4px;">Họ tên chủ thẻ:</label>
+                                <input type="text" id="af-name" value="NGUYỄN VŨ TRUNG HIẾU" oninput="triggerAntiFraudRender()" style="width: 100%; padding: 8px 12px; background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #fff; font-size: 13px;">
+                            </div>
+
+                            <div style="margin-bottom: 14px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 4px;">
+                                    <span>Độ đậm dải bảo an:</span>
+                                    <span id="af-opacity-label" style="color: #38bdf8;">38%</span>
+                                </div>
+                                <input type="range" id="af-opacity" min="20" max="75" value="38" oninput="document.getElementById('af-opacity-label').innerText = this.value + '%'; triggerAntiFraudRender();" style="width: 100%;">
+                            </div>
+
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 4px;">Lưới sóng vân bảo an Guilloche:</label>
+                                <select id="af-guilloche" onchange="triggerAntiFraudRender()" style="width: 100%; padding: 8px 12px; background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #fff; font-size: 13px;">
+                                    <option value="dual">Sóng đôi bảo an đan xen (Tiền Polymer)</option>
+                                    <option value="dense">Mật độ cao (Chuẩn Hộ chiếu)</option>
+                                    <option value="off">Tắt vân sóng</option>
+                                </select>
+                            </div>
+
+                            <button class="btn-glow-action" onclick="downloadAntiFraudShieldImage()" style="width: 100%; padding: 13px; font-size: 14px; font-weight: 700; border-radius: 10px; background: linear-gradient(135deg, #0284c7, #06b6d4); box-shadow: 0 4px 18px rgba(14, 165, 233, 0.4);">
+                                <span>⬇️ Tải Ảnh CCCD Đã Đóng Giáp (Nét 100%)</span>
+                            </button>
+                        </div>
+
+                        <!-- Right Live Preview -->
+                        <div>
+                            <div style="background: #020617; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; position: relative;">
+                                <div style="position: absolute; top: 12px; right: 12px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; z-index: 10;">
+                                    ● SOVEREIGN SHIELD ACTIVE
+                                </div>
+                                <canvas id="af-studio-canvas" width="1000" height="630" style="max-width: 100%; height: auto; display: block;"></canvas>
+                            </div>
+
+                            <div style="margin-top: 14px; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 10px; padding: 14px; font-size: 12px; color: #94a3b8; line-height: 1.6;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <span>Mã Băm Xác Thực SHA-256:</span>
+                                    <span id="af-audit-hash" style="color: #38bdf8; font-family: monospace; font-weight: 700;">Đang khởi tạo...</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <span>Vùng Khóa Điểm Ảnh:</span>
+                                    <span style="color: #f8fafc; font-weight: 600;">Chân dung (Mắt/Mũi) + Vi mạch Chip + Dấu vân tay</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Kháng Cự AI Inpainting:</span>
+                                    <span style="color: #34d399; font-weight: 700;">Tuyệt Đối (AI cố xóa chữ sẽ làm hỏng thẻ eKYC)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-PANE 2: THỦY VÂN TẦN SỐ VÔ HÌNH (2D-DCT) -->
+                <div id="shield-pane-stego" style="display: none;">
+                    <div style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 18px; margin-bottom: 1.5rem;">
+                        <h3 style="font-size: 1.1rem; color: #fff; font-weight: 700; margin-bottom: 4px;">👁️ Thủy Vân Tần Số Vô Hình (2D-DCT) & Kính Soi Gián Điệp</h3>
+                        <p style="color: #94a3b8; font-size: 13px; margin: 0;">Khắc chuỗi định danh bí mật vào cấu trúc sóng ánh sáng trung bình của ảnh. Mắt người nhìn vào thấy trong veo 100%, nhưng khi bị chụp trộm hoặc nén gửi Zalo thì Kính Soi vẫn bắt quả tang đích danh!</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+                        <!-- Left: Gài Bẫy Tàng Hình -->
+                        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 20px;">
+                            <div style="font-weight: 700; font-size: 15px; color: #38bdf8; margin-bottom: 12px;">🔒 BƯỚC 1: GÀI DẤU TÀNG HÌNH VÀO TÀI LIỆU</div>
+                            
+                            <div class="drop-stage" id="stego-embed-dropzone" style="padding: 20px 15px; margin-bottom: 14px; border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: 12px; background: rgba(14, 165, 233, 0.04); text-align: center; cursor: pointer;">
+                                <input type="file" id="stego-embed-file-input" accept="image/*" style="display: none;">
+                                <div style="font-weight: 600; color: #f8fafc; font-size: 13px; margin-bottom: 4px;">Kéo thả ảnh cần bảo hộ vào đây</div>
+                                <button class="shimmer-button" type="button" onclick="document.getElementById('stego-embed-file-input').click()" style="padding: 4px 14px; font-size: 12px;">Chọn Ảnh Cần Gài Bẫy</button>
+                            </div>
+
+                            <div style="margin-bottom: 14px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 5px;">Chuỗi định danh bí mật (User ID / Tên người nhận):</label>
+                                <input type="text" id="stego-secret-input" value="CHU SO HUU: NGUYEN VU TRUNG HIEU | ID: 070202010690" style="width: 100%; padding: 9px 12px; background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #fff; font-size: 13px;">
+                            </div>
+
+                            <button class="btn-glow-action" onclick="runStegoEmbedClient()" style="width: 100%; padding: 12px; font-size: 14px; font-weight: 700; border-radius: 10px; background: linear-gradient(135deg, #0284c7, #06b6d4);">
+                                <span>🔒 Khắc Dấu Tàng Hình (2D-DCT) & Tải Về</span>
+                            </button>
+                            <div id="stego-embed-log" style="font-size: 12px; color: #34d399; margin-top: 8px; font-family: monospace;"></div>
+                        </div>
+
+                        <!-- Right: Kính Soi Gián Điệp -->
+                        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 14px; padding: 20px;">
+                            <div style="font-weight: 700; font-size: 15px; color: #f87171; margin-bottom: 12px;">🔍 BƯỚC 2: KÍNH SOI TRUY TÌM KẺ RÒ RỈ</div>
+
+                            <div class="drop-stage" id="stego-extract-dropzone" style="padding: 20px 15px; margin-bottom: 14px; border: 2px dashed rgba(239, 68, 68, 0.4); border-radius: 12px; background: rgba(239, 68, 68, 0.04); text-align: center; cursor: pointer;">
+                                <input type="file" id="stego-extract-file-input" accept="image/*" style="display: none;">
+                                <div style="font-weight: 600; color: #f8fafc; font-size: 13px; margin-bottom: 4px;">Kéo thả ảnh bị rò rỉ (chụp màn hình/tải từ Zalo)</div>
+                                <button class="btn-outline" type="button" onclick="document.getElementById('stego-extract-file-input').click()" style="padding: 4px 14px; font-size: 12px; border-color: rgba(239, 68, 68, 0.5); color: #fca5a5;">Chọn Ảnh Nghi Ngờ Lộ</button>
+                            </div>
+
+                            <button class="btn-glow-action" onclick="runStegoExtractClient()" style="width: 100%; padding: 12px; font-size: 14px; font-weight: 700; border-radius: 10px; background: linear-gradient(135deg, #dc2626, #b91c1c); box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);">
+                                <span>🔍 Kính Soi: Quét Bắt Quả Tang Kẻ Rò Rỉ</span>
+                            </button>
+
+                            <!-- Terminal Result Box -->
+                            <div id="stego-scanner-terminal" style="margin-top: 14px; background: #030712; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px; font-family: monospace; font-size: 12px; line-height: 1.5; color: #94a3b8; min-height: 110px;">
+                                [KÍNH SOI TẦN SỐ ĐANG CHỜ ẢNH...]<br>
+                                - Trạng thái: Sẵn sàng phân tích phổ 2D-DCT<br>
+                                - Thuật toán: 8x8 Orthogonal Matrix Majority Voting<br>
+                                - Hãy kéo thả ảnh nghi ngờ để phát hiện danh tính thủ phạm!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
         <!-- 13. HOW-IT-WORKS BLUEPRINT & BATTLE COMPARISON THEATER   -->
 
         <!-- ======================================================== -->
@@ -15200,7 +15383,8 @@
 
         </div>
 
-    </main>
+    
+        </main>
 
 
 

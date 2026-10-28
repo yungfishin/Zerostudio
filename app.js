@@ -988,7 +988,12 @@ function initTabs() {
                 pane.classList.remove('active');
             });
             const activePane = document.getElementById(`tab-${targetTab}`);
-            if (activePane) activePane.classList.add('active');
+            if (activePane) {
+                activePane.classList.add('active');
+                try {
+                    activePane.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } catch(e) {}
+            }
         });
     });
 }
@@ -1000,6 +1005,7 @@ function initDropzones() {
     setupDropzone('upscale-dropzone', 'upscale-file-input', handleUpscaleFile);
     setupDropzone('video-remaster-dropzone', 'video-remaster-file-input', handleVideoRemasterFile);
     setupDropzone('compress-dropzone', 'compress-file-input', handleCompressFiles);
+    setupDropzone('antifraud-dropzone', 'antifraud-file-input', window.handleAntiFraudFile);
 }
 
 function setupDropzone(zoneId, inputId, handler) {
@@ -7781,3 +7787,590 @@ window.switchVideoSubMode = function(mode) {
         setTimeout(window.loadSfxCatalog, 200);
     }
 };
+
+
+
+// =====================================================================
+// MODULE: ZEROSTUDIO SOVEREIGN SHIELD (BẢO VỆ CCCD & 2D-DCT OFFLINE)
+// =====================================================================
+
+window.currentStudioCCCDImage = null;
+window.stegoEmbedTargetImage = null;
+window.stegoExtractTargetImage = null;
+
+// Chuyển đổi 2 chế độ: Giáp CCCD vs Kính Soi Thủy Vân Vô Hình
+window.switchShieldSubMode = function(mode) {
+    const btnCCCD = document.getElementById('shield-subnav-cccd');
+    const btnStego = document.getElementById('shield-subnav-stego');
+    const paneCCCD = document.getElementById('shield-pane-cccd');
+    const paneStego = document.getElementById('shield-pane-stego');
+    
+    if (mode === 'cccd') {
+        if (btnCCCD) btnCCCD.classList.add('active');
+        if (btnStego) btnStego.classList.remove('active');
+        if (paneCCCD) paneCCCD.style.display = 'block';
+        if (paneStego) paneStego.style.display = 'none';
+        window.triggerAntiFraudRender();
+    } else {
+        if (btnCCCD) btnCCCD.classList.remove('active');
+        if (btnStego) btnStego.classList.add('active');
+        if (paneCCCD) paneCCCD.style.display = 'none';
+        if (paneStego) paneStego.style.display = 'block';
+    }
+};
+
+// 1-Click Quick Legal Presets
+window.setAntiFraudPreset = function(type) {
+    const purposeInput = document.getElementById('af-purpose');
+    if (!purposeInput) return;
+    if (type === 'job') {
+        purposeInput.value = 'XÁC MINH HỒ SƠ XIN VIỆC LÀM';
+    } else if (type === 'bank') {
+        purposeInput.value = 'XÁC MINH MỞ TÀI KHOẢN NGÂN HÀNG';
+    } else if (type === 'rent') {
+        purposeInput.value = 'ĐĂNG KÝ TẠM TRÚ THUÊ NHÀ TRỌ';
+    } else if (type === 'contract') {
+        purposeInput.value = 'XÁC MINH HỢP ĐỒNG MUA BÁN TÀI SẢN';
+    }
+    window.triggerAntiFraudRender();
+    if (typeof window.showToast === 'function') {
+        window.showToast(`⚡ Đã áp dụng mẫu: ${purposeInput.value}!`, 'info');
+    }
+};
+
+window.handleAntiFraudFile = function(files) {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    if (!file.type.startsWith('image/')) {
+        if (typeof window.showToast === 'function') {
+            window.showToast('Vui lòng chọn một file ảnh hợp lệ (JPG, PNG, WEBP)!', 'warning');
+        }
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            window.currentStudioCCCDImage = img;
+            window.triggerAntiFraudRender();
+            if (typeof window.showToast === 'function') {
+                window.showToast('🛡️ Đã nạp ảnh CCCD! Giáp bảo vệ đang tự động kích hoạt.', 'success');
+            }
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+window.loadSampleCCCDInStudio = function() {
+    const canvas = document.getElementById('af-studio-canvas');
+    if (!canvas) return;
+    const w = 1000, h = 630;
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#eaf2f8');
+    grad.addColorStop(1, '#d8e5f0');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(10, 10, w - 20, h - 20);
+
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(40, 30, 80, 80);
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM', 145, 55);
+    ctx.fillStyle = '#b91c1c';
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillText('CĂN CƯỚC CÔNG DÂN / CITIZEN IDENTITY CARD', 145, 85);
+
+    ctx.fillStyle = '#eab308';
+    ctx.strokeStyle = '#ca8a04';
+    ctx.lineWidth = 2;
+    ctx.fillRect(45, 170, 95, 95);
+    ctx.strokeRect(45, 170, 95, 95);
+
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(45, 300, 200, 280);
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('ẢNH CHÂN DUNG', 75, 450);
+
+    ctx.strokeStyle = '#64748b';
+    ctx.strokeRect(740, 300, 200, 280);
+    ctx.fillText('VÂN TAY', 800, 450);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('Số / No.: 001202008899', 280, 200);
+
+    ctx.font = '16px sans-serif';
+    ctx.fillStyle = '#475569';
+    ctx.fillText('Họ và tên / Full name:', 280, 245);
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillStyle = '#0369a1';
+    ctx.fillText('NGUYỄN VŨ TRUNG HIẾU', 280, 275);
+
+    ctx.font = '16px sans-serif';
+    ctx.fillStyle = '#475569';
+    ctx.fillText('Ngày sinh / Date of birth: 20/05/2002', 280, 330);
+    ctx.fillText('Giới tính / Sex: Nam    Quốc tịch: Việt Nam', 280, 370);
+    ctx.fillText('Quê quán: Hà Nội', 280, 410);
+
+    const img = new Image();
+    img.onload = function() {
+        window.currentStudioCCCDImage = img;
+        window.triggerAntiFraudRender();
+    };
+    img.src = canvas.toDataURL();
+};
+
+// Render bảo vệ CCCD với Dynamic Native Resolution
+window.triggerAntiFraudRender = function() {
+    const canvas = document.getElementById('af-studio-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    if (!window.currentStudioCCCDImage) {
+        window.loadSampleCCCDInStudio();
+        return;
+    }
+
+    // Bảo tồn 100% độ phân giải ảnh gốc (Native camera resolution)
+    const natW = window.currentStudioCCCDImage.naturalWidth || window.currentStudioCCCDImage.width || 1000;
+    const natH = window.currentStudioCCCDImage.naturalHeight || window.currentStudioCCCDImage.height || 630;
+    canvas.width = natW;
+    canvas.height = natH;
+
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(window.currentStudioCCCDImage, 0, 0, w, h);
+
+    const scaleFactor = Math.min(w, h) / 630.0;
+
+    const purpose = ((document.getElementById('af-purpose') && document.getElementById('af-purpose').value) || 'XÁC MINH HỒ SƠ').toUpperCase();
+    const org = ((document.getElementById('af-org') && document.getElementById('af-org').value) || 'ĐỐI TÁC CÔNG NGHỆ').toUpperCase();
+    const opacityEl = document.getElementById('af-opacity');
+    const opacity = opacityEl ? parseInt(opacityEl.value) / 100 : 0.38;
+    const guillocheMode = (document.getElementById('af-guilloche') && document.getElementById('af-guilloche').value) || 'dual';
+
+    const dateNow = new Date().toLocaleDateString('vi-VN');
+    
+    // Hash generator
+    let hashVal = 0;
+    const hashStr = purpose + org + dateNow + "ZeroStudio2026";
+    for (let i = 0; i < hashStr.length; i++) {
+        hashVal = ((hashVal << 5) - hashVal) + hashStr.charCodeAt(i);
+        hashVal |= 0;
+    }
+    const hashCode = Math.abs(hashVal).toString(16).toUpperCase().padStart(8, '0') + "A8F9";
+    const auditEl = document.getElementById('af-audit-hash');
+    if (auditEl) auditEl.innerText = hashCode;
+
+    // 1. Vân Guilloche
+    if (guillocheMode !== 'off') {
+        const spacing = (guillocheMode === 'dense' ? 24 : 40) * scaleFactor;
+        ctx.lineWidth = Math.max(1, 1.2 * scaleFactor);
+        for (let y = 0; y < h + spacing; y += spacing) {
+            ctx.strokeStyle = 'rgba(2, 132, 199, 0.16)';
+            ctx.beginPath();
+            for (let x = 0; x < w; x += 6 * scaleFactor) {
+                const wave = y + (10 * Math.sin(x * 0.035 / scaleFactor) + 6 * Math.cos(x * 0.08 / scaleFactor)) * scaleFactor;
+                if (x === 0) ctx.moveTo(x, wave); else ctx.lineTo(x, wave);
+            }
+            ctx.stroke();
+
+            ctx.strokeStyle = 'rgba(225, 29, 72, 0.12)';
+            ctx.beginPath();
+            for (let x = 0; x < w; x += 6 * scaleFactor) {
+                const wave = y + (10 * Math.cos(x * 0.035 / scaleFactor + 1) + 6 * Math.sin(x * 0.08 / scaleFactor)) * scaleFactor;
+                if (x === 0) ctx.moveTo(x, wave); else ctx.lineTo(x, wave);
+            }
+            ctx.stroke();
+        }
+    }
+
+    // 2. Dải chữ chéo bảo vệ 42 độ
+    ctx.save();
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate(-42 * Math.PI / 180);
+
+    const diag = Math.sqrt(w * w + h * h);
+    const stepY = 120 * scaleFactor;
+    for (let y = -diag; y < diag; y += stepY) {
+        ctx.font = `bold ${Math.round(24 * scaleFactor)}px sans-serif`;
+        ctx.fillStyle = `rgba(220, 38, 38, ${opacity * 0.85})`;
+        ctx.textAlign = 'center';
+        ctx.fillText(`CHỈ DÙNG ${purpose} - KHÔNG CÓ GIÁ TRỊ VAY VỐN HAY MỞ TÀI KHOẢN`, 0, y);
+
+        ctx.font = `bold ${Math.round(17 * scaleFactor)}px sans-serif`;
+        ctx.fillStyle = `rgba(3, 105, 161, ${opacity * 0.95})`;
+        ctx.fillText(`CẤP CHO: ${org} (${dateNow}) | MÃ BẢO AN: ${hashCode}`, 0, y + 32 * scaleFactor);
+
+        ctx.strokeStyle = `rgba(220, 38, 38, ${opacity * 0.35})`;
+        ctx.lineWidth = Math.max(1, scaleFactor);
+        ctx.beginPath();
+        ctx.moveTo(-diag, y + 54 * scaleFactor);
+        ctx.lineTo(diag, y + 54 * scaleFactor);
+        ctx.stroke();
+    }
+    ctx.restore();
+
+    // 3. Tem mộc bảo mật điện tử góc dưới
+    const stampW = 340 * scaleFactor, stampH = 75 * scaleFactor;
+    const stampX = w - stampW - 20 * scaleFactor, stampY = h - stampH - 20 * scaleFactor;
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+    ctx.fillRect(stampX, stampY, stampW, stampH);
+    ctx.strokeStyle = '#dc2626';
+    ctx.lineWidth = Math.max(1.5, 2 * scaleFactor);
+    ctx.strokeRect(stampX, stampY, stampW, stampH);
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = Math.max(1, scaleFactor);
+    ctx.strokeRect(stampX + 3 * scaleFactor, stampY + 3 * scaleFactor, stampW - 6 * scaleFactor, stampH - 6 * scaleFactor);
+
+    ctx.fillStyle = '#dc2626';
+    ctx.font = `bold ${Math.round(14 * scaleFactor)}px sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText('★ ZEROSTUDIO SOVEREIGN SHIELD ★', stampX + 12 * scaleFactor, stampY + 22 * scaleFactor);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = `${Math.round(12 * scaleFactor)}px sans-serif`;
+    ctx.fillText(`Xác minh: ${purpose.slice(0, 28)}`, stampX + 12 * scaleFactor, stampY + 42 * scaleFactor);
+    ctx.fillText(`Mã băm: ${hashCode} | ${dateNow}`, stampX + 12 * scaleFactor, stampY + 62 * scaleFactor);
+};
+
+window.downloadAntiFraudShieldImage = function() {
+    const canvas = document.getElementById('af-studio-canvas');
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.download = `CCCD_Bao_Ve_ZeroStudio_${Date.now()}.jpg`;
+    link.href = canvas.toDataURL('image/jpeg', 0.96);
+    link.click();
+    if (typeof confetti === 'function') confetti({ particleCount: 70 });
+    if (typeof window.showToast === 'function') {
+        window.showToast('🛡️ Đã tải ảnh CCCD bảo vệ thành công (Giữ nguyên độ phân giải gốc)!', 'success');
+    }
+};
+
+// =====================================================================
+// ĐỘNG CƠ THỦY VÂN TẦN SỐ VÔ HÌNH 2D-DCT THUẦN CLIENT JAVASCRIPT
+// =====================================================================
+const _DCT_T = [];
+for (let i = 0; i < 8; i++) {
+    _DCT_T[i] = [];
+    const a = (i === 0) ? 1.0 / Math.sqrt(8) : Math.sqrt(2 / 8);
+    for (let j = 0; j < 8; j++) {
+        _DCT_T[i][j] = a * Math.cos((2 * j + 1) * i * Math.PI / 16);
+    }
+}
+const _DCT_Tt = [];
+for (let i = 0; i < 8; i++) {
+    _DCT_Tt[i] = [];
+    for (let j = 0; j < 8; j++) _DCT_Tt[i][j] = _DCT_T[j][i];
+}
+
+function _jsDct8x8(B) {
+    const temp = new Float64Array(64);
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            let sum = 0;
+            for (let k = 0; k < 8; k++) sum += _DCT_T[i][k] * B[k * 8 + j];
+            temp[i * 8 + j] = sum;
+        }
+    }
+    const D = new Float64Array(64);
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            let sum = 0;
+            for (let k = 0; k < 8; k++) sum += temp[i * 8 + k] * _DCT_Tt[k][j];
+            D[i * 8 + j] = sum;
+        }
+    }
+    return D;
+}
+
+function _jsIdct8x8(D) {
+    const temp = new Float64Array(64);
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            let sum = 0;
+            for (let k = 0; k < 8; k++) sum += _DCT_Tt[i][k] * D[k * 8 + j];
+            temp[i * 8 + j] = sum;
+        }
+    }
+    const B = new Float64Array(64);
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            let sum = 0;
+            for (let k = 0; k < 8; k++) sum += temp[i * 8 + k] * _DCT_T[k][j];
+            B[i * 8 + j] = sum;
+        }
+    }
+    return B;
+}
+
+function _jsTextToBits(str) {
+    const utf8 = unescape(encodeURIComponent(str));
+    const bytes = [];
+    for (let i = 0; i < utf8.length; i++) bytes.push(utf8.charCodeAt(i));
+    const len = bytes.length;
+    let crc = 0;
+    for (let i = 0; i < len; i++) crc = (crc + bytes[i] * (i + 1)) & 0xFFFF;
+    const packet = [0x5A, len, ...bytes, (crc >> 8) & 0xFF, crc & 0xFF];
+    const bits = [];
+    for (const byte of packet) {
+        for (let i = 7; i >= 0; i--) bits.push((byte >> i) & 1);
+    }
+    return bits;
+}
+
+function _jsBitsToText(bits) {
+    const bytes = [];
+    for (let i = 0; i < bits.length - 7; i += 8) {
+        let val = 0;
+        for (let b = 0; b < 8; b++) val = (val << 1) | bits[i + b];
+        bytes.push(val);
+    }
+    for (let idx = 0; idx < bytes.length; idx++) {
+        if (bytes[idx] === 0x5A && idx + 1 < bytes.length) {
+            const payloadLen = bytes[idx + 1];
+            const totalLen = 2 + payloadLen + 2;
+            if (idx + totalLen <= bytes.length) {
+                const payloadBytes = bytes.slice(idx + 2, idx + 2 + payloadLen);
+                const crcHigh = bytes[idx + 2 + payloadLen];
+                const crcLow = bytes[idx + 2 + payloadLen + 1];
+                const expectedCrc = (crcHigh << 8) | crcLow;
+                let actualCrc = 0;
+                for (let i = 0; i < payloadLen; i++) actualCrc = (actualCrc + payloadBytes[i] * (i + 1)) & 0xFFFF;
+                if (expectedCrc === actualCrc) {
+                    try {
+                        return decodeURIComponent(escape(String.fromCharCode.apply(null, payloadBytes)));
+                    } catch(e) {}
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// Khắc dấu vô hình 2D-DCT Client-side
+window.runStegoEmbedClient = function() {
+    if (!window.stegoEmbedTargetImage) {
+        // Nếu chưa chọn ảnh thì dùng luôn ảnh CCCD hiện tại
+        if (window.currentStudioCCCDImage) {
+            window.stegoEmbedTargetImage = window.currentStudioCCCDImage;
+        } else {
+            if (typeof window.showToast === 'function') {
+                window.showToast('Vui lòng chọn hoặc nạp một ảnh để gài bẫy tàng hình!', 'warning');
+            }
+            return;
+        }
+    }
+
+    const secretText = (document.getElementById('stego-secret-input') && document.getElementById('stego-secret-input').value) || 'ZEROSTUDIO-SECURE-2026';
+    const logEl = document.getElementById('stego-embed-log');
+
+    const tempCan = document.createElement('canvas');
+    const w = window.stegoEmbedTargetImage.naturalWidth || window.stegoEmbedTargetImage.width || 800;
+    const h = window.stegoEmbedTargetImage.naturalHeight || window.stegoEmbedTargetImage.height || 600;
+    tempCan.width = w; tempCan.height = h;
+    const ctx = tempCan.getContext('2d');
+    ctx.drawImage(window.stegoEmbedTargetImage, 0, 0, w, h);
+
+    const imgData = ctx.getImageData(0, 0, w, h);
+    const data = imgData.data;
+
+    // Trích xuất kênh Y (Luminance)
+    const blocksW = Math.floor(w / 8);
+    const blocksH = Math.floor(h / 8);
+    const totalBlocks = blocksW * blocksH;
+
+    const bits = _jsTextToBits(secretText);
+    const delta = 28.0;
+
+    let bitIdx = 0;
+    for (let r = 0; r < blocksH; r++) {
+        for (let c = 0; c < blocksW; c++) {
+            const bit = bits[bitIdx % bits.length];
+            const block = new Float64Array(64);
+            for (let y = 0; y < 8; y++) {
+                for (let x = 0; x < 8; x++) {
+                    const pxIdx = ((r * 8 + y) * w + (c * 8 + x)) * 4;
+                    // Y = 0.299R + 0.587G + 0.114B
+                    block[y * 8 + x] = 0.299 * data[pxIdx] + 0.587 * data[pxIdx + 1] + 0.114 * data[pxIdx + 2];
+                }
+            }
+            const D = _jsDct8x8(block);
+            if (bit === 1) {
+                if (D[26] - D[19] < delta) {
+                    const diff = delta - (D[26] - D[19]);
+                    D[26] += diff / 2; D[19] -= diff / 2;
+                }
+            } else {
+                if (D[19] - D[26] < delta) {
+                    const diff = delta - (D[19] - D[26]);
+                    D[19] += diff / 2; D[26] -= diff / 2;
+                }
+            }
+            const recon = _jsIdct8x8(D);
+            for (let y = 0; y < 8; y++) {
+                for (let x = 0; x < 8; x++) {
+                    const pxIdx = ((r * 8 + y) * w + (c * 8 + x)) * 4;
+                    const oldY = 0.299 * data[pxIdx] + 0.587 * data[pxIdx + 1] + 0.114 * data[pxIdx + 2];
+                    const newY = Math.max(0, Math.min(255, recon[y * 8 + x]));
+                    const dy = newY - oldY;
+                    data[pxIdx] = Math.max(0, Math.min(255, data[pxIdx] + dy));
+                    data[pxIdx + 1] = Math.max(0, Math.min(255, data[pxIdx + 1] + dy));
+                    data[pxIdx + 2] = Math.max(0, Math.min(255, data[pxIdx + 2] + dy));
+                }
+            }
+            bitIdx++;
+        }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+
+    const link = document.createElement('a');
+    link.download = `TaiLieu_GaiBay_TangHinh_${Date.now()}.png`;
+    link.href = tempCan.toDataURL('image/png');
+    link.click();
+
+    if (logEl) {
+        logEl.innerHTML = `✅ ĐÃ KHẮC THỦY VÂN 2D-DCT: Đã nhúng ${bits.length} bits vào ${totalBlocks} khối tần số. File đã tải về!`;
+    }
+    if (typeof window.showToast === 'function') {
+        window.showToast('🔒 Đã gài bẫy tàng hình 2D-DCT và tải file về thành công!', 'success');
+    }
+};
+
+// Kính soi giải mã bắt quả tang kẻ tuồn tin
+window.runStegoExtractClient = function() {
+    if (!window.stegoExtractTargetImage) {
+        if (typeof window.showToast === 'function') {
+            window.showToast('Vui lòng kéo thả ảnh nghi ngờ bị rò rỉ vào ô Kính Soi!', 'warning');
+        }
+        return;
+    }
+
+    const termEl = document.getElementById('stego-scanner-terminal');
+    const tempCan = document.createElement('canvas');
+    const w = window.stegoExtractTargetImage.naturalWidth || window.stegoExtractTargetImage.width || 800;
+    const h = window.stegoExtractTargetImage.naturalHeight || window.stegoExtractTargetImage.height || 600;
+    tempCan.width = w; tempCan.height = h;
+    const ctx = tempCan.getContext('2d');
+    ctx.drawImage(window.stegoExtractTargetImage, 0, 0, w, h);
+
+    const imgData = ctx.getImageData(0, 0, w, h);
+    const data = imgData.data;
+
+    const blocksW = Math.floor(w / 8);
+    const blocksH = Math.floor(h / 8);
+
+    const rawBits = [];
+    for (let r = 0; r < blocksH; r++) {
+        for (let c = 0; c < blocksW; c++) {
+            const block = new Float64Array(64);
+            for (let y = 0; y < 8; y++) {
+                for (let x = 0; x < 8; x++) {
+                    const pxIdx = ((r * 8 + y) * w + (c * 8 + x)) * 4;
+                    block[y * 8 + x] = 0.299 * data[pxIdx] + 0.587 * data[pxIdx + 1] + 0.114 * data[pxIdx + 2];
+                }
+            }
+            const D = _jsDct8x8(block);
+            rawBits.push(D[26] > D[19] ? 1 : 0);
+        }
+    }
+
+    const recovered = _jsBitsToText(rawBits);
+
+    if (recovered) {
+        if (termEl) {
+            termEl.innerHTML = `
+                <span style="color:#22c55e; font-weight:bold;">🎉 [PHÁT HIỆN THỦ PHẠM RÒ RỈ THÀNH CÔNG!]</span><br>
+                --------------------------------------------------<br>
+                🎯 DANH TÍNH GIẤU KÍN ĐƯỢC BÓC TRẦN:<br>
+                <strong style="color:#38bdf8; font-size:13px;">"${recovered}"</strong><br>
+                --------------------------------------------------<br>
+                🔒 Khớp mã kiểm tra CRC16: 100% Nguyên bản!<br>
+                ⚡ Bằng chứng số học bất khả chối cãi!
+            `;
+        }
+        if (typeof confetti === 'function') confetti({ particleCount: 80 });
+        if (typeof window.showToast === 'function') {
+            window.showToast('🎯 Kính Soi đã bắt quả tang danh tính thủ phạm rò rỉ!', 'success');
+        }
+    } else {
+        if (termEl) {
+            termEl.innerHTML = `
+                <span style="color:#ef4444; font-weight:bold;">❌ [KHÔNG TÌM THẤY THỦY VÂN HỢP LỆ]</span><br>
+                - File ảnh này chưa được gài bẫy bảo vệ của ZeroStudio,<br>
+                - Hoặc ảnh đã bị chỉnh sửa/biến dạng vượt ngưỡng cho phép.
+            `;
+        }
+        if (typeof window.showToast === 'function') {
+            window.showToast('Không tìm thấy thủy vân trên bức ảnh này.', 'warning');
+        }
+    }
+};
+
+// Đăng ký dropzone cho Stego Embed & Extract
+document.addEventListener('DOMContentLoaded', () => {
+    // Stego Embed
+    const embedInput = document.getElementById('stego-embed-file-input');
+    if (embedInput) {
+        embedInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        window.stegoEmbedTargetImage = img;
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('Đã nạp file cần gài dấu tàng hình!', 'info');
+                        }
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+
+    // Stego Extract
+    const extractInput = document.getElementById('stego-extract-file-input');
+    if (extractInput) {
+        extractInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        window.stegoExtractTargetImage = img;
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('Đã nạp ảnh rò rỉ vào Kính Soi! Bấm "Quét Bắt Quả Tang" ngay.', 'info');
+                        }
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+
+    // Camera input for mobile
+    const cameraInput = document.getElementById('antifraud-camera-input');
+    if (cameraInput) {
+        cameraInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                window.handleAntiFraudFile(e.target.files);
+            }
+        });
+    }
+});
